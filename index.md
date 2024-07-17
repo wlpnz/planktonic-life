@@ -10,7 +10,7 @@ hero:
     src: /note.png
     alt: 背景图
   actions:
-    - theme: brand
+    - theme: GitHub
       text: Markdown Examples
       link: /markdown-examples
     - theme: alt
