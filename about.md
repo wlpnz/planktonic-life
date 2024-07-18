@@ -8,4 +8,4 @@
 笔记来源： B站课程笔记、项目经验
 
 ## 网站搭建流程
-[使用VitePress搭建笔记仓库.md](project_exp/使用VitePress搭建笔记仓库)
+[使用VitePress搭建笔记仓库.md](/project_exp/使用VitePress搭建笔记仓库)

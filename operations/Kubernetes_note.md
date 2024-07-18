@@ -47,10 +47,10 @@
 
 <img src="./images/Kubernetes_note/image-20200406232838722.png" alt="image-20200406232838722" style="zoom:100%;border:1px solid;" />
 
-    
+​    
 
     kubernetes，是一个全新的基于容器技术的分布式架构领先方案，是谷歌严格保密十几年的秘密武器----Borg系统的一个开源版本，于2014年9月发布第一个版本，2015年7月发布第一个正式版本。
-
+    
     kubernetes的本质是**一组服务器集群**，它可以在集群的每个节点上运行特定的程序，来对节点中的容器进行管理。目的是实现资源管理的自动化，主要提供了如下的主要功能：
 
 - **自我修复**：一旦某一个容器崩溃，能够在1秒中左右迅速启动新的容器
@@ -595,7 +595,7 @@ address: [顺义,昌平]
 > 小提示：
 >
 > 	1  书写yaml切记`:` 后面要加一个空格
->
+>	
 > 	2  如果需要将多段yaml配置放在一个文件中，中间要使用`---`分隔
 >
 >     3 下面是一个yaml转json的网站，可以通过它验证yaml是否书写正确
@@ -1038,9 +1038,9 @@ scp -r ~/.kube cluster03:~/
 ## Namespace
 
     Namespace是kubernetes系统中的一种非常重要资源，它的主要作用是用来实现**多套环境的资源隔离**或者**多租户的资源隔离**。
-
+    
     默认情况下，kubernetes集群中的所有的Pod都是可以相互访问的。但是在实际中，可能不想让两个Pod之间进行互相的访问，那此时就可以将两个Pod划分到不同的namespace下。kubernetes通过将集群内部的资源分配到不同的Namespace中，可以形成逻辑上的"组"，以方便不同的组的资源进行隔离使用和管理。 
-
+    
     可以通过kubernetes的授权机制，将不同的namespace交给不同租户进行管理，这样就实现了多租户的资源隔离。此时还能结合kubernetes的资源配额机制，限定不同租户能占用的资源，例如CPU使用量、内存使用量等等，来实现租户可用资源的管理。
 
 <img src="./images/Kubernetes_note/image-20200407100850484.png" alt="image-20200407100850484" style="zoom:80%;border:1px solid" />
@@ -1134,7 +1134,7 @@ metadata:
 然后就可以执行对应的创建和删除命令了：
 
     创建：kubectl  create  -f  ns-dev.yaml
-
+    
     删除：kubectl  delete  -f  ns-dev.yaml
 
 ## Pod
@@ -1310,7 +1310,7 @@ spec:
 然后就可以执行对应的创建和删除命令了：
 
     创建：kubectl  create  -f  pod-nginx.yaml
-
+    
     删除：kubectl  delete  -f  pod-nginx.yaml
 
 ## Label
@@ -1334,7 +1334,7 @@ Label的特点：
 标签定义完毕之后，还要考虑到标签的选择，这就要使用到Label Selector，即：
 
     Label用于给某个资源对象定义标识
-
+    
     Label Selector用于查询和筛选拥有某些标签的资源对象
 
 当前有两种Label Selector：
@@ -1354,7 +1354,7 @@ Label的特点：
 标签的选择条件可以使用多个，此时将多个Label Selector进行组合，使用逗号","进行分隔即可。例如：
 
 		name=slave，env!=production
-
+	
 		name not in (frontend)，env!=production
 
 **命令方式**
@@ -1411,7 +1411,7 @@ spec:
 ## Deployment
 
     在kubernetes中，Pod是最小的控制单元，但是kubernetes很少直接控制Pod，一般都是通过Pod控制器来完成的。Pod控制器用于pod的管理，确保pod资源符合预期的状态，当pod的资源出现故障时，会尝试进行重启或重建pod。
-
+    
      在kubernetes中Pod控制器的种类有很多，本章节只介绍一种：Deployment。
 
 <img src="./images/Kubernetes_note/image-20200408193950807.png" alt="image-20200408193950807" style="border: 1px solid; zoom: 80%;" />
@@ -1515,7 +1515,7 @@ spec:
 然后就可以执行对应的创建和删除命令了：
 
     创建：kubectl  create  -f  deploy-nginx.yaml
-
+    
     删除：kubectl  delete  -f  deploy-nginx.yaml
 
 ##  Service
@@ -1608,7 +1608,7 @@ spec:
 然后就可以执行对应的创建和删除命令了：
 
     创建：kubectl  create  -f  svc-nginx.yaml
-
+    
     删除：kubectl  delete  -f  svc-nginx.yaml
 
 > **小结**
@@ -1902,7 +1902,7 @@ Events:
 ### 启动命令
 
     在前面的案例中，一直有一个问题没有解决，就是的busybox容器一直没有成功运行，那么到底是什么原因导致这个容器的故障呢？
-
+    
     原来busybox并不是一个程序，而是类似于一个工具类的集合，kubernetes集群启动管理后，它会自动关闭。解决方法就是让其一直在运行，这就用到了command配置。
 
 创建pod-command.yaml文件，内容如下：
@@ -2204,7 +2204,7 @@ Warning  FailedScheduling  <unknown>  default-scheduler  0/2 nodes are available
 接下来做一个案例，模拟下面这个需求：
 
     假设要以主容器来运行nginx，但是要求在运行nginx之前先要能够连接上mysql和redis所在服务器
-
+    
     为了简化测试，事先规定好mysql`(192.168.109.201)`和redis`(192.168.109.202)`服务器的地址
 
 创建pod-initcontainer.yaml，内容如下：
@@ -2755,7 +2755,7 @@ Events:
 ### 亲和性调度
 
     上一节，介绍了两种定向调度的方式，使用起来非常方便，但是也有一定的问题，那就是如果没有满足条件的Node，那么Pod将不会被运行，即使在集群中还有可用Node列表也不行，这就限制了它的使用场景。
-
+    
     基于上面的问题，kubernetes还提供了一种亲和性调度（Affinity）。它在NodeSelector的基础之上的进行了扩展，可以通过配置的形式，实现优先选择满足条件的Node进行调度，如果没有，也可以调度到不满足条件的节点上，使调度更加灵活。
 
 Affinity主要分为三类：
@@ -3095,7 +3095,7 @@ pod-podantiaffinity-required   1/1     Running   0          30s   10.244.1.96   
 **污点（Taints）**
 
     前面的调度方式都是站在Pod的角度上，通过在Pod上添加属性，来确定Pod是否要调度到指定的Node上，其实我们也可以站在Node的角度上，通过在Node上添加**污点**属性，来决定是否允许Pod调度过来。
-
+    
     Node被设置上污点之后就和Pod之间存在了一种相斥的关系，进而拒绝Pod调度进来，甚至可以将已经存在的Pod驱逐出去。
 
 污点的格式为：`key=value:effect`, key和value是污点的标签，effect描述污点的作用，支持如下三个选项：
@@ -3437,9 +3437,11 @@ replicaset.apps "pc-replicaset" deleted
 
 ## Deployment(Deploy)
 
-    为了更好的解决服务编排的问题，kubernetes在V1.2版本开始，引入了Deployment控制器。值得一提的是，这种控制器并不直接管理pod，而是通过管理ReplicaSet来简介管理Pod，即：Deployment管理ReplicaSet，ReplicaSet管理Pod。所以Deployment比ReplicaSet功能更加强大。
+    为了更好的解决服务编排的问题，kubernetes在V1.2版本开始，引入了Deployment控制器。
+    值得一提的是，这种控制器并不直接管理pod，而是通过管理ReplicaSet来简介管理Pod，
+    即：Deployment管理ReplicaSet，ReplicaSet管理Pod。所以Deployment比ReplicaSet功能更加强大。
 
-![](../附件/语雀/image-20200612005524778.png)
+![image-20240718100611815](images/Kubernetes_note/image-20240718100611815.png)
 
 Deployment主要功能有下面几个：
 
@@ -3743,7 +3745,7 @@ pc-deployment-c848d767     0         0         0       71m
 **金丝雀发布**
 
     Deployment控制器支持控制更新过程中的控制，如“暂停(pause)”或“继续(resume)”更新操作。
-
+    
     比如有一批新的Pod资源创建完成后立即暂停更新过程，此时，仅存在一部分新版本的应用，主体部分还是旧的版本。然后，再筛选一小部分的用户请求路由到新版本的Pod应用，继续观察能否稳定地按期望的方式运行。确定没问题之后再继续完成余下的Pod资源滚动更新，否则立即回滚更新操作。这就是所谓的金丝雀发布。
 
 ```powershell
@@ -3801,7 +3803,7 @@ deployment.apps "pc-deployment" deleted
 ## Horizontal Pod Autoscaler(HPA)
 
     在前面的课程中，我们已经可以实现通过手工执行`kubectl scale`命令实现Pod扩容或缩容，但是这显然不符合Kubernetes的定位目标--自动化、智能化。 Kubernetes期望可以实现通过监测Pod的使用情况，实现pod数量的自动调整，于是就产生了Horizontal Pod Autoscaler（HPA）这种控制器。
-
+    
     HPA可以获取每个Pod利用率，然后和HPA中定义的指标进行对比，同时计算出需要伸缩的具体值，最后实现Pod的数量的调整。其实HPA与之前的Deployment一样，也属于一种Kubernetes资源对象，它通过追踪分析RC控制的所有目标Pod的负载变化情况，来确定是否需要针对性地调整目标Pod的副本数，这是HPA的实现原理。
 
 <img src="./images/Kubernetes_note/image-20200608155858271.png" style="border: 1px solid; zoom: 80%;"/>
@@ -4326,7 +4328,7 @@ cronjob.batch "pc-cronjob" deleted
 ## Service介绍
 
     在kubernetes中，pod是应用程序的载体，我们可以通过pod的ip来访问应用程序，但是pod的ip地址不是固定的，这也就意味着不方便直接采用pod的ip对服务进行访问。
-
+    
     为了解决这个问题，kubernetes提供了Service资源，Service会对提供同一个服务的多个pod进行聚合，并且提供一个统一的入口地址。通过访问Service的入口地址就能访问到后面的pod服务。
 
 <img src="./images/Kubernetes_note/image-20200408194716913.png" style="zoom:100%;border:1px solid" />
@@ -4531,7 +4533,7 @@ TCP  10.97.97.97:80 rr
 **Endpoint**
 
     Endpoint是kubernetes中的一个资源对象，存储在etcd中，用来记录一个service对应的所有pod的访问地址，它是根据service配置文件中selector描述产生的。
-
+    
     一个Service由一组Pod组成，这些Pod通过Endpoints暴露出来，**Endpoints是实现实际服务的端点集合**。换句话说，service和pod之间的联系是通过endpoints实现的。
 
 ![image-20200509191917069](images/Kubernetes_note/image-20200509191917069.png)
@@ -4992,7 +4994,7 @@ tomcat.itheima.com /  tomcat-service:8080(10.244.1.99:8080,10.244.2.117:8080,10.
 # 第八章 数据存储
 
     在前面已经提到，容器的生命周期可能很短，会被频繁地创建和销毁。那么容器在销毁时，保存在容器中的数据也会被清除。这种结果对用户来说，在某些情况下是不乐意看到的。为了持久化保存容器的数据，kubernetes引入了Volume的概念。
-
+    
     Volume是Pod中能够被多个容器访问的共享目录，它被定义在Pod上，然后被一个Pod里的多个容器挂载到具体的文件目录下，kubernetes通过Volume实现同一个Pod中不同容器之间的数据共享以及数据的持久化存储。Volume的生命容器不与Pod中单个容器的生命周期相关，当容器终止或者重启时，Volume中的数据也不会丢失。
 
 kubernetes的Volume支持多种类型，比较常见的有下面几个：
@@ -5006,7 +5008,7 @@ kubernetes的Volume支持多种类型，比较常见的有下面几个：
 ### EmptyDir
 
     EmptyDir是最基础的Volume类型，一个EmptyDir就是Host上的一个空目录。
-
+    
     EmptyDir是在Pod被分配到Node时创建的，它的初始内容为空，并且无须指定宿主机上对应的目录文件，因为kubernetes会自动分配一个目录，当Pod销毁时， EmptyDir中的数据也会被永久删除。 EmptyDir用途如下：
 
 - 临时空间，例如用于某些应用程序运行时所需的临时目录，且无须永久保留
@@ -5069,7 +5071,7 @@ volume-emptydir   2/2     Running   0          97s   10.244.1.100   node1  .....
 ### HostPath
 
     上节课提到，EmptyDir中数据不会被持久化，它会随着Pod的结束而销毁，如果想简单的将数据持久化到主机中，可以选择HostPath。
-
+    
     HostPath就是将Node主机中一个实际目录挂在到Pod中，以供容器使用，这样的设计就可以保证Pod销毁了，但是数据依据可以存在于Node主机上。
 
 <img src="./images/Kubernetes_note/image-20200413214031331.png" style="zoom:100%;border:1px solid" />
@@ -5139,7 +5141,7 @@ access.log  error.log
 ### NFS
 
     HostPath可以解决数据持久化的问题，但是一旦Node节点故障了，Pod如果转移到了别的节点，又会出现问题了，此时需要准备单独的网络存储系统，比较常用的用NFS、CIFS。
-
+    
     NFS是一个网络文件存储系统，可以搭建一台NFS服务器，然后将Pod中的存储直接连接到NFS系统上，这样的话，无论Pod在节点上怎么转移，只要Node跟NFS的对接没问题，数据就可以成功访问。
 
 <img src="./images/Kubernetes_note/image-20200413215133559.png" style="zoom:100%;border:1px solid" />
@@ -5221,9 +5223,9 @@ access.log  error.log
 ### PV和PVC
 
     前面已经学习了使用NFS提供存储，此时就要求用户会搭建NFS系统，并且会在yaml配置nfs。由于kubernetes支持的存储系统有很多，要求客户全都掌握，显然不现实。为了能够屏蔽底层存储实现的细节，方便用户使用， kubernetes引入PV和PVC两种资源对象。
-
+    
     PV（Persistent Volume）是持久化卷的意思，是对底层的共享存储的一种抽象。一般情况下PV由kubernetes管理员进行创建和配置，它与底层具体的共享存储技术有关，并通过插件完成与共享存储的对接。
-
+    
     PVC（Persistent Volume Claim）是持久卷声明的意思，是用户对于存储需求的一种声明。换句话说，PVC其实就是用户向kubernetes系统发出的一种资源需求申请。
 
 <img src="./images/Kubernetes_note/image-20200514194111567.png" style="zoom:100%;border:1px solid" />
@@ -5855,7 +5857,7 @@ Kubernetes集群安全的最关键点在于如何识别并认证客户端身份�
 ## 授权管理
 
      授权发生在认证成功之后，通过认证就可以知道请求用户是谁， 然后Kubernetes会根据事先定义的授权策略来决定用户是否有权限访问，这个过程就称为授权。
-
+    
      每个发送到ApiServer的请求都带上了用户和资源的信息：比如发送请求的用户、请求的路径、请求的动作等，授权就是根据这些信息和授权策略进行比较，如果符合策略，则认为授权通过，否则会返回错误。
 
 API Server目前支持以下几种授权策略：

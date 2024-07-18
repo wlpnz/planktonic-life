@@ -94,7 +94,7 @@ SHOW VARIABLES LIKE '%lower_case_table_names%'
 
 - Linux下
 
-![image.png](../附件/语雀/1711591097467-9446c85c-3078-46ea-963f-6fd2e88f4020.png) 
+![image-20240718095644784](images/MySQL高级/image-20240718095644784.png) 
 
 - lower_case_table_names参数值的设置
    - 默认为0，大小写敏感 。 
@@ -426,7 +426,8 @@ SET GLOBAL mandatory_roles = 'role1,role2@localhost,r3@%.example.com'; #系统�
 #### MySQL中的SQL执行流程
 ![image.png](images/MySQL高级/1712545343988-6bbdb5cf-97e5-4f77-843b-3b258b9967d9.png)
 执行流程： **SQL语句 -> 查询缓存 -> 解析器 -> 优化器 -> 执行器**
-![image.png](../附件/语雀/1712545645522-6c11faf6-3630-4a53-a5d6-a309ae63468b.png)
+
+![image-20240718100036324](images/MySQL高级/image-20240718100036324.png)
 
 #### MySQL8中SQL执行原理
 确认profiling是否开启

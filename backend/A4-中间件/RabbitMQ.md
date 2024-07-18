@@ -51,8 +51,11 @@ RabbitMQ是一个消息中间件，它用于接收并转发消息。
 
 ### RabbitMQ的安装
 [erlang-rpm下载](https://github.com/rabbitmq/erlang-rpm/tags)
+
 [安装RabbitMQ](https://www.rabbitmq.com/install-rpm.html)
+
 ![image.png](images/RabbitMQ/1696311754685-bc653c0d-2e39-49f0-9132-f6e1b10e619d.png)
+
 
 ```java
 rpm -ivh erlang-21.3-1.el7.x86_64.rpm

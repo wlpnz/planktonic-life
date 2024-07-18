@@ -79,7 +79,7 @@ docker run -d --restart=always \
 -v /develop_env/rabbitMQ/plugins:/plugins \
 -p 15672:15672 -p 5672:5672 rabbitmq:3.8.34
 docker exec -it rabbit /bin/bash
-管理界面配置：[RabbitMQ](https://www.yuque.com/pnzing/java/de7892ax30cogld3)
+管理界面配置：[RabbitMQ](/backend/A4-中间件/RabbitMQ.md#rabbitmq的安装)
 管理界面账号密码：pnz/abc123
 访问路径：http://192.168.10.190:15672/
 
@@ -151,9 +151,12 @@ docker run -d --name minio -p 9000:9000 -p 9001:9001 --privileged=true -e "MINIO
 docker pull rabbitmq:3.8.34
 docker run -d --hostname  my-rabbit --name rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3.8.34
 docker exec -it rabbit /bin/bash
-添加管理插件以及设置角色，具体参考语雀笔记
+添加管理插件以及设置角色，笔记：[RabbitMQ](/backend/A4-中间件/RabbitMQ.md#rabbitmq的安装)
+
 管理界面账号密码：pnz/abc123
+
 访问路径：[http://192.168.10.3:15672/](http://192.168.10.3:15672/)
+
 
 #### install xxl-job-admin
 sql地址：[https://github.com/xuxueli/xxl-job/blob/master/doc/db/tables_xxl_job.sql](https://github.com/xuxueli/xxl-job/blob/master/doc/db/tables_xxl_job.sql)

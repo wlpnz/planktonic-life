@@ -580,7 +580,12 @@ db.comment.deleteOne({_id:"1"})
 db.collection.countDocuments(query, options)
 ```
 参数：
-![](../附件/语雀/image-20240419093034158.png)
+
+| Parameter | Type     | Description                  |
+| --------- | -------- | ---------------------------- |
+| query     | document | 查询选择条件                 |
+| options   | document | 可选。用于修改计数的额外选项 |
+
 【示例】
 （1 )统计所有记录数：
 统计comment集合的所有的记录数：
