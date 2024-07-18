@@ -12,13 +12,17 @@ export default defineConfig({
   lastUpdated: true,
   themeConfig: {
     outline: [2, 6],
+    // search: {
+    //   provider: 'algolia',
+    //   options: {
+    //     appId: '...',
+    //     apiKey: '...',
+    //     indexName: '...',
+    //     placeholder: '请输入关键字'
+    //   }
+    // },
     search: {
-      provider: 'algolia',
-      options: {
-        appId: '...',
-        apiKey: '...',
-        indexName: '...'
-      }
+      provider: 'local'
     },
     nav: [
       { text: '首页', link: '/' },
@@ -49,5 +53,8 @@ export default defineConfig({
       prev: false,
       next: false
     }
+  },
+  sitemap: {
+    hostname: 'https://blog.wlpnz.top/'
   }
 })
