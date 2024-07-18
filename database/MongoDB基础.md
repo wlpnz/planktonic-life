@@ -1166,7 +1166,7 @@ Mongo命令参考：
 ```
 db.comment.createIndex({"userid":1})
 ```
-2 ）复合索引注解[@CompoundIndex ](/CompoundIndex )
+2 ）复合索引注解`[@CompoundIndex ](/CompoundIndex )`
 org.springframework.data.mongodb.core.index.CompoundIndex.class
 复合索引的声明，建复合索引可以有效地提高多字段的查询效率。
 Mongo命令参考：
