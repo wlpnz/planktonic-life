@@ -2,6 +2,7 @@
 - [SpringCloud](https://spring.io/projects/spring-cloud/#learn)
 - [SpringCloud与SpringCloudAlibaba 版本选择](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E)
 - [SpringCloud与SpringBoot版本选型](https://start.spring.io/actuator/info)
+
 | type | version |
 | --- | --- |
 | SpringCloud | 2020.0.6 |

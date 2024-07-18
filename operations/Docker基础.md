@@ -67,7 +67,7 @@ docker rmi 镜像id  “删除镜像”
 删除多个 docker rmi -f 镜像名1:TAG 镜像名2::TAG
 删除全部 docker rmi -f $(docker images -qa)
 
-docker的虚悬镜像：仓库名、标签都是<none>的镜像,俗称虚悬镜像dangling image
+docker的虚悬镜像：仓库名、标签都是`<none>`的镜像,俗称虚悬镜像dangling image
 ![image.png](images/Docker基础/1695278742013-4c5013d2-7288-4741-b180-647f14630125.png)
 
 #### 容器命令

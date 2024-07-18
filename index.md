@@ -3,19 +3,20 @@
 layout: home
 
 hero:
-  name: "浮游一生"
+  name: "小小浮游"
   text: "一个开发者的笔记库"
   tagline: 随波逐流
   image:
     src: /note.png
     alt: 背景图
   actions:
-    - theme: GitHub
-      text: Markdown Examples
-      link: /markdown-examples
+    - theme: brand
+      text: GitHub
+      link: https://github.com/wlpnz
+      target: _blank
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: About me
+      link: /about
 
 features:
   - title: 后端

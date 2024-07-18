@@ -1,8 +1,8 @@
-# 初识
+# JVM基础
 ## 定义&结构图解
 定义：Java Virtual Machine--java程序的运行环境
-![image.png](./images/JVM基础/1682492725344-6b693b1b-4ef1-4bfb-af6f-bd43d0400bac.png)
-![image.png](./images/JVM基础/1682492794645-a6fee7bd-8ef9-4cf3-a6ed-63e763adb342.png)
+![image.png](images/JVM基础/1682492725344-6b693b1b-4ef1-4bfb-af6f-bd43d0400bac.png)
+![image.png](images/JVM基础/1682492794645-a6fee7bd-8ef9-4cf3-a6ed-63e763adb342.png)
 [参考资料](https://www.javainterviewpoint.com/java-virtual-machine-architecture-in-java/)
 
 ## 程序计数器
@@ -10,23 +10,23 @@ Program Counter Register 程序计数器（物理实现：寄存器）
 
 - 作用：记住下一条jvm指令的执行地址
 - 特点
-   - 是线程私有的
-   - 不会存在内存溢出
+    - 是线程私有的
+    - 不会存在内存溢出
 
 ## 栈
 Java Virtual Machine Stacks （Java 虚拟机栈）
 
-- 每个线程运行时所需要的内存，称为虚拟机栈 
-- 每个栈由多个栈帧（Frame）组成，对应着每次方法调用时所占用的内存 
+- 每个线程运行时所需要的内存，称为虚拟机栈
+- 每个栈由多个栈帧（Frame）组成，对应着每次方法调用时所占用的内存
 - 每个线程只能有一个活动栈帧，对应着当前正在执行的那个方法
 
 `-Xss256K`:修改栈空间大小
-> 问题辨析 
+> 问题辨析
 
 1. 垃圾回收是否涉及栈内存？
-   1. 不会，每次出栈，都会直接释放
+    1. 不会，每次出栈，都会直接释放
 2. 栈内存分配越大越好吗？
-   1. 不是越大越好
+    1. 不是越大越好
 3. 方法内的局部变量是否线程安全？
 -  如果方法内局部变量没有逃离方法的作用范围，它是线程安全的
 - 如果是局部变量引用了对象，并逃离方法的作用范围，需要考虑线程安全
@@ -41,9 +41,7 @@ Java Virtual Machine Stacks （Java 虚拟机栈）
 - 用top定位哪个进程(取pid)对cpu的占用过高
 - ps H -eo pid,tid,%cpu | grep 进程id （用ps命令进一步定位是哪个线程引起的cpu占用过高）
 - jstack 进程id
-   - 可以根据线程id 找到有问题的线程，进一步定位到问题代码的源码行号
-- 
-
+    - 可以根据线程id 找到有问题的线程，进一步定位到问题代码的源码行号
 
 ## 本地方法栈
 Native Method Stacks 本地方法栈
@@ -62,34 +60,36 @@ Heap 堆  `-Xmx8m`：修改堆空间大小
 > 堆内存溢出 java.lang.OutOfMemoryError:Java heap space
 
 1. jps 工具
-查看当前系统中有哪些 java 进程
+   查看当前系统中有哪些 java 进程
 2. jmap 工具
-查看堆内存占用情况 jmap - heap 进程id
+   查看堆内存占用情况 jmap - heap 进程id
 3. jconsole 工具
-图形界面的，多功能的监测工具，可以连续监测
+   图形界面的，多功能的监测工具，可以连续监测
 4. visualVm
 
 图形界面的多功能的监测工具，可以连续监测
+
 ## 方法区
 组成：
-![image.png](./images/JVM基础/1682513109099-95dc1d72-f00a-477b-82ec-395700de603b.png)
+![image.png](images/JVM基础/1682513109099-95dc1d72-f00a-477b-82ec-395700de603b.png)
 
 > 方法区内存溢出
 
 - 1.8以前会导致永久代内存溢出
-   - 演示永久代内存溢出 java.lang.OutOfMemoryError: PermGen space 
-   - `-XX:MaxPermSize=8m`设置永久代的大小
+    - 演示永久代内存溢出 java.lang.OutOfMemoryError: PermGen space
+    - `-XX:MaxPermSize=8m`设置永久代的大小
 - 1.8之后会导致元空间内存溢出
-   - 演示元空间内存溢出 java.lang.OutOfMemoryError: Metaspace
-   - `-XX:MaxMetaspaceSize=8m`设置元空间的大小
+    - 演示元空间内存溢出 java.lang.OutOfMemoryError: Metaspace
+    - `-XX:MaxMetaspaceSize=8m`设置元空间的大小
 
 ### 运行时常量池
 
-- 常量池，就是一张表，虚拟机指令根据这张常量表找到要执行的类名、方法名、参数类型、字面量等信息 
+- 常量池，就是一张表，虚拟机指令根据这张常量表找到要执行的类名、方法名、参数类型、字面量等信息
 - 运行时常量池，常量池是 *.class 文件中的，当该类被加载，它的常量池信息就会放入运行时常量池，并把里面的符号地址变为真实地址
 - 使用` javap -v **.class`查看编译器的实际执行过程
 
-![image.png](./images/JVM基础/1682513343472-5a278eac-51ea-4ac8-ab2a-7f4b7dcfdba6.png)
+
+![image.png](images/JVM基础/1682513343472-5a278eac-51ea-4ac8-ab2a-7f4b7dcfdba6.png)
 ### StringTable
 ```java
 String s1 = "a";
@@ -112,32 +112,33 @@ x2.intern();
 System.out.println(x1 == x2); //false
 ```
 
-- 常量池中的字符串仅是符号，第一次用到时才变为对象 
-- 利用串池的机制，来避免重复创建字符串对象 
-- 字符串变量拼接的原理是 StringBuilder （1.8） 
-- 字符串常量拼接的原理是编译期优化 
-- 可以使用 intern 方法，主动将串池中还没有的字符串对象放入串池 
-   - 1.8 将这个字符串对象尝试放入串池，如果有则并不会放入，如果没有则放入串池， 会把串池中的对象返回 
-   - 1.6 将这个字符串对象尝试放入串池，如果有则并不会放入，如果没有会把此对象复制一份，放入串池， 会把串池中的对象返回
+- 常量池中的字符串仅是符号，第一次用到时才变为对象
+- 利用串池的机制，来避免重复创建字符串对象
+- 字符串变量拼接的原理是 StringBuilder （1.8）
+- 字符串常量拼接的原理是编译期优化
+- 可以使用 intern 方法，主动将串池中还没有的字符串对象放入串池
+    - 1.8 将这个字符串对象尝试放入串池，如果有则并不会放入，如果没有则放入串池， 会把串池中的对象返回
+    - 1.6 将这个字符串对象尝试放入串池，如果有则并不会放入，如果没有会把此对象复制一份，放入串池， 会把串池中的对象返回
 ### StringTable垃圾回收
 当串池中的大小快满的时候会触发GC垃圾回收机制
 ### StringTable性能调优
-
 - 当有许多字符串需要处理时，适当调整`-XX:StringTableSize=桶个数`有助于优化执行速度
 - 考虑将字符串对象是否入池
 - 提示：`-XX:+PrintStringTableStatistics`打印串池的信息
+
+
 ## 直接内存
 ### 定义
 Direct Memory
 
-- 常见于 NIO 操作时，用于数据缓冲区 
-- 分配回收成本较高，但读写性能高 
+- 常见于 NIO 操作时，用于数据缓冲区
+- 分配回收成本较高，但读写性能高
 - 不受 JVM 内存回收管理
 ### 分配和回收原理
 
-- 使用了 Unsafe 对象完成直接内存的分配回收，并且回收需要主动调用 freeMemory 方法 
+- 使用了 Unsafe 对象完成直接内存的分配回收，并且回收需要主动调用 freeMemory 方法
 - ByteBuffffer 的实现类内部，使用了 Cleaner （虚引用）来监测 ByteBuffffer 对象，一旦 ByteBuffffer 对象被垃圾回收，那么就会由 ReferenceHandler 线程通过 Cleaner 的 clean 方法调用 freeMemory 来释放直接内存
-> 在JVM调优时一般添加 `-XX:+DisableExplicitGC` 禁用显示的垃圾回收(System.gc()方法) 
+> 在JVM调优时一般添加 `-XX:+DisableExplicitGC` 禁用显示的垃圾回收(System.gc()方法)
 > 会对使用直接内存造成影响，解决方式：使用UnSafe手动管理分配的内存
 
 # 垃圾回收
@@ -147,17 +148,15 @@ Direct Memory
 弊端：当存在**循环引用**的问题时，对于存在循环引用的对象不会对其进行垃圾回收
 
 ### 可达分析(Java中使用)
-
-- Java 虚拟机中的垃圾回收器采用可达性分析来探索所有存活的对象 
+- Java 虚拟机中的垃圾回收器采用可达性分析来探索所有存活的对象
 - 扫描堆中的对象，看是否能够沿着 GC Root对象 为起点的引用链找到该对象，找不到，表示可以回收
 - 哪些对象可以作为`GC Root`？
 ### 四种引用
-
 1. 强引用
-   - 只有所有 GC Roots 对象都不通过【强引用】引用该对象，该对象才能被垃圾回收
+    - 只有所有 GC Roots 对象都不通过【强引用】引用该对象，该对象才能被垃圾回收
 2. 软引用(SoftReference)
-   - 仅有软引用引用该对象时，在垃圾回收后，内存仍不足时会再次出发垃圾回收，回收软引用对象 	
-   - 可以配合引用队列来释放软引用自身
+    - 仅有软引用引用该对象时，在垃圾回收后，内存仍不足时会再次出发垃圾回收，回收软引用对象
+    - 可以配合引用队列来释放软引用自身
 ```java
 private static final int _4MB = 4 * 1024 * 1024;
 
@@ -189,10 +188,9 @@ public static void main(String[] args) {
 
 }
 ```
-
 3. 弱引用(WeakReference)
-   - 仅有弱引用引用该对象时，在垃圾回收时，无论内存是否充足，都会回收弱引用对象 
-   - 可以配合引用队列来释放弱引用自身
+    - 仅有弱引用引用该对象时，在垃圾回收时，无论内存是否充足，都会回收弱引用对象
+    - 可以配合引用队列来释放弱引用自身
 ```java
 private static final int _4MB = 4 * 1024 * 1024;
 
@@ -213,33 +211,34 @@ public static void main(String[] args) {
 ```
 
 4. 虚引用(PhantomReference)
-   - 必须配合引用队列使用，主要配合 ByteBuffer 使用，被引用对象回收时，会将虚引用入队,由 Reference Handler 线程调用虚引用相关方法(Unsafe.freeMemory)释放直接内存
+    - 必须配合引用队列使用，主要配合 ByteBuffer 使用，被引用对象回收时，会将虚引用入队,由 Reference Handler 线程调用虚引用相关方法(Unsafe.freeMemory)释放直接内存
 5. 终结器引用(FinalReference)
-   - 无需手动编码，但其内部配合引用队列使用，在垃圾回收时，终结器引用入队（被引用对象暂时没有被回收），再由 Finalizer 线程通过终结器引用找到被引用对象并调用它的 finalize方法，第二次 GC 时才能回收被引用对象
+    - 无需手动编码，但其内部配合引用队列使用，在垃圾回收时，终结器引用入队（被引用对象暂时没有被回收），再由 Finalizer 线程通过终结器引用找到被引用对象并调用它的 finalize方法，第二次 GC 时才能回收被引用对象
 
-![image.png](./images/JVM基础/1682577777880-f4a46e03-a12c-4b2a-9469-faef05e8ba3c.png)
+![image.png](images/JVM基础/1682577777880-f4a46e03-a12c-4b2a-9469-faef05e8ba3c.png)
 ## 垃圾回收算法
 
 1. **标记清除**
-   1. 速度快
-   2. 会造成内存碎片
+    1. 速度快
+    2. 会造成内存碎片
 
-![image.png](./images/JVM基础/1682582515121-4ccfed83-d27a-4f71-9a8f-0ff49fe88cd1.png)
+![image.png](images/JVM基础/1682582515121-4ccfed83-d27a-4f71-9a8f-0ff49fe88cd1.png)
 
 2. **标记整理**
-   1. 速度慢（整理时需要改变对象引用地址等等）
-   2. 没有内存碎片
+    1. 速度慢（整理时需要改变对象引用地址等等）
+    2. 没有内存碎片
 
-![image.png](./images/JVM基础/1682582566371-428c9b6d-e027-4607-97c7-d7d0e5b8c78d.png)
+![image.png](images/JVM基础/1682582566371-428c9b6d-e027-4607-97c7-d7d0e5b8c78d.png)
 
 3. **复制**
-   1. 不会有内存碎片
-   2. 需要占用双倍内存空间
+    1. 不会有内存碎片
+    2. 需要占用双倍内存空间
 
-![image.png](./images/JVM基础/1682582663691-152c2a1f-0de7-4faf-a2a0-06e7dd0d4d97.png)
+![image.png](images/JVM基础/1682582663691-152c2a1f-0de7-4faf-a2a0-06e7dd0d4d97.png)
 ## 分代垃圾回收
-![image.png](./images/JVM基础/1682583971852-91c596d7-d990-44bd-93db-222c94fa0628.png)
+![image.png](images/JVM基础/1682583971852-91c596d7-d990-44bd-93db-222c94fa0628.png)
 ### 相关VM参数
+
 | 堆初始大小  | -Xms |
 | --- | --- |
 | 堆最大大小  | -Xmx 或 -XX:MaxHeapSize=size |
@@ -264,8 +263,8 @@ public static void main(String[] args) {
 
 ### 吞吐量优先
 
-- 多线程 
-- 堆内存较大，多核 cpu 
+- 多线程
+- 堆内存较大，多核 cpu
 - 让单位时间内，STW 的时间最短 0.2 0.2 = 0.4，垃圾回收时间占比最低，这样就称吞吐量高
 ```java
 //只要开启一个 另外一个就会开启
@@ -279,11 +278,11 @@ public static void main(String[] args) {
 //控制垃圾回收线程的线程数
 -XX:ParallelGCThreads=n
 ```
-![image.png](./images/JVM基础/1683176603154-9158f987-ddf7-4cad-9cb5-fcbe1cb3963b.png)
+![image.png](images/JVM基础/1683176603154-9158f987-ddf7-4cad-9cb5-fcbe1cb3963b.png)
 ### 响应时间优先
 
-- 多线程 
-- 堆内存较大，多核 cpu 
+- 多线程
+- 堆内存较大，多核 cpu
 - 尽可能让单次 STW 的时间最短 0.1 0.1 0.1 0.1 0.1 = 0.5
 ```java
 -XX:+UseConcMarkSweepGC ~ -XX:+UseParNewGC ~ SerialOld
@@ -296,28 +295,27 @@ public static void main(String[] args) {
 
 **定义：Garbage First**
 
-- 2004 论文发布 
-- 2009 JDK 6u14 体验 
-- 2012 JDK 7u4 官方支持 
-- 2017 JDK 9 默认 
+- 2004 论文发布
+- 2009 JDK 6u14 体验
+- 2012 JDK 7u4 官方支持
+- 2017 JDK 9 默认
 
-适用场景 
+适用场景
 
-- 同时注重吞吐量（Throughput）和低延迟（Low latency），默认的暂停目标是 200 ms 
-- 超大堆内存，会将堆划分为多个大小相等的 Region 
-- 整体上是 标记+整理 算法，两个区域之间是 复制 算法 
+- 同时注重吞吐量（Throughput）和低延迟（Low latency），默认的暂停目标是 200 ms
+- 超大堆内存，会将堆划分为多个大小相等的 Region
+- 整体上是 标记+整理 算法，两个区域之间是 复制 算法
 
-相关 JVM 参数 
+相关 JVM 参数
 `-XX:+UseG1GC`
 `-XX:G1HeapRegionSize=size`
 `-XX:MaxGCPauseMillis=time`
 G1垃圾回收阶段
-  `Young Collection ==> Young Collection + Concurrent Mark ==> Mixed Collection ==> Young Collection`
+`Young Collection ==> Young Collection + Concurrent Mark ==> Mixed Collection ==> Young Collection`
 **Young Collection**
 
 - 会STW
-
-**YoungCollection+CM**
+  **YoungCollection+CM**
 
 - 在Young GC时会进行GC Root的初始标记
 - 老年代占用堆空间比例达到阈值时，进行并发标记（不会 STW），由下面的 JVM 参数决定
@@ -325,25 +323,25 @@ G1垃圾回收阶段
 
 **Mixed Collection **
 
-- 会对 E、S、O 进行全面垃圾回收 
-- 最终标记（Remark）会 STW 
-- 拷贝存活（Evacuation）会 STW 
+- 会对 E、S、O 进行全面垃圾回收
+- 最终标记（Remark）会 STW
+- 拷贝存活（Evacuation）会 STW
 - `-XX:MaxGCPauseMillis=ms`
 
 ** Full GC **
 
-- SerialGC 
-   - 新生代内存不足发生的垃圾收集 - minor gc 
-   - 老年代内存不足发生的垃圾收集 - full gc 
-- ParallelGC 
-   - 新生代内存不足发生的垃圾收集 - minor gc 
-   - 老年代内存不足发生的垃圾收集 - full gc 
-- CMS 	
-   - 新生代内存不足发生的垃圾收集 - minor gc 
-   - 老年代内存不足 
-- G1 
-   - 新生代内存不足发生的垃圾收集 - minor gc 
-   - 老年代内存不足
+- SerialGC
+    - 新生代内存不足发生的垃圾收集 - minor gc
+    - 老年代内存不足发生的垃圾收集 - full gc
+- ParallelGC
+    - 新生代内存不足发生的垃圾收集 - minor gc
+    - 老年代内存不足发生的垃圾收集 - full gc
+- CMS
+    - 新生代内存不足发生的垃圾收集 - minor gc
+    - 老年代内存不足
+- G1
+    - 新生代内存不足发生的垃圾收集 - minor gc
+    - 老年代内存不足
 
 **Young Collection 跨代引用 **
 新生代回收的跨代引用（老年代引用新生代）问题
@@ -354,48 +352,46 @@ G1垃圾回收阶段
 **Remark**
 
 - `pre-write barrier + satb_mark_queue`
+  ![image.png](./images/JVM基础/1683466347516-e4764dbb-4a5c-4b3a-a464-6d481f5cabf5.png)
+  ** JDK 8u20 字符串去重 **
 
-![image.png](./images/JVM基础/1683466347516-e4764dbb-4a5c-4b3a-a464-6d481f5cabf5.png)
-** JDK 8u20 字符串去重 **
-
-- 优点：节省大量内存 
-- 缺点：略微多占用了 cpu 时间，新生代回收时间略微增加 
+- 优点：节省大量内存
+- 缺点：略微多占用了 cpu 时间，新生代回收时间略微增加
 
 `-XX:+UseStringDeduplication`
 
-- 将所有新分配的字符串放入一个队列 
-- 当新生代回收时，G1并发检查是否有字符串重复 
-- 如果它们值一样，让它们引用同一个 char[] 
-- 注意，与 String.intern() 不一样 
-   - String.intern() 关注的是字符串对象 
-   - 而字符串去重关注的是 char[] 
-   - 在 JVM 内部，使用了不同的字符串表
+- 将所有新分配的字符串放入一个队列
+- 当新生代回收时，G1并发检查是否有字符串重复
+- 如果它们值一样，让它们引用同一个 char[]
+- 注意，与 String.intern() 不一样
+    - String.intern() 关注的是字符串对象
+    - 而字符串去重关注的是 char[]
+    - 在 JVM 内部，使用了不同的字符串表
 
 **JDK 8u40 并发标记类卸载 **
-所有对象都经过并发标记后，就能知道哪些类不再被使用，当一个类加载器的所有类都不再使用，则卸 
-载它所加载的所有类 
+所有对象都经过并发标记后，就能知道哪些类不再被使用，当一个类加载器的所有类都不再使用，则卸
+载它所加载的所有类
 `-XX:+ClassUnloadingWithConcurrentMark` 默认启用
 ** JDK 8u60 回收巨型对象 **
 
-- 一个对象大于 region 的一半时，称之为巨型对象 
-- G1 不会对巨型对象进行拷贝 
-- 回收时被优先考虑 
+- 一个对象大于 region 的一半时，称之为巨型对象
+- G1 不会对巨型对象进行拷贝
+- 回收时被优先考虑
 - G1 会跟踪老年代所有 incoming 引用，这样老年代 incoming 引用为0 的巨型对象就可以在新生代垃圾回收时处理掉
 
 ** JDK 9 并发标记起始时间的调整 **
 
-- 并发标记必须在堆空间占满前完成，否则退化为 FullGC 
-- JDK 9 之前需要使用 -XX:InitiatingHeapOccupancyPercent 
-- JDK 9 可以动态调整 
-   - `-XX:InitiatingHeapOccupancyPercent` 用来设置初始值 
-   - 进行数据采样并动态调整 
-   - 总会添加一个安全的空档空间
+- 并发标记必须在堆空间占满前完成，否则退化为 FullGC
+- JDK 9 之前需要使用 -XX:InitiatingHeapOccupancyPercent
+- JDK 9 可以动态调整
+    - `-XX:InitiatingHeapOccupancyPercent` 用来设置初始值
+    - 进行数据采样并动态调整
+    - 总会添加一个安全的空档空间
 # 类加载与字节码技术
 ```java
 int a = 10;
 int b = a++ + ++a + a--;
 字节码：
-
 0: bipush 10   //压入操作栈
 2: istore_1    //存入slot1  a
 3: iload_1		//加slot 1的值到操作栈
@@ -416,7 +412,7 @@ a++ 和 ++a 的区别是先执行 iload 还是 先执行 iinc
 ![image.png](./images/JVM基础/1683467421308-1c7ddfdb-ae7b-411a-adfe-8df84c581dc6.png)
 几点说明：
 
-- byte，short，char 都会按 int 比较，因为操作数栈都是 4 字节 
+- byte，short，char 都会按 int 比较，因为操作数栈都是 4 字节
 - goto 用来进行跳转到指定行号的字节码
 ```java
 while循环
@@ -460,10 +456,10 @@ for (int i = 0; i < 10; i++) {}
 11: goto 2
 14: return
 ```
+
 ## 构造方法
-### <cinit>()V
-编译器会按从上至下的顺序，收集所有 static 静态代码块和静态成员赋值的代码，合并为一个特殊的方 
-法`<cinit>()V` ：
+### `<cinit>()V`
+编译器会按从上至下的顺序，收集所有 static 静态代码块和静态成员赋值的代码，合并为一个特殊的方法`<cinit>()V` ：
 ```java
 public class Demo3_8_1 {
 	static int i = 10;
@@ -481,7 +477,7 @@ public class Demo3_8_1 {
 
 <cinit>()V 方法会在类加载的初始化阶段被调用
 ```
-### <init>()V
+### `<init>()V`
 ```java
 public class Demo3_8_2 {
 	private String a = "s1";
@@ -567,7 +563,6 @@ public class Demo3_9 {
 22: invokestatic #7 // Method test4:()V
 25: invokestatic #7 // Method test4:()V
 28: return
-
 new 是创建【对象】，给对象分配堆内存，执行成功会将【对象引用】压入操作数栈
 dup 是赋值操作数栈栈顶的内容，本例即为【对象引用】，为什么需要两份引用呢，一个是要配
 合 invokespecial 调用该对象的构造方法 "<init>":()V （会消耗掉栈顶一个引用），另一个要
@@ -581,11 +576,11 @@ invokestatic 之前执行了 pop 指令，把【对象引用】从操作数栈�
 还有一个执行 invokespecial 的情况是通过 super 调用父类方法
 ```
 ## 多态的原理
-当执行 invokevirtual 指令时， 
-1. 先通过栈帧中的对象引用找到对象 
-2. 分析对象头，找到对象的实际 Class 
-3. Class 结构中有 vtable，它在类加载的链接阶段就已经根据方法的重写规则生成好了 
-4. 查表得到方法的具体地址 
+当执行 invokevirtual 指令时，
+1. 先通过栈帧中的对象引用找到对象
+2. 分析对象头，找到对象的实际 Class
+3. Class 结构中有 vtable，它在类加载的链接阶段就已经根据方法的重写规则生成好了
+4. 查表得到方法的具体地址
 5. 执行方法的字节码
 ## 异常处理
 ```java

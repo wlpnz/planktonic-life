@@ -22,11 +22,11 @@
 
   > 优点：
   >
-  > ​    可以保证每个容器拥有自己的文件系统、CPU、内存、进程空间等
+  >     可以保证每个容器拥有自己的文件系统、CPU、内存、进程空间等
   >
-  > ​    运行应用程序所需要的资源都被容器包装，并和底层基础架构解耦
+  >     运行应用程序所需要的资源都被容器包装，并和底层基础架构解耦
   >
-  > ​    容器化的应用程序可以跨云服务商、跨Linux操作系统发行版进行部署
+  >     容器化的应用程序可以跨云服务商、跨Linux操作系统发行版进行部署
 
 ![image-20200505183738289](images/Kubernetes_note/image-20200505183738289.png)
 
@@ -41,17 +41,17 @@
 - **Mesos**：Apache的一个资源统一管控的工具，需要和Marathon结合使用
 - **Kubernetes**：Google开源的的容器编排工具
 
-<img src="images/Kubernetes_note/image-20200524150339551.png" alt="image-20200524150339551" style="border:1px solid;zoom:110%;" />
+<img src="./images/Kubernetes_note/image-20200524150339551.png" alt="image-20200524150339551" style="border:1px solid;zoom:110%;" />
 
 ## kubernetes简介
 
-<img src="images/Kubernetes_note/image-20200406232838722.png" alt="image-20200406232838722" style="zoom:100%;border:1px solid;" />
+<img src="./images/Kubernetes_note/image-20200406232838722.png" alt="image-20200406232838722" style="zoom:100%;border:1px solid;" />
 
-​    
+    
 
-​    kubernetes，是一个全新的基于容器技术的分布式架构领先方案，是谷歌严格保密十几年的秘密武器----Borg系统的一个开源版本，于2014年9月发布第一个版本，2015年7月发布第一个正式版本。
+    kubernetes，是一个全新的基于容器技术的分布式架构领先方案，是谷歌严格保密十几年的秘密武器----Borg系统的一个开源版本，于2014年9月发布第一个版本，2015年7月发布第一个正式版本。
 
-​    kubernetes的本质是**一组服务器集群**，它可以在集群的每个节点上运行特定的程序，来对节点中的容器进行管理。目的是实现资源管理的自动化，主要提供了如下的主要功能：
+    kubernetes的本质是**一组服务器集群**，它可以在集群的每个节点上运行特定的程序，来对节点中的容器进行管理。目的是实现资源管理的自动化，主要提供了如下的主要功能：
 
 - **自我修复**：一旦某一个容器崩溃，能够在1秒中左右迅速启动新的容器
 - **弹性伸缩**：可以根据需要，自动对集群中正在运行的容器数量进行调整
@@ -84,7 +84,7 @@
 >
 > **Docker** : 负责节点上容器的各种操作
 
-<img src="images/Kubernetes_note/image-20200406184656917.png" alt="image-20200406184656917" style="zoom:200%;" />
+<img src="./images/Kubernetes_note/image-20200406184656917.png" alt="image-20200406184656917" style="zoom:200%;" />
 
 下面，以部署一个nginx服务来说明kubernetes系统各个组件调用关系：
 
@@ -104,7 +104,7 @@
 
 6. 一个nginx服务就运行了，如果需要访问nginx，就需要通过kube-proxy来对pod产生访问的代理
 
-​        这样，外界用户就可以访问集群中的nginx服务了
+        这样，外界用户就可以访问集群中的nginx服务了
 
 ## kubernetes概念
 
@@ -122,7 +122,7 @@
 
 **NameSpace**：命名空间，用来隔离pod的运行环境
 
-<img src="images/Kubernetes_note/image-20200403224313355.png" alt="image-20200403224313355" style="zoom:200%;" />
+<img src="./images/Kubernetes_note/image-20200403224313355.png" alt="image-20200403224313355" style="zoom:200%;" />
 
 
 
@@ -163,7 +163,7 @@ kubernetes有多种部署方式，目前主流的方式有kubeadm、minikube、�
 
 ## 环境搭建
 
-​    本次环境搭建需要安装三台Centos服务器（一主二从），然后在每台服务器中分别安装docker（18.06.3），kubeadm（1.17.4）、kubelet（1.17.4）、kubectl（1.17.4）程序。
+    本次环境搭建需要安装三台Centos服务器（一主二从），然后在每台服务器中分别安装docker（18.06.3），kubeadm（1.17.4）、kubelet（1.17.4）、kubectl（1.17.4）程序。
 
 ### 主机安装
 
@@ -497,7 +497,7 @@ service/nginx        NodePort    10.104.121.45   <none>        80:30073/TCP   17
 # 4 最后在电脑上访问下部署的nginx服务
 ~~~
 
-<img src="images/Kubernetes_note/image-20200405142656921.png" alt="image-20200405142656921" style="zoom:80%; border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200405142656921.png" alt="image-20200405142656921" style="zoom:80%; border:1px solid" />
 
 
 
@@ -509,21 +509,21 @@ service/nginx        NodePort    10.104.121.45   <none>        80:30073/TCP   17
 
 在kubernetes中，所有的内容都抽象为资源，用户需要通过操作资源来管理kubernetes。
 
->​    kubernetes的本质上就是一个集群系统，用户可以在集群中部署各种服务，所谓的部署服务，其实就是在kubernetes集群中运行一个个的容器，并将指定的程序跑在容器中。
+>    kubernetes的本质上就是一个集群系统，用户可以在集群中部署各种服务，所谓的部署服务，其实就是在kubernetes集群中运行一个个的容器，并将指定的程序跑在容器中。
 >
->​    kubernetes的最小管理单元是pod而不是容器，所以只能将容器放在`Pod`中，而kubernetes一般也不会直接管理Pod，而是通过`Pod控制器`来管理Pod的。
+>    kubernetes的最小管理单元是pod而不是容器，所以只能将容器放在`Pod`中，而kubernetes一般也不会直接管理Pod，而是通过`Pod控制器`来管理Pod的。
 >
->​    Pod可以提供服务之后，就要考虑如何访问Pod中服务，kubernetes提供了`Service`资源实现这个功能。
+>    Pod可以提供服务之后，就要考虑如何访问Pod中服务，kubernetes提供了`Service`资源实现这个功能。
 >
->​    当然，如果Pod中程序的数据需要持久化，kubernetes还提供了各种`存储`系统。
+>    当然，如果Pod中程序的数据需要持久化，kubernetes还提供了各种`存储`系统。
 
-<img src="images/Kubernetes_note/image-20200406225334627.png" alt="image-20200406225334627" style="zoom:200%;" />
+<img src="./images/Kubernetes_note/image-20200406225334627.png" alt="image-20200406225334627" style="zoom:200%;" />
 
 >  学习kubernetes的核心，就是学习如何对集群上的`Pod、Pod控制器、Service、存储`等各种资源进行操作
 
 ## YAML语言介绍
 
-​    YAML是一个类似 XML、JSON 的标记性语言。它强调以**数据**为中心，并不是以标识语言为重点。因而YAML本身的定义比较简单，号称"一种人性化的数据格式语言"。
+    YAML是一个类似 XML、JSON 的标记性语言。它强调以**数据**为中心，并不是以标识语言为重点。因而YAML本身的定义比较简单，号称"一种人性化的数据格式语言"。
 
 ~~~xml
 <heima>
@@ -594,13 +594,13 @@ address: [顺义,昌平]
 
 > 小提示：
 >
-> ​	1  书写yaml切记`:` 后面要加一个空格
+> 	1  书写yaml切记`:` 后面要加一个空格
 >
-> ​	2  如果需要将多段yaml配置放在一个文件中，中间要使用`---`分隔
+> 	2  如果需要将多段yaml配置放在一个文件中，中间要使用`---`分隔
 >
-> ​    3 下面是一个yaml转json的网站，可以通过它验证yaml是否书写正确
+>     3 下面是一个yaml转json的网站，可以通过它验证yaml是否书写正确
 >
-> ​       https://www.json2yaml.com/convert-yaml-to-json
+>        https://www.json2yaml.com/convert-yaml-to-json
 
 ## 资源管理方式
 
@@ -626,7 +626,7 @@ address: [顺义,昌平]
 
 **kubectl命令**
 
-​    kubectl是kubernetes集群的命令行工具，通过它能够对集群本身进行管理，并能够在集群上进行容器化应用的安装部署。kubectl命令的语法如下：
+    kubectl是kubernetes集群的命令行工具，通过它能够对集群本身进行管理，并能够在集群上进行容器化应用的安装部署。kubectl命令的语法如下：
 
 ~~~md
 kubectl [command] [type] [name] [flags]
@@ -1015,7 +1015,7 @@ pod/nginxpod unchanged
 
 > 扩展：kubectl可以在node节点上运行吗 ?
 
-​    kubectl的运行是需要进行配置的，它的配置文件是\$HOME/.kube，如果想要在node节点运行此命令，需要将master上的.kube文件复制到node节点上，即在master节点上执行下面操作：
+    kubectl的运行是需要进行配置的，它的配置文件是\$HOME/.kube，如果想要在node节点运行此命令，需要将master上的.kube文件复制到node节点上，即在master节点上执行下面操作：
 
 ~~~powershell
 scp -r ~/.kube cluster03:~/
@@ -1037,13 +1037,13 @@ scp -r ~/.kube cluster03:~/
 
 ## Namespace
 
-​    Namespace是kubernetes系统中的一种非常重要资源，它的主要作用是用来实现**多套环境的资源隔离**或者**多租户的资源隔离**。
+    Namespace是kubernetes系统中的一种非常重要资源，它的主要作用是用来实现**多套环境的资源隔离**或者**多租户的资源隔离**。
 
-​    默认情况下，kubernetes集群中的所有的Pod都是可以相互访问的。但是在实际中，可能不想让两个Pod之间进行互相的访问，那此时就可以将两个Pod划分到不同的namespace下。kubernetes通过将集群内部的资源分配到不同的Namespace中，可以形成逻辑上的"组"，以方便不同的组的资源进行隔离使用和管理。 
+    默认情况下，kubernetes集群中的所有的Pod都是可以相互访问的。但是在实际中，可能不想让两个Pod之间进行互相的访问，那此时就可以将两个Pod划分到不同的namespace下。kubernetes通过将集群内部的资源分配到不同的Namespace中，可以形成逻辑上的"组"，以方便不同的组的资源进行隔离使用和管理。 
 
-​    可以通过kubernetes的授权机制，将不同的namespace交给不同租户进行管理，这样就实现了多租户的资源隔离。此时还能结合kubernetes的资源配额机制，限定不同租户能占用的资源，例如CPU使用量、内存使用量等等，来实现租户可用资源的管理。
+    可以通过kubernetes的授权机制，将不同的namespace交给不同租户进行管理，这样就实现了多租户的资源隔离。此时还能结合kubernetes的资源配额机制，限定不同租户能占用的资源，例如CPU使用量、内存使用量等等，来实现租户可用资源的管理。
 
-<img src="images/Kubernetes_note/image-20200407100850484.png" alt="image-20200407100850484" style="zoom:80%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200407100850484.png" alt="image-20200407100850484" style="zoom:80%;border:1px solid" />
 
 kubernetes在集群启动之后，会默认创建几个namespace
 
@@ -1133,9 +1133,9 @@ metadata:
 
 然后就可以执行对应的创建和删除命令了：
 
-​    创建：kubectl  create  -f  ns-dev.yaml
+    创建：kubectl  create  -f  ns-dev.yaml
 
-​    删除：kubectl  delete  -f  ns-dev.yaml
+    删除：kubectl  delete  -f  ns-dev.yaml
 
 ## Pod
 
@@ -1143,7 +1143,7 @@ Pod是kubernetes集群进行管理的最小单元，程序要运行必须部署�
 
 Pod可以认为是容器的封装，一个Pod中可以存在一个或者多个容器。
 
-<img src="images/Kubernetes_note/image-20200407121501907.png" alt="image-20200407121501907" style="zoom:80%;" />
+<img src="./images/Kubernetes_note/image-20200407121501907.png" alt="image-20200407121501907" style="zoom:80%;" />
 
 kubernetes在集群启动之后，集群中的各个组件也都是以Pod方式运行的。可以通过下面命令查看：
 
@@ -1309,9 +1309,9 @@ spec:
 
 然后就可以执行对应的创建和删除命令了：
 
-​    创建：kubectl  create  -f  pod-nginx.yaml
+    创建：kubectl  create  -f  pod-nginx.yaml
 
-​    删除：kubectl  delete  -f  pod-nginx.yaml
+    删除：kubectl  delete  -f  pod-nginx.yaml
 
 ## Label
 
@@ -1333,9 +1333,9 @@ Label的特点：
 
 标签定义完毕之后，还要考虑到标签的选择，这就要使用到Label Selector，即：
 
-​    Label用于给某个资源对象定义标识
+    Label用于给某个资源对象定义标识
 
-​    Label Selector用于查询和筛选拥有某些标签的资源对象
+    Label Selector用于查询和筛选拥有某些标签的资源对象
 
 当前有两种Label Selector：
 
@@ -1353,9 +1353,9 @@ Label的特点：
 
 标签的选择条件可以使用多个，此时将多个Label Selector进行组合，使用逗号","进行分隔即可。例如：
 
-​		name=slave，env!=production
+		name=slave，env!=production
 
-​		name not in (frontend)，env!=production
+		name not in (frontend)，env!=production
 
 **命令方式**
 
@@ -1410,11 +1410,11 @@ spec:
 
 ## Deployment
 
-​    在kubernetes中，Pod是最小的控制单元，但是kubernetes很少直接控制Pod，一般都是通过Pod控制器来完成的。Pod控制器用于pod的管理，确保pod资源符合预期的状态，当pod的资源出现故障时，会尝试进行重启或重建pod。
+    在kubernetes中，Pod是最小的控制单元，但是kubernetes很少直接控制Pod，一般都是通过Pod控制器来完成的。Pod控制器用于pod的管理，确保pod资源符合预期的状态，当pod的资源出现故障时，会尝试进行重启或重建pod。
 
-​     在kubernetes中Pod控制器的种类有很多，本章节只介绍一种：Deployment。
+     在kubernetes中Pod控制器的种类有很多，本章节只介绍一种：Deployment。
 
-<img src="images/Kubernetes_note/image-20200408193950807.png" alt="image-20200408193950807" style="border: 1px solid; zoom: 80%;" />
+<img src="./images/Kubernetes_note/image-20200408193950807.png" alt="image-20200408193950807" style="border: 1px solid; zoom: 80%;" />
 
 **命令操作**
 
@@ -1514,9 +1514,9 @@ spec:
 
 然后就可以执行对应的创建和删除命令了：
 
-​    创建：kubectl  create  -f  deploy-nginx.yaml
+    创建：kubectl  create  -f  deploy-nginx.yaml
 
-​    删除：kubectl  delete  -f  deploy-nginx.yaml
+    删除：kubectl  delete  -f  deploy-nginx.yaml
 
 ##  Service
 
@@ -1607,13 +1607,13 @@ spec:
 
 然后就可以执行对应的创建和删除命令了：
 
-​    创建：kubectl  create  -f  svc-nginx.yaml
+    创建：kubectl  create  -f  svc-nginx.yaml
 
-​    删除：kubectl  delete  -f  svc-nginx.yaml
+    删除：kubectl  delete  -f  svc-nginx.yaml
 
 > **小结**
 >
-> ​    至此，已经掌握了Namespace、Pod、Deployment、Service资源的基本操作，有了这些操作，就可以在kubernetes集群中实现一个服务的简单部署和访问了，但是如果想要更好的使用kubernetes，就需要深入学习这几种资源的细节和原理。
+>     至此，已经掌握了Namespace、Pod、Deployment、Service资源的基本操作，有了这些操作，就可以在kubernetes集群中实现一个服务的简单部署和访问了，但是如果想要更好的使用kubernetes，就需要深入学习这几种资源的细节和原理。
 
 # 第五章 Pod详解
 
@@ -1623,7 +1623,7 @@ spec:
 
 ### Pod结构
 
-<img src="images/Kubernetes_note/image-20200407121501908.png" alt="image-20200407121501907" style="zoom:80%;" />
+<img src="./images/Kubernetes_note/image-20200407121501908.png" alt="image-20200407121501907" style="zoom:80%;" />
 
 每个Pod中都可以包含一个或者多个容器，这些容器可以分为两类：
 
@@ -1873,9 +1873,9 @@ imagePullPolicy，用于设置镜像拉取策略，kubernetes支持配置三种�
 
 > 默认值说明：
 >
-> ​    如果镜像tag为具体版本号， 默认策略是：IfNotPresent
+>     如果镜像tag为具体版本号， 默认策略是：IfNotPresent
 >
-> ​	如果镜像tag为：latest（最终版本） ，默认策略是always
+> 	如果镜像tag为：latest（最终版本） ，默认策略是always
 
 ~~~powershell
 # 创建Pod
@@ -1901,9 +1901,9 @@ Events:
 
 ### 启动命令
 
-​    在前面的案例中，一直有一个问题没有解决，就是的busybox容器一直没有成功运行，那么到底是什么原因导致这个容器的故障呢？
+    在前面的案例中，一直有一个问题没有解决，就是的busybox容器一直没有成功运行，那么到底是什么原因导致这个容器的故障呢？
 
-​    原来busybox并不是一个程序，而是类似于一个工具类的集合，kubernetes集群启动管理后，它会自动关闭。解决方法就是让其一直在运行，这就用到了command配置。
+    原来busybox并不是一个程序，而是类似于一个工具类的集合，kubernetes集群启动管理后，它会自动关闭。解决方法就是让其一直在运行，这就用到了command配置。
 
 创建pod-command.yaml文件，内容如下：
 
@@ -1926,11 +1926,11 @@ command，用于在pod中的容器初始化完毕之后运行一个命令。
 
 > 稍微解释下上面命令的意思：
 >
-> ​    "/bin/sh","-c",  使用sh执行命令
+>     "/bin/sh","-c",  使用sh执行命令
 >
-> ​    touch /tmp/hello.txt;   创建一个/tmp/hello.txt 文件
+>     touch /tmp/hello.txt;   创建一个/tmp/hello.txt 文件
 >
-> ​    while true;do /bin/echo $(date +%T) >> /tmp/hello.txt; sleep 3; done;  每隔3秒向文件中写入当前时间
+>     while true;do /bin/echo $(date +%T) >> /tmp/hello.txt; sleep 3; done;  每隔3秒向文件中写入当前时间
 
 ~~~powershell
 # 创建Pod
@@ -2064,7 +2064,7 @@ spec:
 
 ### 资源配额
 
-​    容器中的程序要运行，肯定是要占用一定资源的，比如cpu和内存等，如果不对某个容器的资源做限制，那么它就可能吃掉大量资源，导致其它容器无法运行。针对这种情况，kubernetes提供了对内存和cpu的资源进行配额的机制，这种机制主要通过resources选项实现，他有两个子选项：
+    容器中的程序要运行，肯定是要占用一定资源的，比如cpu和内存等，如果不对某个容器的资源做限制，那么它就可能吃掉大量资源，导致其它容器无法运行。针对这种情况，kubernetes提供了对内存和cpu的资源进行配额的机制，这种机制主要通过resources选项实现，他有两个子选项：
 
 - limits：用于限制运行时容器的最大占用资源，当容器占用资源超过limits时会被终止，并进行重启
 
@@ -2147,7 +2147,7 @@ Warning  FailedScheduling  <unknown>  default-scheduler  0/2 nodes are available
 
 - pod终止过程
 
-<img src="images/Kubernetes_note/image-20200412111402706.png" alt="image-20200412111402706" style="border:solid 1px" />
+<img src="./images/Kubernetes_note/image-20200412111402706.png" alt="image-20200412111402706" style="border:solid 1px" />
 
 
 在整个生命周期中，Pod会出现5种**状态**（**相位**），分别如下：
@@ -2174,7 +2174,7 @@ Warning  FailedScheduling  <unknown>  default-scheduler  0/2 nodes are available
 
 6. apiServer将接收到的pod状态信息存入etcd中
 
-   <img src="images/Kubernetes_note/image-20200406184656918.png" alt="image-20200406184656917" style="zoom:100%;" />
+   <img src="./images/Kubernetes_note/image-20200406184656918.png" alt="image-20200406184656917" style="zoom:100%;" />
 
 
 **pod的终止过程**
@@ -2203,9 +2203,9 @@ Warning  FailedScheduling  <unknown>  default-scheduler  0/2 nodes are available
 
 接下来做一个案例，模拟下面这个需求：
 
-​    假设要以主容器来运行nginx，但是要求在运行nginx之前先要能够连接上mysql和redis所在服务器
+    假设要以主容器来运行nginx，但是要求在运行nginx之前先要能够连接上mysql和redis所在服务器
 
-​    为了简化测试，事先规定好mysql`(192.168.109.201)`和redis`(192.168.109.202)`服务器的地址
+    为了简化测试，事先规定好mysql`(192.168.109.201)`和redis`(192.168.109.202)`服务器的地址
 
 创建pod-initcontainer.yaml，内容如下：
 
@@ -2352,7 +2352,7 @@ postStart...
 
 ### 容器探测
 
-​    容器探测用于检测容器中的应用实例是否正常工作，是保障业务可用性的一种传统机制。如果经过探测，实例的状态不符合预期，那么kubernetes就会把该问题实例" 摘除 "，不承担业务流量。kubernetes提供了两种探针来实现容器探测，分别是：
+    容器探测用于检测容器中的应用实例是否正常工作，是保障业务可用性的一种传统机制。如果经过探测，实例的状态不符合预期，那么kubernetes就会把该问题实例" 摘除 "，不承担业务流量。kubernetes提供了两种探针来实现容器探测，分别是：
 
 - liveness probes：存活性探针，用于检测应用实例当前是否处于正常运行状态，如果不是，k8s会重启容器
 
@@ -2542,7 +2542,7 @@ pod-liveness-httpget   1/1     Running   5          3m17s
 # 当然接下来，可以修改成一个可以访问的路径path，比如/，再试，结果就正常了......
 ~~~
 
-​    至此，已经使用liveness Probe演示了三种探测方式，但是查看livenessProbe的子属性，会发现除了这三种方式，还有一些其他的配置，在这里一并解释下：
+    至此，已经使用liveness Probe演示了三种探测方式，但是查看livenessProbe的子属性，会发现除了这三种方式，还有一些其他的配置，在这里一并解释下：
 
 ~~~powershell
 [root@master ~]# kubectl explain pod.spec.containers.livenessProbe
@@ -2584,13 +2584,13 @@ spec:
 
 ### 重启策略
 
-​    在上一节中，一旦容器探测出现了问题，kubernetes就会对容器所在的Pod进行重启，其实这是由pod的重启策略决定的，pod的重启策略有 3 种，分别如下：
+    在上一节中，一旦容器探测出现了问题，kubernetes就会对容器所在的Pod进行重启，其实这是由pod的重启策略决定的，pod的重启策略有 3 种，分别如下：
 
 - Always ：容器失效时，自动重启该容器，这也是默认值。
 - OnFailure ： 容器终止运行且退出码不为0时重启
 - Never ： 不论状态为何，都不重启该容器
 
-​    重启策略适用于pod对象中的所有容器，首次需要重启的容器，将在其需要时立即进行重启，随后再次需要重启的操作将由kubelet延迟一段时间后进行，且反复的重启操作的延迟时长以此为10s、20s、40s、80s、160s和300s，300s是最大延迟时长。
+    重启策略适用于pod对象中的所有容器，首次需要重启的容器，将在其需要时立即进行重启，随后再次需要重启的操作将由kubelet延迟一段时间后进行，且反复的重启操作的延迟时长以此为10s、20s、40s、80s、160s和300s，300s是最大延迟时长。
 
 创建pod-restartpolicy.yaml：
 
@@ -2636,7 +2636,7 @@ pod-restartpolicy      0/1     Running   0          5min42s
 
 ## Pod调度
 
-​    在默认情况下，一个Pod在哪个Node节点上运行，是由Scheduler组件采用相应的算法计算出来的，这个过程是不受人工控制的。但是在实际使用中，这并不满足的需求，因为很多情况下，我们想控制某些Pod到达某些节点上，那么应该怎么做呢？这就要求了解kubernetes对Pod的调度规则，kubernetes提供了四大类调度方式：
+    在默认情况下，一个Pod在哪个Node节点上运行，是由Scheduler组件采用相应的算法计算出来的，这个过程是不受人工控制的。但是在实际使用中，这并不满足的需求，因为很多情况下，我们想控制某些Pod到达某些节点上，那么应该怎么做呢？这就要求了解kubernetes对Pod的调度规则，kubernetes提供了四大类调度方式：
 
 - 自动调度：运行在哪个节点上完全由Scheduler经过一系列的算法计算得出
 - 定向调度：NodeName、NodeSelector
@@ -2645,11 +2645,11 @@ pod-restartpolicy      0/1     Running   0          5min42s
 
 ### 定向调度
 
-​    定向调度，指的是利用在pod上声明nodeName或者nodeSelector，以此将Pod调度到期望的node节点上。注意，这里的调度是强制的，这就意味着即使要调度的目标Node不存在，也会向上面进行调度，只不过pod运行失败而已。
+    定向调度，指的是利用在pod上声明nodeName或者nodeSelector，以此将Pod调度到期望的node节点上。注意，这里的调度是强制的，这就意味着即使要调度的目标Node不存在，也会向上面进行调度，只不过pod运行失败而已。
 
 **NodeName**
 
-​    NodeName用于强制约束将Pod调度到指定的Name的Node节点上。这种方式，其实是直接跳过Scheduler的调度逻辑，直接将Pod调度到指定名称的节点。
+    NodeName用于强制约束将Pod调度到指定的Name的Node节点上。这种方式，其实是直接跳过Scheduler的调度逻辑，直接将Pod调度到指定名称的节点。
 
 接下来，实验一下：创建一个pod-nodename.yaml文件
 
@@ -2691,7 +2691,7 @@ pod-nodename   0/1     Pending   0          6s    <none>   node3   ......
 
 **NodeSelector**
 
-​    NodeSelector用于将pod调度到添加了指定标签的node节点上。它是通过kubernetes的label-selector机制实现的，也就是说，在pod创建之前，会由scheduler使用MatchNodeSelector调度策略进行label匹配，找出目标node，然后将pod调度到目标节点，该匹配规则是强制约束。
+    NodeSelector用于将pod调度到添加了指定标签的node节点上。它是通过kubernetes的label-selector机制实现的，也就是说，在pod创建之前，会由scheduler使用MatchNodeSelector调度策略进行label匹配，找出目标node，然后将pod调度到目标节点，该匹配规则是强制约束。
 
 接下来，实验一下：
 
@@ -2754,9 +2754,9 @@ Events:
 
 ### 亲和性调度
 
-​    上一节，介绍了两种定向调度的方式，使用起来非常方便，但是也有一定的问题，那就是如果没有满足条件的Node，那么Pod将不会被运行，即使在集群中还有可用Node列表也不行，这就限制了它的使用场景。
+    上一节，介绍了两种定向调度的方式，使用起来非常方便，但是也有一定的问题，那就是如果没有满足条件的Node，那么Pod将不会被运行，即使在集群中还有可用Node列表也不行，这就限制了它的使用场景。
 
-​    基于上面的问题，kubernetes还提供了一种亲和性调度（Affinity）。它在NodeSelector的基础之上的进行了扩展，可以通过配置的形式，实现优先选择满足条件的Node进行调度，如果没有，也可以调度到不满足条件的节点上，使调度更加灵活。
+    基于上面的问题，kubernetes还提供了一种亲和性调度（Affinity）。它在NodeSelector的基础之上的进行了扩展，可以通过配置的形式，实现优先选择满足条件的Node进行调度，如果没有，也可以调度到不满足条件的节点上，使调度更加灵活。
 
 Affinity主要分为三类：
 
@@ -3094,9 +3094,9 @@ pod-podantiaffinity-required   1/1     Running   0          30s   10.244.1.96   
 
 **污点（Taints）**
 
-​    前面的调度方式都是站在Pod的角度上，通过在Pod上添加属性，来确定Pod是否要调度到指定的Node上，其实我们也可以站在Node的角度上，通过在Node上添加**污点**属性，来决定是否允许Pod调度过来。
+    前面的调度方式都是站在Pod的角度上，通过在Pod上添加属性，来确定Pod是否要调度到指定的Node上，其实我们也可以站在Node的角度上，通过在Node上添加**污点**属性，来决定是否允许Pod调度过来。
 
-​    Node被设置上污点之后就和Pod之间存在了一种相斥的关系，进而拒绝Pod调度进来，甚至可以将已经存在的Pod驱逐出去。
+    Node被设置上污点之后就和Pod之间存在了一种相斥的关系，进而拒绝Pod调度进来，甚至可以将已经存在的Pod驱逐出去。
 
 污点的格式为：`key=value:effect`, key和value是污点的标签，effect描述污点的作用，支持如下三个选项：
 
@@ -3104,7 +3104,7 @@ pod-podantiaffinity-required   1/1     Running   0          30s   10.244.1.96   
 - NoSchedule：kubernetes将不会把Pod调度到具有该污点的Node上，但不会影响当前Node上已存在的Pod
 - NoExecute：kubernetes将不会把Pod调度到具有该污点的Node上，同时也会将Node上已存在的Pod驱离
 
-<img src="images/Kubernetes_note/image-20200605021831545.png" alt="image-20200605021606508" style="border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200605021831545.png" alt="image-20200605021606508" style="border:1px solid" />
 
 使用kubectl设置和去除污点的命令示例如下：
 
@@ -3167,7 +3167,7 @@ taint3-6d78dbd749-tktkq   0/1     Pending   0          6s    <none>   <none>   <
 
 **容忍（Toleration）**
 
-​    上面介绍了污点的作用，我们可以在node上添加污点用于拒绝pod调度上来，但是如果就是想将一个pod调度到一个有污点的node上去，这时候应该怎么做呢？这就要使用到**容忍**。
+    上面介绍了污点的作用，我们可以在node上添加污点用于拒绝pod调度上来，但是如果就是想将一个pod调度到一个有污点的node上去，这时候应该怎么做呢？这就要使用到**容忍**。
 
 ![image-20200514095913741](images/Kubernetes_note/image-20200514095913741.png)
 
@@ -3238,7 +3238,7 @@ Pod是kubernetes的最小管理单元，在kubernetes中，按照pod的创建方
 
 > **`什么是Pod控制器`** 
 >
-> ​    Pod控制器是管理pod的中间层，使用Pod控制器之后，只需要告诉Pod控制器，想要多少个什么样的Pod就可以了，它会创建出满足条件的Pod并确保每一个Pod资源处于用户期望的目标状态。如果Pod资源在运行中出现故障，它会基于指定策略重新编排Pod。
+>     Pod控制器是管理pod的中间层，使用Pod控制器之后，只需要告诉Pod控制器，想要多少个什么样的Pod就可以了，它会创建出满足条件的Pod并确保每一个Pod资源处于用户期望的目标状态。如果Pod资源在运行中出现故障，它会基于指定策略重新编排Pod。
 
 在kubernetes中，有很多类型的pod控制器，每种都有自己的适合的场景，常见的有下面这些：
 
@@ -3260,7 +3260,7 @@ Pod是kubernetes的最小管理单元，在kubernetes中，按照pod的创建方
 
 ## ReplicaSet(RS)
 
-​    ReplicaSet的主要作用是**保证一定数量的pod正常运行**，它会持续监听这些Pod的运行状态，一旦Pod发生故障，就会重启或重建。同时它还支持对pod数量的扩缩容和镜像版本的升降级。
+    ReplicaSet的主要作用是**保证一定数量的pod正常运行**，它会持续监听这些Pod的运行状态，一旦Pod发生故障，就会重启或重建。同时它还支持对pod数量的扩缩容和镜像版本的升降级。
 
 ![](images/Kubernetes_note/image-20200612005334159.png)
 
@@ -3299,7 +3299,7 @@ spec: # 详情描述
 
 - selector：选择器，它的作用是建立pod控制器和pod之间的关联关系，采用的Label Selector机制
 
-  ​               在pod模板上定义label，在控制器上定义选择器，就可以表明当前控制器能管理哪些pod了
+                 在pod模板上定义label，在控制器上定义选择器，就可以表明当前控制器能管理哪些pod了
 
 - template：模板，就是当前控制器创建pod所使用的模板板，里面其实就是前一章学过的pod的定义
 
@@ -3437,7 +3437,7 @@ replicaset.apps "pc-replicaset" deleted
 
 ## Deployment(Deploy)
 
-​    为了更好的解决服务编排的问题，kubernetes在V1.2版本开始，引入了Deployment控制器。值得一提的是，这种控制器并不直接管理pod，而是通过管理ReplicaSet来简介管理Pod，即：Deployment管理ReplicaSet，ReplicaSet管理Pod。所以Deployment比ReplicaSet功能更加强大。
+    为了更好的解决服务编排的问题，kubernetes在V1.2版本开始，引入了Deployment控制器。值得一提的是，这种控制器并不直接管理pod，而是通过管理ReplicaSet来简介管理Pod，即：Deployment管理ReplicaSet，ReplicaSet管理Pod。所以Deployment比ReplicaSet功能更加强大。
 
 ![](../附件/语雀/image-20200612005524778.png)
 
@@ -3678,7 +3678,7 @@ pc-deployment-c848d767-rrqcn    0/1     Terminating         0          34m
 
 滚动更新的过程：
 
-<img src="images/Kubernetes_note/image-20200416140251491.png" style="zoom:150%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200416140251491.png" style="zoom:150%;border:1px solid" />
 
 镜像更新中rs的变化:
 
@@ -3742,9 +3742,9 @@ pc-deployment-c848d767     0         0         0       71m
 
 **金丝雀发布**
 
-​    Deployment控制器支持控制更新过程中的控制，如“暂停(pause)”或“继续(resume)”更新操作。
+    Deployment控制器支持控制更新过程中的控制，如“暂停(pause)”或“继续(resume)”更新操作。
 
-​    比如有一批新的Pod资源创建完成后立即暂停更新过程，此时，仅存在一部分新版本的应用，主体部分还是旧的版本。然后，再筛选一小部分的用户请求路由到新版本的Pod应用，继续观察能否稳定地按期望的方式运行。确定没问题之后再继续完成余下的Pod资源滚动更新，否则立即回滚更新操作。这就是所谓的金丝雀发布。
+    比如有一批新的Pod资源创建完成后立即暂停更新过程，此时，仅存在一部分新版本的应用，主体部分还是旧的版本。然后，再筛选一小部分的用户请求路由到新版本的Pod应用，继续观察能否稳定地按期望的方式运行。确定没问题之后再继续完成余下的Pod资源滚动更新，否则立即回滚更新操作。这就是所谓的金丝雀发布。
 
 ```powershell
 # 更新deployment的版本，并配置暂停deployment
@@ -3800,11 +3800,11 @@ deployment.apps "pc-deployment" deleted
 
 ## Horizontal Pod Autoscaler(HPA)
 
-​    在前面的课程中，我们已经可以实现通过手工执行`kubectl scale`命令实现Pod扩容或缩容，但是这显然不符合Kubernetes的定位目标--自动化、智能化。 Kubernetes期望可以实现通过监测Pod的使用情况，实现pod数量的自动调整，于是就产生了Horizontal Pod Autoscaler（HPA）这种控制器。
+    在前面的课程中，我们已经可以实现通过手工执行`kubectl scale`命令实现Pod扩容或缩容，但是这显然不符合Kubernetes的定位目标--自动化、智能化。 Kubernetes期望可以实现通过监测Pod的使用情况，实现pod数量的自动调整，于是就产生了Horizontal Pod Autoscaler（HPA）这种控制器。
 
-​    HPA可以获取每个Pod利用率，然后和HPA中定义的指标进行对比，同时计算出需要伸缩的具体值，最后实现Pod的数量的调整。其实HPA与之前的Deployment一样，也属于一种Kubernetes资源对象，它通过追踪分析RC控制的所有目标Pod的负载变化情况，来确定是否需要针对性地调整目标Pod的副本数，这是HPA的实现原理。
+    HPA可以获取每个Pod利用率，然后和HPA中定义的指标进行对比，同时计算出需要伸缩的具体值，最后实现Pod的数量的调整。其实HPA与之前的Deployment一样，也属于一种Kubernetes资源对象，它通过追踪分析RC控制的所有目标Pod的负载变化情况，来确定是否需要针对性地调整目标Pod的副本数，这是HPA的实现原理。
 
-<img src="images/Kubernetes_note/image-20200608155858271.png" style="border: 1px solid; zoom: 80%;"/>
+<img src="./images/Kubernetes_note/image-20200608155858271.png" style="border: 1px solid; zoom: 80%;"/>
 
 接下来，我们来做一个实验
 
@@ -3990,7 +3990,7 @@ nginx-7df9756ccc-sl9c6   1/1     Terminating         0          6m50s
 
 ## DaemonSet(DS)
 
-​    DaemonSet类型的控制器可以保证在集群中的每一台（或指定）节点上都运行一个副本。一般适用于日志收集、节点监控等场景。也就是说，如果一个Pod提供的功能是节点级别的（每个节点都需要且只需要一个），那么这类Pod就适合使用DaemonSet类型的控制器创建。
+    DaemonSet类型的控制器可以保证在集群中的每一台（或指定）节点上都运行一个副本。一般适用于日志收集、节点监控等场景。也就是说，如果一个Pod提供的功能是节点级别的（每个节点都需要且只需要一个），那么这类Pod就适合使用DaemonSet类型的控制器创建。
 
 ![](images/Kubernetes_note/image-20200612010223537.png)
 
@@ -4082,7 +4082,7 @@ Job，主要用于负责**批量处理(一次要处理指定数量任务)**短�
 - 当Job创建的pod执行成功结束时，Job将记录成功结束的pod数量
 - 当成功结束的pod达到指定的数量时，Job将完成执行
 
-<img src="images/Kubernetes_note/image-20200618213054113.png" style="zoom:80%;" />
+<img src="./images/Kubernetes_note/image-20200618213054113.png" style="zoom:80%;" />
 
 Job的资源清单文件：
 
@@ -4201,9 +4201,9 @@ job.batch "pc-job" deleted
 
 ## CronJob(CJ)
 
-​    CronJob控制器以Job控制器资源为其管控对象，并借助它管理pod资源对象，Job控制器定义的作业任务在其控制器资源创建之后便会立即执行，但CronJob可以以类似于Linux操作系统的周期性任务作业计划的方式控制其运行**时间点**及**重复运行**的方式。也就是说，**CronJob可以在特定的时间点(反复的)去运行job任务**。
+    CronJob控制器以Job控制器资源为其管控对象，并借助它管理pod资源对象，Job控制器定义的作业任务在其控制器资源创建之后便会立即执行，但CronJob可以以类似于Linux操作系统的周期性任务作业计划的方式控制其运行**时间点**及**重复运行**的方式。也就是说，**CronJob可以在特定的时间点(反复的)去运行job任务**。
 
-<img src="images/Kubernetes_note/image-20200618213149531.png" style="zoom:80%;" />
+<img src="./images/Kubernetes_note/image-20200618213149531.png" style="zoom:80%;" />
 
 CronJob的资源清单文件：
 
@@ -4325,15 +4325,15 @@ cronjob.batch "pc-cronjob" deleted
 
 ## Service介绍
 
-​    在kubernetes中，pod是应用程序的载体，我们可以通过pod的ip来访问应用程序，但是pod的ip地址不是固定的，这也就意味着不方便直接采用pod的ip对服务进行访问。
+    在kubernetes中，pod是应用程序的载体，我们可以通过pod的ip来访问应用程序，但是pod的ip地址不是固定的，这也就意味着不方便直接采用pod的ip对服务进行访问。
 
-​    为了解决这个问题，kubernetes提供了Service资源，Service会对提供同一个服务的多个pod进行聚合，并且提供一个统一的入口地址。通过访问Service的入口地址就能访问到后面的pod服务。
+    为了解决这个问题，kubernetes提供了Service资源，Service会对提供同一个服务的多个pod进行聚合，并且提供一个统一的入口地址。通过访问Service的入口地址就能访问到后面的pod服务。
 
-<img src="images/Kubernetes_note/image-20200408194716913.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200408194716913.png" style="zoom:100%;border:1px solid" />
 
-​    Service在很多情况下只是一个概念，真正起作用的其实是kube-proxy服务进程，每个Node节点上都运行着一个kube-proxy服务进程。当创建Service的时候会通过api-server向etcd写入创建的service的信息，而kube-proxy会基于监听的机制发现这种Service的变动，然后**它会将最新的Service信息转换成对应的访问规则**。
+    Service在很多情况下只是一个概念，真正起作用的其实是kube-proxy服务进程，每个Node节点上都运行着一个kube-proxy服务进程。当创建Service的时候会通过api-server向etcd写入创建的service的信息，而kube-proxy会基于监听的机制发现这种Service的变动，然后**它会将最新的Service信息转换成对应的访问规则**。
 
-<img src="images/Kubernetes_note/image-20200509121254425.png" style="border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200509121254425.png" style="border:1px solid" />
 
 ~~~powershell
 # 10.97.97.97:80 是service提供的访问入口
@@ -4354,23 +4354,23 @@ kube-proxy目前支持三种工作模式:
 
 **userspace 模式**
 
-​    userspace模式下，kube-proxy会为每一个Service创建一个监听端口，发向Cluster IP的请求被Iptables规则重定向到kube-proxy监听的端口上，kube-proxy根据LB算法选择一个提供服务的Pod并和其建立链接，以将请求转发到Pod上。
-​    该模式下，kube-proxy充当了一个四层负责均衡器的角色。由于kube-proxy运行在userspace中，在进行转发处理时会增加内核和用户空间之间的数据拷贝，虽然比较稳定，但是效率比较低。
+    userspace模式下，kube-proxy会为每一个Service创建一个监听端口，发向Cluster IP的请求被Iptables规则重定向到kube-proxy监听的端口上，kube-proxy根据LB算法选择一个提供服务的Pod并和其建立链接，以将请求转发到Pod上。
+    该模式下，kube-proxy充当了一个四层负责均衡器的角色。由于kube-proxy运行在userspace中，在进行转发处理时会增加内核和用户空间之间的数据拷贝，虽然比较稳定，但是效率比较低。
 
-<img src="images/Kubernetes_note/image-20200509151424280.png" style="border: 1px solid; zoom: 57%;" />
+<img src="./images/Kubernetes_note/image-20200509151424280.png" style="border: 1px solid; zoom: 57%;" />
 
 **iptables 模式**
 
-​    iptables模式下，kube-proxy为service后端的每个Pod创建对应的iptables规则，直接将发向Cluster IP的请求重定向到一个Pod IP。
-​    该模式下kube-proxy不承担四层负责均衡器的角色，只负责创建iptables规则。该模式的优点是较userspace模式效率更高，但不能提供灵活的LB策略，当后端Pod不可用时也无法进行重试。
+    iptables模式下，kube-proxy为service后端的每个Pod创建对应的iptables规则，直接将发向Cluster IP的请求重定向到一个Pod IP。
+    该模式下kube-proxy不承担四层负责均衡器的角色，只负责创建iptables规则。该模式的优点是较userspace模式效率更高，但不能提供灵活的LB策略，当后端Pod不可用时也无法进行重试。
 
-<img src="images/Kubernetes_note/image-20200509152947714.png" style="zoom: 57%;"  />
+<img src="./images/Kubernetes_note/image-20200509152947714.png" style="zoom: 57%;"  />
 
 **ipvs 模式**
 
-​    ipvs模式和iptables类似，kube-proxy监控Pod的变化并创建相应的ipvs规则。ipvs相对iptables转发效率更高。除此以外，ipvs支持更多的LB算法。
+    ipvs模式和iptables类似，kube-proxy监控Pod的变化并创建相应的ipvs规则。ipvs相对iptables转发效率更高。除此以外，ipvs支持更多的LB算法。
 
-<img src="images/Kubernetes_note/image-20200509153731363.png" style="zoom: 57%" />
+<img src="./images/Kubernetes_note/image-20200509153731363.png" style="zoom: 57%" />
 
 ~~~powershell
 # 此模式必须安装ipvs内核模块，否则会降级为iptables
@@ -4530,9 +4530,9 @@ TCP  10.97.97.97:80 rr
 
 **Endpoint**
 
-​    Endpoint是kubernetes中的一个资源对象，存储在etcd中，用来记录一个service对应的所有pod的访问地址，它是根据service配置文件中selector描述产生的。
+    Endpoint是kubernetes中的一个资源对象，存储在etcd中，用来记录一个service对应的所有pod的访问地址，它是根据service配置文件中selector描述产生的。
 
-​    一个Service由一组Pod组成，这些Pod通过Endpoints暴露出来，**Endpoints是实现实际服务的端点集合**。换句话说，service和pod之间的联系是通过endpoints实现的。
+    一个Service由一组Pod组成，这些Pod通过Endpoints暴露出来，**Endpoints是实现实际服务的端点集合**。换句话说，service和pod之间的联系是通过endpoints实现的。
 
 ![image-20200509191917069](images/Kubernetes_note/image-20200509191917069.png)
 
@@ -4585,7 +4585,7 @@ service "service-clusterip" deleted
 
 ### HeadLiness类型的Service
 
-​    在某些场景中，开发人员可能不想使用Service提供的负载均衡功能，而希望自己来控制负载均衡策略，针对这种情况，kubernetes提供了HeadLiness  Service，这类Service不会分配Cluster IP，如果想要访问service，只能通过service的域名进行查询。
+    在某些场景中，开发人员可能不想使用Service提供的负载均衡功能，而希望自己来控制负载均衡策略，针对这种情况，kubernetes提供了HeadLiness  Service，这类Service不会分配Cluster IP，如果想要访问service，只能通过service的域名进行查询。
 
 创建service-headliness.yaml
 
@@ -4644,9 +4644,9 @@ service-headliness.dev.svc.cluster.local. 30 IN A 10.244.2.33
 
 ### NodePort类型的Service
 
-​    在之前的样例中，创建的Service的ip地址只有集群内部才可以访问，如果希望将Service暴露给集群外部使用，那么就要使用到另外一种类型的Service，称为NodePort类型。NodePort的工作原理其实就是**将service的端口映射到Node的一个端口上**，然后就可以通过`NodeIp:NodePort`来访问service了。
+    在之前的样例中，创建的Service的ip地址只有集群内部才可以访问，如果希望将Service暴露给集群外部使用，那么就要使用到另外一种类型的Service，称为NodePort类型。NodePort的工作原理其实就是**将service的端口映射到Node的一个端口上**，然后就可以通过`NodeIp:NodePort`来访问service了。
 
-<img src="images/Kubernetes_note/image-20200620175731338.png" style="border:1px solid"  />
+<img src="./images/Kubernetes_note/image-20200620175731338.png" style="border:1px solid"  />
 
 创建service-nodeport.yaml
 
@@ -4681,15 +4681,15 @@ service-nodeport   NodePort   10.105.64.191   <none>        80:30002/TCP  app=ng
 
 ### LoadBalancer类型的Service
 
-​    LoadBalancer和NodePort很相似，目的都是向外部暴露一个端口，区别在于LoadBalancer会在集群的外部再来做一个负载均衡设备，而这个设备需要外部环境支持的，外部服务发送到这个设备上的请求，会被设备负载之后转发到集群中。
+    LoadBalancer和NodePort很相似，目的都是向外部暴露一个端口，区别在于LoadBalancer会在集群的外部再来做一个负载均衡设备，而这个设备需要外部环境支持的，外部服务发送到这个设备上的请求，会被设备负载之后转发到集群中。
 
-<img src="images/Kubernetes_note/image-20200510103945494.png" style="border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200510103945494.png" style="border:1px solid" />
 
 ### ExternalName类型的Service
 
-​     ExternalName类型的Service用于引入集群外部的服务，它通过`externalName`属性指定外部一个服务的地址，然后在集群内部访问此service就可以访问到外部的服务了。
+     ExternalName类型的Service用于引入集群外部的服务，它通过`externalName`属性指定外部一个服务的地址，然后在集群内部访问此service就可以访问到外部的服务了。
 
-<img src="images/Kubernetes_note/image-20200510113311209.png" style="border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200510113311209.png" style="border:1px solid" />
 
 ~~~yaml
 apiVersion: v1
@@ -4717,16 +4717,16 @@ www.a.shifen.com.       30      IN      A       39.156.66.14
 
 ## Ingress介绍
 
-​     在前面课程中已经提到，Service对集群之外暴露服务的主要方式有两种：NotePort和LoadBalancer，但是这两种方式，都有一定的缺点：
+     在前面课程中已经提到，Service对集群之外暴露服务的主要方式有两种：NotePort和LoadBalancer，但是这两种方式，都有一定的缺点：
 
 - NodePort方式的缺点是会占用很多集群机器的端口，那么当集群服务变多的时候，这个缺点就愈发明显
 - LB方式的缺点是每个service需要一个LB，浪费、麻烦，并且需要kubernetes之外设备的支持
 
-​    基于这种现状，kubernetes提供了Ingress资源对象，Ingress只需要一个NodePort或者一个LB就可以满足暴露多个Service的需求。工作机制大致如下图表示：
+    基于这种现状，kubernetes提供了Ingress资源对象，Ingress只需要一个NodePort或者一个LB就可以满足暴露多个Service的需求。工作机制大致如下图表示：
 
-<img src="images/Kubernetes_note/image-20200623092808049.png" style="border:1px solid"/>
+<img src="./images/Kubernetes_note/image-20200623092808049.png" style="border:1px solid"/>
 
-​    实际上，Ingress相当于一个7层的负载均衡器，是kubernetes对反向代理的一个抽象，它的工作原理类似于Nginx，可以理解成在**Ingress里建立诸多映射规则，Ingress Controller通过监听这些配置规则并转化成Nginx的反向代理配置 , 然后对外部提供服务**。在这里有两个核心概念：
+    实际上，Ingress相当于一个7层的负载均衡器，是kubernetes对反向代理的一个抽象，它的工作原理类似于Nginx，可以理解成在**Ingress里建立诸多映射规则，Ingress Controller通过监听这些配置规则并转化成Nginx的反向代理配置 , 然后对外部提供服务**。在这里有两个核心概念：
 
 - ingress：kubernetes中的一个对象，作用是定义请求如何转发到service的规则
 - ingress controller：具体实现反向代理及负载均衡的程序，对ingress定义的规则进行解析，根据配置的规则来实现请求转发，实现方式有很多，比如Nginx, Contour, Haproxy等等
@@ -4738,7 +4738,7 @@ Ingress（以Nginx为例）的工作原理如下：
 3. Ingress控制器会将生成的Nginx配置写入到一个运行着的Nginx服务中，并动态更新
 4. 到此为止，其实真正在工作的就是一个Nginx了，内部配置了用户定义的请求转发规则
 
-<img src="images/Kubernetes_note/image-20200516112704764.png" style="border: 1px solid; zoom: 100%;" />
+<img src="./images/Kubernetes_note/image-20200516112704764.png" style="border: 1px solid; zoom: 100%;" />
 
 ## Ingress使用
 
@@ -4776,7 +4776,7 @@ ingress-nginx   NodePort   10.98.75.163   <none>        80:32240/TCP,443:31335/T
 
 为了后面的实验比较方便，创建如下图所示的模型
 
-<img src="images/Kubernetes_note/image-20200516102419998.png" style="zoom:80%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200516102419998.png" style="zoom:80%;border:1px solid" />
 
 创建tomcat-nginx.yaml
 
@@ -4991,9 +4991,9 @@ tomcat.itheima.com /  tomcat-service:8080(10.244.1.99:8080,10.244.2.117:8080,10.
 
 # 第八章 数据存储
 
-​    在前面已经提到，容器的生命周期可能很短，会被频繁地创建和销毁。那么容器在销毁时，保存在容器中的数据也会被清除。这种结果对用户来说，在某些情况下是不乐意看到的。为了持久化保存容器的数据，kubernetes引入了Volume的概念。
+    在前面已经提到，容器的生命周期可能很短，会被频繁地创建和销毁。那么容器在销毁时，保存在容器中的数据也会被清除。这种结果对用户来说，在某些情况下是不乐意看到的。为了持久化保存容器的数据，kubernetes引入了Volume的概念。
 
-​    Volume是Pod中能够被多个容器访问的共享目录，它被定义在Pod上，然后被一个Pod里的多个容器挂载到具体的文件目录下，kubernetes通过Volume实现同一个Pod中不同容器之间的数据共享以及数据的持久化存储。Volume的生命容器不与Pod中单个容器的生命周期相关，当容器终止或者重启时，Volume中的数据也不会丢失。
+    Volume是Pod中能够被多个容器访问的共享目录，它被定义在Pod上，然后被一个Pod里的多个容器挂载到具体的文件目录下，kubernetes通过Volume实现同一个Pod中不同容器之间的数据共享以及数据的持久化存储。Volume的生命容器不与Pod中单个容器的生命周期相关，当容器终止或者重启时，Volume中的数据也不会丢失。
 
 kubernetes的Volume支持多种类型，比较常见的有下面几个：
 
@@ -5005,9 +5005,9 @@ kubernetes的Volume支持多种类型，比较常见的有下面几个：
 
 ### EmptyDir
 
-​    EmptyDir是最基础的Volume类型，一个EmptyDir就是Host上的一个空目录。
+    EmptyDir是最基础的Volume类型，一个EmptyDir就是Host上的一个空目录。
 
-​    EmptyDir是在Pod被分配到Node时创建的，它的初始内容为空，并且无须指定宿主机上对应的目录文件，因为kubernetes会自动分配一个目录，当Pod销毁时， EmptyDir中的数据也会被永久删除。 EmptyDir用途如下：
+    EmptyDir是在Pod被分配到Node时创建的，它的初始内容为空，并且无须指定宿主机上对应的目录文件，因为kubernetes会自动分配一个目录，当Pod销毁时， EmptyDir中的数据也会被永久删除。 EmptyDir用途如下：
 
 - 临时空间，例如用于某些应用程序运行时所需的临时目录，且无须永久保留
 
@@ -5015,9 +5015,9 @@ kubernetes的Volume支持多种类型，比较常见的有下面几个：
 
 接下来，通过一个容器之间文件共享的案例来使用一下EmptyDir。
 
-​    在一个Pod中准备两个容器nginx和busybox，然后声明一个Volume分别挂在到两个容器的目录中，然后nginx容器负责向Volume中写日志，busybox中通过命令将日志内容读到控制台。
+    在一个Pod中准备两个容器nginx和busybox，然后声明一个Volume分别挂在到两个容器的目录中，然后nginx容器负责向Volume中写日志，busybox中通过命令将日志内容读到控制台。
 
-<img src="images/Kubernetes_note/image-20200413174713773.png" style="zoom:80%;border:solid 1px" />
+<img src="./images/Kubernetes_note/image-20200413174713773.png" style="zoom:80%;border:solid 1px" />
 
 创建一个volume-emptydir.yaml
 
@@ -5068,11 +5068,11 @@ volume-emptydir   2/2     Running   0          97s   10.244.1.100   node1  .....
 
 ### HostPath
 
-​    上节课提到，EmptyDir中数据不会被持久化，它会随着Pod的结束而销毁，如果想简单的将数据持久化到主机中，可以选择HostPath。
+    上节课提到，EmptyDir中数据不会被持久化，它会随着Pod的结束而销毁，如果想简单的将数据持久化到主机中，可以选择HostPath。
 
-​    HostPath就是将Node主机中一个实际目录挂在到Pod中，以供容器使用，这样的设计就可以保证Pod销毁了，但是数据依据可以存在于Node主机上。
+    HostPath就是将Node主机中一个实际目录挂在到Pod中，以供容器使用，这样的设计就可以保证Pod销毁了，但是数据依据可以存在于Node主机上。
 
-<img src="images/Kubernetes_note/image-20200413214031331.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200413214031331.png" style="zoom:100%;border:1px solid" />
 
 创建一个volume-hostpath.yaml：
 
@@ -5138,11 +5138,11 @@ access.log  error.log
 
 ### NFS
 
-​    HostPath可以解决数据持久化的问题，但是一旦Node节点故障了，Pod如果转移到了别的节点，又会出现问题了，此时需要准备单独的网络存储系统，比较常用的用NFS、CIFS。
+    HostPath可以解决数据持久化的问题，但是一旦Node节点故障了，Pod如果转移到了别的节点，又会出现问题了，此时需要准备单独的网络存储系统，比较常用的用NFS、CIFS。
 
-​    NFS是一个网络文件存储系统，可以搭建一台NFS服务器，然后将Pod中的存储直接连接到NFS系统上，这样的话，无论Pod在节点上怎么转移，只要Node跟NFS的对接没问题，数据就可以成功访问。
+    NFS是一个网络文件存储系统，可以搭建一台NFS服务器，然后将Pod中的存储直接连接到NFS系统上，这样的话，无论Pod在节点上怎么转移，只要Node跟NFS的对接没问题，数据就可以成功访问。
 
-<img src="images/Kubernetes_note/image-20200413215133559.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200413215133559.png" style="zoom:100%;border:1px solid" />
 
 1）首先要准备nfs的服务器，这里为了简单，直接是master节点做nfs服务器
 
@@ -5220,13 +5220,13 @@ access.log  error.log
 
 ### PV和PVC
 
-​    前面已经学习了使用NFS提供存储，此时就要求用户会搭建NFS系统，并且会在yaml配置nfs。由于kubernetes支持的存储系统有很多，要求客户全都掌握，显然不现实。为了能够屏蔽底层存储实现的细节，方便用户使用， kubernetes引入PV和PVC两种资源对象。
+    前面已经学习了使用NFS提供存储，此时就要求用户会搭建NFS系统，并且会在yaml配置nfs。由于kubernetes支持的存储系统有很多，要求客户全都掌握，显然不现实。为了能够屏蔽底层存储实现的细节，方便用户使用， kubernetes引入PV和PVC两种资源对象。
 
-​    PV（Persistent Volume）是持久化卷的意思，是对底层的共享存储的一种抽象。一般情况下PV由kubernetes管理员进行创建和配置，它与底层具体的共享存储技术有关，并通过插件完成与共享存储的对接。
+    PV（Persistent Volume）是持久化卷的意思，是对底层的共享存储的一种抽象。一般情况下PV由kubernetes管理员进行创建和配置，它与底层具体的共享存储技术有关，并通过插件完成与共享存储的对接。
 
-​    PVC（Persistent Volume Claim）是持久卷声明的意思，是用户对于存储需求的一种声明。换句话说，PVC其实就是用户向kubernetes系统发出的一种资源需求申请。
+    PVC（Persistent Volume Claim）是持久卷声明的意思，是用户对于存储需求的一种声明。换句话说，PVC其实就是用户向kubernetes系统发出的一种资源需求申请。
 
-<img src="images/Kubernetes_note/image-20200514194111567.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200514194111567.png" style="zoom:100%;border:1px solid" />
 
 使用了PV和PVC之后，工作可以得到进一步的细分：
 
@@ -5260,7 +5260,7 @@ PV 的关键配置参数说明：
 
 - **存储能力（capacity）**
 
-​      目前只支持存储空间的设置( storage=1Gi )，不过未来可能会加入IOPS、吞吐量等指标的配置
+      目前只支持存储空间的设置( storage=1Gi )，不过未来可能会加入IOPS、吞吐量等指标的配置
 
 - **访问模式（accessModes）**
 
@@ -5407,7 +5407,7 @@ PVC 的关键配置参数说明：
 
 - **访问模式（accessModes）**
 
-​       用于描述用户应用对存储资源的访问权限
+       用于描述用户应用对存储资源的访问权限
 
 - **选择条件（selector）**
 
@@ -5594,7 +5594,7 @@ PVC和PV是一一对应的，PV和PVC之间的相互作用遵循以下生命周�
 
   对于PV，管理员可以设定回收策略，用于设置与之绑定的PVC释放资源之后如何处理遗留数据的问题。只有PV的存储空间完成回收，才能供新的PVC绑定和使用
 
-<img src="images/Kubernetes_note/image-20200515002806726.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200515002806726.png" style="zoom:100%;border:1px solid" />
 
 ## 配置存储
 
@@ -5687,7 +5687,7 @@ password:123456
 
 ### Secret
 
-​    在kubernetes中，还存在一种和ConfigMap非常类似的对象，称为Secret对象。它主要用于存储敏感信息，例如密码、秘钥、证书等等。
+    在kubernetes中，还存在一种和ConfigMap非常类似的对象，称为Secret对象。它主要用于存储敏感信息，例如密码、秘钥、证书等等。
 
 1)  首先使用base64对数据进行编码
 
@@ -5779,7 +5779,7 @@ admin
 
 ## 访问控制概述
 
-​    Kubernetes作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。所谓的安全性其实就是保证对Kubernetes的各种**客户端**进行**认证和鉴权**操作。
+    Kubernetes作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。所谓的安全性其实就是保证对Kubernetes的各种**客户端**进行**认证和鉴权**操作。
 
 **客户端**
 
@@ -5789,7 +5789,7 @@ admin
 
 - **Service Account**：kubernetes管理的账号，用于为Pod中的服务进程在访问Kubernetes时提供身份标识。
 
-<img src="images/Kubernetes_note/image-20200520102949189.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520102949189.png" style="zoom:100%;border:1px solid" />
 
 **认证、授权与准入控制**   
 
@@ -5799,7 +5799,7 @@ ApiServer是访问及管理资源对象的唯一入口。任何一个请求访�
 - Authorization（授权）：  判断用户是否有权限对访问的资源执行特定的动作
 - Admission Control（准入控制）：用于补充授权机制以实现更加精细的访问控制功能。
 
-<img src="images/Kubernetes_note/image-20200520103942580.png" style="zoom:100%; border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520103942580.png" style="zoom:100%; border:1px solid" />
 
 ## 认证管理
 
@@ -5823,7 +5823,7 @@ Kubernetes集群安全的最关键点在于如何识别并认证客户端身份�
       这种认证方式是安全性最高的一种方式，但是同时也是操作起来最麻烦的一种方式。
   ~~~
 
-<img src="images/Kubernetes_note/image-20200518211037434.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200518211037434.png" style="zoom:100%;border:1px solid" />
 
 **HTTPS认证大体分为3个过程：**
 
@@ -5854,9 +5854,9 @@ Kubernetes集群安全的最关键点在于如何识别并认证客户端身份�
 
 ## 授权管理
 
-​     授权发生在认证成功之后，通过认证就可以知道请求用户是谁， 然后Kubernetes会根据事先定义的授权策略来决定用户是否有权限访问，这个过程就称为授权。
+     授权发生在认证成功之后，通过认证就可以知道请求用户是谁， 然后Kubernetes会根据事先定义的授权策略来决定用户是否有权限访问，这个过程就称为授权。
 
-​     每个发送到ApiServer的请求都带上了用户和资源的信息：比如发送请求的用户、请求的路径、请求的动作等，授权就是根据这些信息和授权策略进行比较，如果符合策略，则认为授权通过，否则会返回错误。
+     每个发送到ApiServer的请求都带上了用户和资源的信息：比如发送请求的用户、请求的路径、请求的动作等，授权就是根据这些信息和授权策略进行比较，如果符合策略，则认为授权通过，否则会返回错误。
 
 API Server目前支持以下几种授权策略：
 
@@ -5881,7 +5881,7 @@ RBAC(Role-Based Access Control) 基于角色的访问控制，主要是在描述
 - 角色：代表着一组定义在资源上的可操作动作(权限)的集合
 - 绑定：将定义好的角色跟用户绑定在一起
 
-<img src="images/Kubernetes_note/image-20200519181209566.png" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200519181209566.png" style="zoom:100%;border:1px solid" />
 
 RBAC引入了4个顶级资源对象：
 
@@ -6124,7 +6124,7 @@ Switched to context "kubernetes-admin@kubernetes".
 
 # 第十章 DashBoard
 
-​    之前在kubernetes中完成的所有操作都是通过命令行工具kubectl完成的。其实，为了提供更丰富的用户体验，kubernetes还开发了一个基于web的用户界面（Dashboard）。用户可以使用Dashboard部署容器化的应用，还可以监控应用的状态，执行故障排查以及管理kubernetes中各种资源。
+    之前在kubernetes中完成的所有操作都是通过命令行工具kubectl完成的。其实，为了提供更丰富的用户体验，kubernetes还开发了一个基于web的用户界面（Dashboard）。用户可以使用Dashboard部署容器化的应用，还可以监控应用的状态，执行故障排查以及管理kubernetes中各种资源。
 
 ## 部署Dashboard
 
@@ -6198,11 +6198,11 @@ ca.crt:     1025 bytes
 
 在登录页面上输入上面的token
 
-<img src="images/Kubernetes_note/image-20200520144548997.png" alt="image-20200520144548997" style="zoom:80%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520144548997.png" alt="image-20200520144548997" style="zoom:80%;border:1px solid" />
 
 出现下面的页面代表成功
 
-<img src="images/Kubernetes_note/image-20200520144959353.png" alt="image-20200520144959353" style="zoom:80%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520144959353.png" alt="image-20200520144959353" style="zoom:80%;border:1px solid" />
 
 ## 使用DashBoard
 
@@ -6212,31 +6212,31 @@ ca.crt:     1025 bytes
 
 选择指定的命名空间`dev`，然后点击`Deployments`，查看dev空间下的所有deployment
 
-<img src="images/Kubernetes_note/image-20200520154628679.png" style="zoom:90%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520154628679.png" style="zoom:90%;border:1px solid" />
 
 **扩缩容**
 
 在`Deployment`上点击`规模`，然后指定`目标副本数量`，点击确定
 
-<img src="images/Kubernetes_note/image-20200520162605102.png" style="zoom:90%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520162605102.png" style="zoom:90%;border:1px solid" />
 
 **编辑**
 
 在`Deployment`上点击`编辑`，然后修改`yaml文件`，点击确定
 
-<img src="images/Kubernetes_note/image-20200520163253644.png" alt="image-20200520163253644" style="zoom:100%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520163253644.png" alt="image-20200520163253644" style="zoom:100%;border:1px solid" />
 
 **查看Pod**
 
 点击`Pods`, 查看pods列表
 
-<img src="images/Kubernetes_note/image-20200520163552110.png" style="zoom:90%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520163552110.png" style="zoom:90%;border:1px solid" />
 
 **操作Pod**
 
 选中某个Pod，可以对其执行日志（logs）、进入执行（exec）、编辑、删除操作
 
-<img src="images/Kubernetes_note/image-20200520163832827.png" style="zoom:90%;border:1px solid" />
+<img src="./images/Kubernetes_note/image-20200520163832827.png" style="zoom:90%;border:1px solid" />
 
 > Dashboard提供了kubectl的绝大部分功能，这里不再一一演示
 

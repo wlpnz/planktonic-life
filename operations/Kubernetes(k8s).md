@@ -10,13 +10,13 @@
 
 
 > 强制删除pod
-> kubectl delete pod <POD-NAME> --force --grace-period=0
+> `kubectl delete pod <POD-NAME> --force --grace-period=0`
+>
 > 强制删除pvc
-> kubectl delete pvc <PVC-NAME> --force --grace-period=0
+> `kubectl delete pvc <PVC-NAME> --force --grace-period=0`
+> 
 > 强制删除资源
-> kubectl delete resrouce res_name --force --grace-period=0
-
-
+> `kubectl delete resrouce res_name --force --grace-period=0`
 
 
 一种容器编排软件
@@ -26,7 +26,7 @@ curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_
 
 查看命名空间(kube-system)中的pods
 kubectl get pods -n kube-system
-<img src="images/Kubernetes(k8s)/1715234251979-94e46af7-56fc-47c5-ae82-322799fa6d18.png" alt="image.png"  />
+<img src="./images/Kubernetes(k8s)/1715234251979-94e46af7-56fc-47c5-ae82-322799fa6d18.png" alt="image.png"  />
 查看pod的详细信息
 kubectl describe pods kube-flannel-ds-amd64-4pk2m -n kube-system
 

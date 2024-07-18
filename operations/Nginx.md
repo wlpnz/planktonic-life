@@ -42,13 +42,13 @@ sendfile on; 使用linux的 sendfile(socket, file, len) 高效网络传输，也
 
 未开启sendfile
 
-<img src="images/Nginx/image-20240617162229066.png" alt="image-20240617162229066" style="zoom:50%;" />
+<img src="./images/Nginx/image-20240617162229066.png" alt="image-20240617162229066" style="zoom:50%;" />
 
 
 
 开启sendfile
 
-<img src="images/Nginx/image-20240617162252122.png" alt="image-20240617162252122" style="zoom:50%;" />
+<img src="./images/Nginx/image-20240617162252122.png" alt="image-20240617162252122" style="zoom:50%;" />
 
 **keepalive_timeout 65;** 
 

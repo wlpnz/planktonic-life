@@ -67,7 +67,7 @@ Redis Stream 主要用于消息队列（MQ，Message Queue），Redis 本身是�
 
 RDB自动触发规则
 
-在redis.conf配置 save  <seconds> <changes> 
+在redis.conf配置 `save  <seconds> <changes>`
 解释：
 seconds意为距离上次保存RDB文件seconds秒
 changes意为在这个时间内key改变了changes次
@@ -101,10 +101,10 @@ redis会在后台异步进行快照操作，不阻塞，快照同时还可以响
 主从复制时，主节点自动触发
 
 如何禁用快照
-将配置文件中的save <seconds> <changes> 设置为 save ""
+将配置文件中的`save <seconds> <changes>` 设置为 save ""
 
 RDB优化配置项详解
-save <seconds> <changes> 自动触发RDB保存
+`save <seconds> <changes>` 自动触发RDB保存
 dbfilename 保存的文件名
 dir 保存rdb文件目录
 stop-writes-on-bgsave-error 默认yes，如果配置成no，表示不在意数据不一致，那么在快照写入失败时，也能保证redis继续接收新的请求
@@ -349,20 +349,20 @@ punsubscribe [pattern [pattern ...]] 退订所有给定模式的频道
 #### 配置哨兵集群
 在工作目录中新建或拷贝sentinel.conf文件，名字绝对不能错
 **重点参数说明：**
-**sentinel monitor <master-name> <ip> <redis-port> <quorum>：**设置要监控的master服务器
+**`sentinel monitor <master-name> <ip> <redis-port> <quorum>`：**设置要监控的master服务器
 quorum表示最少有几个哨兵认可客观下线，同意故障迁移的法定票数
-**sentinel auth-pass <master-name> <password> ：**设置连接master的密码
+**`sentinel auth-pass <master-name> <password>` ：**设置连接master的密码
 注意：因为可能进行主从切换，因此，主从库的密码应设置成一样
 
-**sentinel down-after-milliseconds <master-name> <milliseconds>：**
+**`sentinel down-after-milliseconds <master-name> <milliseconds>`：**
 指定多少毫秒之后，主节点没有应答哨兵，此时哨兵主观上认为主节点下线
-**sentinel parallel-syncs <master-name> <nums>：**
+**`sentinel parallel-syncs <master-name> <nums>`：**
 表示允许并行同步的slave个数，当Master挂了后，哨兵会选出新的Master，此时，剩余的slave会向新的master发起同步数据
-**sentinel failover-timeout <master-name> <milliseconds>：**
+**`sentinel failover-timeout <master-name> <milliseconds>`：**
 故障转移的超时时间，进行故障转移时，如果超过设置的毫秒，表示故障转移失败
-**sentinel notification-script <master-name> <script-path> ：**
+**`sentinel notification-script <master-name> <script-path>` ：**
 配置当某一事件发生时所需要执行的脚本
-**sentinel client-reconfig-script <master-name> <script-path>：**
+**`sentinel client-reconfig-script <master-name> <script-path>`：**
 客户端重新配置主节点参数脚本
 ①通用配置：
 bind 0.0.0.0
@@ -393,7 +393,7 @@ OK，认可访问
 
 **SDown主观下线(Subjectively Down)**
 所谓主观下线（Subjectively Down， 简称 SDOWN）指的是单个Sentinel实例对服务器做出的下线判断，即单个sentinel认为某个服务下线（有可能是接收不到订阅，之间的网络不通等等原因）。主观下线就是说如果服务器在[sentinel down-after-milliseconds]给定的毫秒数之内没有回应PING命令或者返回一个错误消息， 那么这个Sentinel会主观的(单方面的)认为这个master不可以用了，o(╥﹏╥)o
-sentinel down-after-milliseconds <masterName> <timeout>
+`sentinel down-after-milliseconds <masterName> <timeout>`
  表示master被当前sentinel实例认定为失效的间隔时间，这个配置其实就是进行主观下线的一个依据
 master在多长时间内一直没有给Sentine返回有效信息，则认定该master主观下线。也就是说如果多久没联系上redis-servevr，认为这个redis-server进入到失效（SDOWN）状态。
 
@@ -427,7 +427,7 @@ quorum这个参数是进行客观下线的一个依据，法定人数/法定票�
 #### 是什么
 Redis集群是一个提供在多个redis节点间共享数据的程序集
 Redis集群可以支持多个Master
-<img src="images/Redis基础/1695826287541-e5259edc-d020-4b72-9b9a-06cef48602db.png" alt="image.png" style="zoom: 50%;" />
+<img src="./images/Redis基础/1695826287541-e5259edc-d020-4b72-9b9a-06cef48602db.png" alt="image.png" style="zoom: 50%;" />
 
 #### 能干嘛
 Redis集群能支持多个Master，每个Master又可以挂载多个Slave
@@ -454,7 +454,7 @@ Redis集群有16384个哈希槽，每个key通过CRC16校验后对16384取模来
 Redis集群不保证强一致性，这意味着在特定的条件下，Redis集群可能会丢掉一些被系统收到的写入请求命令
 #### 集群环境配置
 ##### 三主三从redis集群配置
-<img src="images/Redis基础/1695804126584-3666dcc2-4593-4fec-b413-0ec003f81c30.jpeg" style="zoom:50%;" />
+<img src="./images/Redis基础/1695804126584-3666dcc2-4593-4fec-b413-0ec003f81c30.jpeg" style="zoom:50%;" />
 新建文件夹：mkdir -p /myredis/cluster
 新建6台独立的redis实例并启动：
 
