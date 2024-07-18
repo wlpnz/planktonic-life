@@ -190,6 +190,8 @@ export const set_sidebar = (pathname) => {
 
 将已有代码上传到github仓库
 
+>  注意：如果不设置自定义域名，需要将`Base`设置为仓库名，具体看[base配置](https://vitepress.dev/zh/reference/site-config#base)
+
 #### 设置GitHub Page
 
 先把github page 的 `Build and deployment`设置成`GitHub Actions`
@@ -283,6 +285,8 @@ jobs:
 ![image-20240718151310616](images/使用VitePress搭建笔记仓库/image-20240718151310616.png)
 
 #### 自定义域名
+
+> 注意：如果使用自定义域名，需要将`base`删除，具体看[base配置](https://vitepress.dev/zh/reference/site-config#base)
 
 在域名服务商那里将自己域名解析到 `account.github.io`，解析类型：`CNAME`
 
