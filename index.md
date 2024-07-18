@@ -31,9 +31,9 @@ features:
   - title: 运维
     details: Linux、Docker、Kubernetes
     link: /operations
-  - title: 开发工具
-    details: Git、Bat
-    link: /devtools
+  - title: 面试
+    details: 面试
+    link: /interview
   - title: 项目经验
     details: 项目经验
     link: /project_exp
