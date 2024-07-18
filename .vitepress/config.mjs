@@ -1,14 +1,13 @@
 import { defineConfig } from 'vitepress'
 import { set_sidebar } from "../utils/auto-gen-sidebar.mjs";	// 改成自己的路径
 
-const base = 'planktonic-life'
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "小小浮游",
   titleTemplate: ":title",
   description: "雾岚的笔记仓库",
-  base: `/${base}/`,
-  head: [['link', { rel: 'icon', href: `/${base}/favicon.svg` }]],
+  // base: `/planktonic-life/`,
+  // head: [['link', { rel: 'icon', href: `/planktonic-life/favicon.svg` }]],
+  head: [['link', { rel: 'icon', href: `/favicon.svg` }]],
   lang: 'zh-CN',
   lastUpdated: true,
   themeConfig: {
@@ -40,7 +39,7 @@ export default defineConfig({
     },
     logo: "plankton.svg", // 配置logo位置，public目录
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/wlpnz' }
+      { icon: 'github', link: 'https://github.com/wlpnz/planktonic-life' }
     ],
     footer: {
       message: '开发者笔记仓库',

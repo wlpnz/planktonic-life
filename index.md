@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: GitHub
-      link: https://github.com/wlpnz
+      link: https://github.com/wlpnz/planktonic-life
       target: _blank
     - theme: alt
       text: About me
