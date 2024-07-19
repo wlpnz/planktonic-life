@@ -12,18 +12,18 @@ export default defineConfig({
   lastUpdated: true,
   themeConfig: {
     outline: [2, 6],
-    // search: {
-    //   provider: 'algolia',
-    //   options: {
-    //     appId: '...',
-    //     apiKey: '...',
-    //     indexName: '...',
-    //     placeholder: '请输入关键字'
-    //   }
-    // },
     search: {
-      provider: 'local'
+      provider: 'algolia',
+      options: {
+        appId: 'SZC32E2BED',
+        apiKey: '96abed280a36c62cb1374434973050bd',
+        indexName: 'wlpnz',
+        placeholder: '请输入关键字'
+      }
     },
+    // search: {
+    //   provider: 'local'
+    // },
     nav: [
       { text: '首页', link: '/' },
       { text: '后端', link: '/backend' },
