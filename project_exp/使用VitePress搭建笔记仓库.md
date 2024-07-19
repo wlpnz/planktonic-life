@@ -374,3 +374,52 @@ utools搜索**任务**，打开任务计划程序
 - 点击完成后，在任务列表看到添加的任务，可以点击运行测试
 
 ![image-20240718153605995](images/使用VitePress搭建笔记仓库/image-20240718153605995.png)
+
+### 附加3
+
+使用Algolia Search
+
+> [搜索 | VitePress](https://vitepress.dev/zh/reference/default-theme-search#algolia-search)
+
+先申请[计划](https://docsearch.algolia.com/apply/)
+
+![image-20240719101002885](images/使用VitePress搭建笔记仓库/image-20240719101002885.png)
+
+文档地址，要填对
+
+发送申请后，会在邮箱接受到通知，在几小时后会收到通过的邮件
+
+![image-20240719101324692](images/使用VitePress搭建笔记仓库/image-20240719101324692.png)
+
+在该邮件的下面会给出`appId`、`apiKey`、`IndexName`
+
+ 然后再config.mjs中配置
+
+```js
+import { defineConfig } from 'vitepress'
+
+export default defineConfig({
+  themeConfig: {
+    search: {
+      provider: 'algolia',
+      options: {
+        appId: '...',
+        apiKey: '...',
+        indexName: '...'
+      }
+    }
+  }
+})
+```
+
+::: info 注意
+
+如果你的域名填写错误，你需要打开脚本的那个网站的[域名配置](https://crawler.algolia.com/admin/domains)
+
+添加你的域名
+
+然后进入脚本页面，在侧边栏选择`Editor`,将其中的域名修改成你自己的域名
+
+然后重新执行爬虫
+
+:::
