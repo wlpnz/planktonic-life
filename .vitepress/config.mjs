@@ -3,8 +3,8 @@ import { set_sidebar } from "../utils/auto-gen-sidebar.mjs";	// 改成自己的�
 
 export default defineConfig({
   title: "小小浮游",
-  titleTemplate: ":title",
-  description: "雾岚的笔记仓库",
+  titleTemplate: ":title - 小小浮游",
+  description: "小小浮游",
   // base: `/planktonic-life/`,
   // head: [['link', { rel: 'icon', href: `/planktonic-life/favicon.svg` }]],
   head: [['link', { rel: 'icon', href: `/favicon.svg` }]],
