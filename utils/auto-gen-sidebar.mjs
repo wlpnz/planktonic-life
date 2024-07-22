@@ -37,7 +37,7 @@ function getList(params, path1, pathname) {
             const items = intersections(files, WHITE_LIST);
             res.push({
                 text: name,
-                collapsed: false,
+                collapsed: true,
                 items: getList(items, dir, `${pathname}/${name}`),
             });
         } else {

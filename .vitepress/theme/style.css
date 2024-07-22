@@ -137,3 +137,12 @@
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
 
+.vp-doc blockquote {
+    margin: 16px 0;
+    border-left: 4px solid #3884ff;
+    border-radius: 5px;
+    padding: 10px 16px 10px 16px;
+    transition: border-color .5s;
+    color: var(--vp-c-text-2);
+    background-color: var(--vp-code-block-bg);
+}
