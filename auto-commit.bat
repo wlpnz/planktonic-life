@@ -9,8 +9,7 @@ ECHO 当前日期和时间是: %currentDateTime%
 REM 
 REM cd E:\planktonic-life\
 
-cd E:
-cd %~dp0
+cd /d %~dp0
 
 git pull origin "master"
 IF %ERRORLEVEL% NEQ 0 (
