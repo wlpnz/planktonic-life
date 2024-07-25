@@ -3,6 +3,8 @@
 ### 创建项目
 
 > [官方文档](https://vitepress.dev/zh/guide/getting-started#installation)
+>
+> [[VuePress 博客搭建系列 33 篇正式完结！](https://segmentfault.com/a/1190000041627148)
 
 ```shell
 先创建项目文件夹`vitepress-demo`
