@@ -27,7 +27,7 @@ Authorization：授权
 
 
 ### 认证-Authentication
-![image.png](images/Spring Security/1684156511015-12508232-4982-4a9c-90c8-ffc037710cb1.png)
+![image.png](images/SpringSecurity/1684156511015-12508232-4982-4a9c-90c8-ffc037710cb1.png)
 自然语言描述：
 
 1. 用户提交用户名/密码 ==> 调用`new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())`生成未认证的`Authentication`

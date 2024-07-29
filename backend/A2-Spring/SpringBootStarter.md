@@ -1,4 +1,7 @@
+### SpringBoot自定义Starter
+
 ## SpringBoot2.7.x以下
+
 POM
 ```xml
 <parent>
@@ -140,8 +143,11 @@ top.wlpnz.hello.config.InterceptorAutoConfiguration
 ## 注意
 :::info
 3.x可以引用2.x的starter，但存在兼容问题
+
 2.7.x及以上可以引用3.x的starter，存在兼容问题
+
 2.7.x以下不能引用3.x的starter，项目不能启动
+
 这里的2.x，3.x指的SpringBoot Version
 
 在自定义的starter中，所有注入到容器中的**类**，都应该有一个**空参**的构造函数
@@ -160,6 +166,12 @@ SpringBoot 2.7.x开始，自动装配的机制开始改动，但是有向后兼�
 
 ## 报错
 问题一：
+
 **Consider defining a bean of type ‘java.lang.String‘ in your configuration**
+
 解决：
+
 在相应的类中加入空参的构造函数
+
+
+
