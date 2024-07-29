@@ -94,7 +94,7 @@ public class TempAutoConfiguration {
     }
 }
 ```
-在resources下创建文件夹`**META-INF**`**,**在META-INF下新建文件`**spring.factories**`
+在resources下创建文件夹`META-INF`**,**在META-INF下新建文件`spring.factories`
 ```latex
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 top.wlpnz.temp.TempAutoConfiguration,\
@@ -128,8 +128,9 @@ POM
 </dependencies>
 ```
 application.yaml、Properties、Service、AutoConfiguration同上
-在resources下创建文件夹`**META-INF/spring**`**,**
+在resources下创建文件夹`META-INF/spring`**,**
 在spring文件夹下新建文件`org.springframework.boot.autoconfigure.AutoConfiguration.imports`
+
 ```latex
 top.wlpnz.hello.config.HelloServiceAutoConfiguration
 top.wlpnz.hello.config.InterceptorAutoConfiguration  
@@ -137,7 +138,7 @@ top.wlpnz.hello.config.InterceptorAutoConfiguration
 ```
 
 ## 注意
-:::tips
+:::info
 3.x可以引用2.x的starter，但存在兼容问题
 2.7.x及以上可以引用3.x的starter，存在兼容问题
 2.7.x以下不能引用3.x的starter，项目不能启动
@@ -145,9 +146,15 @@ top.wlpnz.hello.config.InterceptorAutoConfiguration
 
 在自定义的starter中，所有注入到容器中的**类**，都应该有一个**空参**的构造函数
 :::
+
 SpringBoot 2.7.x开始，自动装配的机制开始改动，但是有向后兼容的机制
-![image.png](images/SpringBoot Starter/1717120070536-7bb2068a-0b1f-45be-8bf1-81ed0452833d.png)
-![image.png](images/SpringBoot Starter/1717120037789-8877d632-27f0-431e-a69b-7358b867ac1a.png)![image.png](images/SpringBoot Starter/1717120144266-3eecbdf7-70bf-4dd6-ba6a-9b2c41c33f9e.png)
+![image.png](images/SpringBootStarter/1717120070536-7bb2068a-0b1f-45be-8bf1-81ed0452833d.png)
+
+![image.png](images/SpringBootStarter/1717120037789-8877d632-27f0-431e-a69b-7358b867ac1a.png)
+
+![image.png](images/SpringBootStarter/1717120144266-3eecbdf7-70bf-4dd6-ba6a-9b2c41c33f9e.png)
+
+
 
 
 
