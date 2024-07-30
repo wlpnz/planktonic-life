@@ -482,6 +482,7 @@ function test(){
 >    <img src="./images/Vue3快速上手/自动补充value.png" alt="自动补充value" style="zoom:50%;border-radius:20px" /> 
 >
 > 2. `reactive`重新分配一个新对象，会**失去**响应式（可以使用`Object.assign`去整体替换）。
+>    ![image-20240730132835211](images/Vue3快速上手/image-20240730132835211.png)
 
 - 使用原则：
 > 1. 若需要一个基本类型的响应式数据，必须使用`ref`。
@@ -514,7 +515,7 @@ function test(){
   // 通过toRefs将person对象中的n个属性批量取出，且依然保持响应式的能力
   let {name,gender} =  toRefs(person)
 	
-  // 通过toRef将person对象中的gender属性取出，且依然保持响应式的能力
+  // 通过toRef将person对象中的age属性取出，且依然保持响应式的能力
   let age = toRef(person,'age')
 
   // 方法
