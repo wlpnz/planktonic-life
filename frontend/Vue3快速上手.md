@@ -1,5 +1,8 @@
-# 1. Vue3简介 
-## 1.1. 【性能的提升】
+# Vue3快速上手
+
+## 1. Vue3简介 
+
+### 1.1. 【性能的提升】
 
 - 打包大小减少`41%`。
 
@@ -7,17 +10,17 @@
 
 - 内存减少`54%`。
 
-## 1.2.【 源码的升级】
+### 1.2.【 源码的升级】
 
 - 使用`Proxy`代替`defineProperty`实现响应式。
 
 - 重写虚拟`DOM`的实现和`Tree-Shaking`。
 
-## 1.3. 【拥抱TypeScript】
+### 1.3. 【拥抱TypeScript】
 
 - `Vue3`可以更好的支持`TypeScript`。
 
-## 1.4. 【新的特性】
+### 1.4. 【新的特性】
 
 1. `Composition API`（组合`API`）：
    - `setup`
@@ -42,9 +45,9 @@
 
 
 
-# 2. 创建Vue3工程
+## 2. 创建Vue3工程
 
-## 2.1. 【基于 vue-cli 创建】
+### 2.1. 【基于 vue-cli 创建】
 点击查看[官方文档](https://cli.vuejs.org/zh/guide/creating-a-project.html#vue-create)
 
 > 备注：目前`vue-cli`已处于维护模式，官方推荐基于 `Vite` 创建项目。
@@ -182,18 +185,18 @@ npm run serve
 ```
 
 
-# 3. Vue3核心语法
-## 3.1.  【OptionsAPI 与 CompositionAPI】
+## 3. Vue3核心语法
+### 3.1.  【OptionsAPI 与 CompositionAPI】
 
 - `Vue2`的`API`设计是`Options`（配置）风格的。
 - `Vue3`的`API`设计是`Composition`（组合）风格的。
-###  Options API 的弊端
+#### Options API 的弊端
 
 `Options`类型的 `API`，数据、方法、计算属性等，是分散在：`data`、`methods`、`computed`中的，若想新增或者修改一个需求，就需要分别修改：`data`、`methods`、`computed`，不便于维护和复用。
 
 <img src="./images/Vue3快速上手/1696662197101-55d2b251-f6e5-47f4-b3f1-d8531bbf9279.gif" alt="1.gif" style="zoom:70%;border-radius:20px" /><img src="./images/Vue3快速上手/1696662200734-1bad8249-d7a2-423e-a3c3-ab4c110628be.gif" alt="2.gif" style="zoom:70%;border-radius:20px" />
 
-### Composition API 的优势
+#### Composition API 的优势
 
 可以用函数的方式，更加优雅的组织代码，让相关功能的代码更加有序的组织在一起。
 
@@ -201,8 +204,8 @@ npm run serve
 
 > 说明：以上四张动图原创作者：大帅老猿
 
-## 3.2. 【拉开序幕的 setup】
-### setup 概述
+### 3.2. 【拉开序幕的 setup】
+#### setup 概述
 `setup`是`Vue3`中一个新的配置项，值是一个函数，它是 `Composition API` **“表演的舞台**_**”**_，组件中所用到的：数据、方法、计算属性、监视......等等，均配置在`setup`中。
 
 特点如下：
@@ -249,7 +252,7 @@ npm run serve
   }
 </script>
 ```
-### setup 的返回值
+#### setup 的返回值
 
 - 若返回一个**对象**：则对象中的：属性、方法等，在模板中均可以直接使用**（重点关注）。**
 - 若返回一个**函数**：则可以自定义渲染内容，代码如下：
@@ -258,12 +261,12 @@ setup(){
   return ()=> '你好啊！'
 }
 ```
-### setup 与 Options API 的关系
+#### setup 与 Options API 的关系
 
 - `Vue2` 的配置（`data`、`methos`......）中**可以访问到** `setup`中的属性、方法。
 - 但在`setup`中**不能访问到**`Vue2`的配置（`data`、`methos`......）。
 - 如果与`Vue2`冲突，则`setup`优先。
-### setup 语法糖
+#### setup 语法糖
 `setup`函数有一个语法糖，这个语法糖，可以让我们把`setup`独立出去，代码如下：
 
 ```vue
@@ -319,7 +322,7 @@ export default defineConfig({
 ```
 
 3. 第三步：`<script setup lang="ts" name="Person">`
-## 3.3. 【ref 创建：基本类型的响应式数据】
+### 3.3. 【ref 创建：基本类型的响应式数据】
 
 - **作用：**定义响应式变量。
 - **语法：**`let xxx = ref(初始值)`。
@@ -364,7 +367,7 @@ export default defineConfig({
   }
 </script>
 ```
-## 3.4. 【reactive 创建：对象类型的响应式数据】
+### 3.4. 【reactive 创建：对象类型的响应式数据】
 
 - **作用：**定义一个**响应式对象**（基本类型不要用它，要用`ref`，否则报错）
 - **语法：**`let 响应式对象= reactive(源对象)`。
@@ -416,7 +419,7 @@ function test(){
 }
 </script>
 ```
-## 3.5. 【ref 创建：对象类型的响应式数据】
+### 3.5. 【ref 创建：对象类型的响应式数据】
 
 - 其实`ref`接收的数据可以是：**基本类型**、**对象类型**。
 - 若`ref`接收的是对象类型，内部其实也是调用了`reactive`函数。
@@ -468,7 +471,8 @@ function test(){
 }
 </script>
 ```
-## 3.6. 【ref 对比 reactive】
+### 3.6. 【ref 对比 reactive】
+
 宏观角度看：
 
 > 1. `ref`用来定义：**基本类型数据**、**对象类型数据**；
@@ -489,7 +493,7 @@ function test(){
 > 2. 若需要一个响应式对象，层级不深，`ref`、`reactive`都可以。
 > 3. 若需要一个响应式对象，且层级较深，推荐使用`reactive`。
 
-## 3.7. 【toRefs 与 toRef】
+### 3.7. 【toRefs 与 toRef】
 
 - 作用：将一个响应式对象中的每一个属性，转换为`ref`对象。
 - 备注：`toRefs`与`toRef`功能一致，但`toRefs`可以批量转换。
@@ -530,7 +534,7 @@ function test(){
   }
 </script>
 ```
-## 3.8. 【computed】
+### 3.8. 【computed】
 
 作用：根据已有数据计算出新数据（和`Vue2`中的`computed`作用一致）。
 
@@ -577,7 +581,7 @@ function test(){
   } 
 </script>
 ```
-## 3.9.【watch】
+### 3.9.【watch】
 
 - 作用：监视数据的变化（和`Vue2`中的`watch`作用一致）
 - 特点：`Vue3`中的`watch`只能监视以下**四种数据**：
@@ -587,7 +591,7 @@ function test(){
 > 4. 一个包含上述内容的数组。
 
 我们在`Vue3`中使用`watch`的时候，通常会遇到以下几种情况：
-### * 情况一
+#### * 情况一
 监视`ref`定义的【基本类型】数据：直接写数据名即可，监视的是其`value`值的改变。
 
 ```vue
@@ -616,7 +620,7 @@ function test(){
   })
 </script>
 ```
-### * 情况二
+#### * 情况二
 监视`ref`定义的【对象类型】数据：直接写数据名，监视的是对象的【地址值】，若想监视对象内部的数据，要手动开启深度监视。
 
 > 注意：
@@ -666,7 +670,7 @@ function test(){
   
 </script>
 ```
-### *  情况三
+#### *  情况三
 监视`reactive`定义的【对象类型】数据，且默认开启了深度监视。
 ```vue
 <template>
@@ -720,7 +724,7 @@ function test(){
   })
 </script>
 ```
-### * 情况四
+#### * 情况四
 监视`ref`或`reactive`定义的【对象类型】数据中的**某个属性**，注意点如下：
 
 1. 若该属性值**不是**【对象类型】，需要写成函数形式。
@@ -783,7 +787,7 @@ function test(){
   },{deep:true})
 </script>
 ```
-### * 情况五
+#### * 情况五
 监视上述的多个数据
 ```vue
 <template>
@@ -836,7 +840,7 @@ function test(){
 
 </script>
 ```
-## 3.10. 【watchEffect】
+### 3.10. 【watchEffect】
 
 * 官网：立即运行一个函数，同时响应式地追踪其依赖，并在依赖更改时重新执行该函数。
 
@@ -903,7 +907,7 @@ function test(){
   
   
 
-## 3.11. 【标签的 ref 属性】
+### 3.11. 【标签的 ref 属性】
 
 作用：用于注册模板引用。
 
@@ -986,7 +990,7 @@ function test(){
 
 
 
-## 3.12. 【props】
+### 3.12. 【props】
 
 > ```js
 >// 定义一个接口，限制每个Person对象的格式
@@ -1053,7 +1057,7 @@ function test(){
 >   ```
 > 
 
-## 3.13. 【生命周期】
+### 3.13. 【生命周期】
 
 * 概念：`Vue`组件实例在创建时要经历一系列的初始化步骤，在此过程中`Vue`会在合适的时机，调用特定的函数，从而让开发者有机会在特定阶段运行自己的代码，这些特定的函数统称为：生命周期钩子
 
@@ -1134,7 +1138,7 @@ function test(){
   </script>
   ```
 
-## 3.14. 【自定义hook】
+### 3.14. 【自定义hook】
 
 - 什么是`hook`？—— 本质是一个函数，把`setup`函数中使用的`Composition API`进行了封装，类似于`vue2.x`中的`mixin`。
 
@@ -1232,7 +1236,7 @@ function test(){
 
 ---
 
-# 4. 路由
+## 4. 路由
 
 ## 4.1. 【对路由的理解】
 
@@ -1587,7 +1591,7 @@ console.log(router.replace)
 
 
 
-# 5. pinia 
+## 5. pinia 
 
 ## 5.1【准备一个效果】
 
@@ -1869,7 +1873,7 @@ export const useTalkStore = defineStore('talk',()=>{
 
 
 
-# 6. 组件通信
+## 6. 组件通信
 
 **`Vue3`组件通信和`Vue2`的区别：**
 
@@ -2365,7 +2369,7 @@ function sendToy(){
 
 
 
-# 7. 其它 API
+## 7. 其它 API
 
 ## 7.1.【shallowRef 与 shallowReactive 】
 
@@ -2533,7 +2537,7 @@ export default function(initValue:string,delay:number){
 
 
 
-# 8. Vue3新组件
+## 8. Vue3新组件
 
 ## 8.1. 【Teleport】
 
