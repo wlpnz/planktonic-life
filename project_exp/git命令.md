@@ -23,6 +23,45 @@ git branch --show-current **显示当前分支**
 1. 1. **git checkout -b 本地分支名 origin/远程分支名**
    2. 例如有远程分支(feature)  ：git checkout -b feature origin/feature
 
+---
+
+未关联git仓库，且本地代码版本比远程仓库代码版本高，如何将代码提交到远程仓库
+
+1. 初始化本地仓库
+   ```git
+   git init
+   ```
+
+2. 添加远程仓库
+   ```git
+   git remote add origin https://github.com/yourusername/your-repo.git
+   ```
+
+3. 将本地仓库代码提交
+   ```git
+   git add .
+   git commit -m "Initial commit with modifications"
+   ```
+
+4. 拉取远程仓库的最新修改，并允许不相关的历史记录
+   ```git
+   git pull origin master --allow-unrelated-histories
+   ```
+
+5. 解决冲突(如果有)
+   如果在拉取远程更改时出现冲突，需要手动解决
+   在手动解决后需要提交解决冲突的文件
+
+   ```git
+   git add .
+   git commit -m "Resolved merge conflict"
+   ```
+
+6. 推送本地更改到远程仓库
+   ```git
+   git push -u origin master
+   ```
+
 ----
 
 Git 配置user.name & user.email
