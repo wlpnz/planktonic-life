@@ -1244,6 +1244,8 @@ function test(){
 
 ### 4.2. 【基本切换效果】
 
+- `npm install vue-router@4`
+
 - `Vue3`中要使用`vue-router`的最新版本，目前是`4`版本。
 
 - 路由配置文件代码如下：
@@ -1272,9 +1274,9 @@ function test(){
 * `main.ts`代码如下：
 
   ```js
-  import router from './router/index'
+  import router from '@/router/index'
+  let app = createApp(App);
   app.use(router)
-  
   app.mount('#app')
   ```
 
@@ -1493,6 +1495,13 @@ routes:[
    1. 传递参数
 
       ```vue
+      <!-- 路由声明，带? 表示可以为空 -->
+      {
+      	name:'xiang',
+      	path:'detail/:id?/:title?/:content?',
+      	component:Detail,
+      }
+      
       <!-- 跳转并携带params参数（to的字符串写法） -->
       <RouterLink :to="`/news/detail/001/新闻001/内容001`">{{news.title}}</RouterLink>
       				
@@ -1769,7 +1778,7 @@ app.mount('#app')
 ### 5.5.【storeToRefs】
 
 - 借助`storeToRefs`将`store`中的数据转为`ref`对象，方便在模板中使用。
-- 注意：`pinia`提供的`storeToRefs`只会将数据做转换，而`Vue`的`toRefs`会转换`store`中数据。
+- 注意：`pinia`提供的`storeToRefs`只会将数据做转换，而`Vue`的`toRefs`会转换`store`中所有的属性。
 
 ```vue
 <template>
@@ -1958,15 +1967,31 @@ export const useTalkStore = defineStore('talk',()=>{
 
    ```html
    <!--在父组件中，给子组件绑定自定义事件：-->
+   <!--自定义事件中的$event的值是自定义事件传递的参数-->
    <Child @send-toy="toy = $event"/>
    
    <!--注意区分原生事件与自定义事件中的$event-->
+   <!--原生事件的$event的值是事件对象-->
    <button @click="toy = $event">测试</button>
    ```
-
-   ```js
-   //子组件中，触发事件：
-   this.$emit('send-toy', 具体数据)
+   
+   ```html
+   <!--父组件中-->
+   //声明事件
+   <Person @send-talk="getTalk"/>
+   // getTalk是回调方法
+   let getTalk = (param: any) =>{
+     console.log('接收到了子组件传的值', param)
+   }
+   <!--子组件中-->
+   import {defineEmits} from 'vue'
+   //定义事件
+   const emit = defineEmits(['send-talk'])
+   let addTalk = () => {
+     getTalk()
+     // 触发事件
+     emit('send-talk', talkList[talkList.length - 1])
+   }
    ```
 
 ### 6.3. 【mitt】
@@ -2290,8 +2315,6 @@ function sendToy(){
 ### 6.9. 【slot】
 
 #### 1. 默认插槽
-
-![img](http://49.232.112.44/images/Vue3快速上手/default_slot.png)
 
 ```vue
 父组件中：
