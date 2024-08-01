@@ -30,16 +30,16 @@ export default defineConfig({
       { text: '前端', link: '/frontend' },
       { text: '数据库', link: '/database' },
       { text: '运维', link: '/operations' },
-      { text: '面试', link: '/interview' },
       { text: '经验', link: '/project_exp' },
+      { text: '其他', link: '/other' },
     ],
     sidebar:{
       "/backend": set_sidebar("/backend"),
       "/frontend": set_sidebar("/frontend"),
       "/database": set_sidebar("/database"),
       "/operations": set_sidebar("/operations"),
-      "/interview": set_sidebar("/interview"),
-      "/project_exp": set_sidebar("/project_exp")
+      "/project_exp": set_sidebar("/project_exp"),
+      "/other": set_sidebar("/other"),
     },
     logo: "plankton.svg", // 配置logo位置，public目录
     socialLinks: [

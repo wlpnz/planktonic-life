@@ -31,12 +31,12 @@ features:
   - title: 运维
     details: Linux、Docker、Kubernetes
     link: /operations
-  - title: 面试
-    details: 面试
-    link: /interview
   - title: 项目经验
     details: 项目经验
     link: /project_exp
+  - title: 其他
+    details: 杂项
+    link: /other
 
 ---
 
