@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "小小浮游"
-  text: "一个开发者的笔记库"
-  tagline: 随波逐流
+  text: "一个小小开发的文档库"
+  tagline: 随波逐流~~~~~~~~
   image:
     src: /note.png
     alt: 背景图
