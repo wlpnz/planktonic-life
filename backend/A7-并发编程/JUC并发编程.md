@@ -1,5 +1,5 @@
-# 线程基础知识
-> 基本知识：**Java知识(易忘记)--多线程**
+# JUC并发编程一
+> 基本知识：**[Java知识(易忘记)--多线程](https://blog.wlpnz.top/backend/A1-Java%E5%9F%BA%E7%A1%80/Java%E7%9F%A5%E8%AF%86(%E6%98%93%E5%BF%98%E8%AE%B0).html#%E5%A4%9A%E7%BA%BF%E7%A8%8B)**
 
 ## 补充：
 ```java
