@@ -53,9 +53,13 @@ LockSupport.unpark(暂停线程对象)
 ![image.png](images/JUC并发编程/1678088668485-87589231-772e-47bc-afc0-255bff093274.png)
 ## 死锁
 定位死锁
+
 jps：查看java相关进程
+
 jstack {pid} ：展示进程相关线程 
+
 jsconsole 查看进程状态
+
 ## ReentrantLock
 > 相对于synchronized它具备如下特点
 
