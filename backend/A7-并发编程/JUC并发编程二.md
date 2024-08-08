@@ -36,9 +36,21 @@
 >
 > Callable接口中定义了需要有返回的任务需要实现的方法
 
+**FutureTask的用法**
 
+get() 阻塞，一旦调用get()方法，不管是否计算完成都会导致阻塞
 
+isDone()轮询，轮询的方式会耗费无谓的CPU资源，而且不见得能及时得到计算结果；如果想要异步获取结果，通常都会以轮询的方式去获取结果，尽量不要阻塞。
 
+**CompleableFuture**
 
+- 在Java8中，CompletableFuture提供了非常强大的Future的扩展功能，可以简化异步编程的复杂性，并提供了函数式编程的能力，可以通过回调处理计算结果，也提供了转换和组合CompletableFuture的方法。
 
+- 它可能代表一个明确完成的Future，也有可能代表一个完成阶段（CompletionStage），它支持在计算完成以后触发一些函数或执行某些动作。
+
+- 类结构：`public class CompletableFuture<T> implements Future<T>, CompletionStage<T> `
+
+CompletionStage代表异步计算过程中的某一阶段，一个阶段完成以后可能会触发另外一个阶段（有点类似Linux中的管道符）
+
+一个阶段的执行可能是被单个阶段的完成触发，也可能是由多个阶段一起触发
 
