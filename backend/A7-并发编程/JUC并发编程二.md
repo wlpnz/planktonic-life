@@ -36,13 +36,13 @@
 >
 > Callable接口中定义了需要有返回的任务需要实现的方法
 
-**FutureTask的用法**
+#### **FutureTask的用法**
 
 get() 阻塞，一旦调用get()方法，不管是否计算完成都会导致阻塞
 
 isDone()轮询，轮询的方式会耗费无谓的CPU资源，而且不见得能及时得到计算结果；如果想要异步获取结果，通常都会以轮询的方式去获取结果，尽量不要阻塞。
 
-**CompleableFuture**
+#### **CompleableFuture**
 
 - 在Java8中，CompletableFuture提供了非常强大的Future的扩展功能，可以简化异步编程的复杂性，并提供了函数式编程的能力，可以通过回调处理计算结果，也提供了转换和组合CompletableFuture的方法。
 
@@ -54,3 +54,117 @@ CompletionStage代表异步计算过程中的某一阶段，一个阶段完成�
 
 一个阶段的执行可能是被单个阶段的完成触发，也可能是由多个阶段一起触发
 
+#### CompletableFuture常用API
+
+**创建异步对象**
+
+```java
+public static CompletableFuture<Void> runAsync(Runnable runnable)
+public static CompletableFuture<Void> runAsync(Runnable runnable, Executor executor)
+public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier)
+public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier, Executor executor)
+```
+
+1、runXxxx都是没有返回结果的，supplyXxx都是可以获取返回结果的
+
+2、可以传入自定义的线程池，否则就用默认的线程池；
+
+**计算完成时回调方法**
+
+```java
+public CompletableFuture<T> whenComplete(BiConsumer<? super T, ? super Throwable> action)
+public CompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action)    
+public CompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action, Executor executor)    
+
+public CompletableFuture<T> exceptionally(Function<Throwable, ? extends T> fn)
+```
+
+whenComplete可以感知正常和异常的计算结果，但是没有返回值；exceptionally处理异常情况，并且有返回值。
+
+whenComplete和whenCompleteAsync的区别： 
+
+- whenComplete：是执行当前任务的线程执行继续执行whenComplete的任务。 
+- whenCompleteAsync：是执行把whenCompleteAsync这个任务继续提交给线程池来进行执行。
+
+方法不以Async结尾，意味着Action使用相同的线程执行，而Async可能会使用其他线程执行（如果是使用相同的线程池，也可能会被同一个线程选中执行）
+
+**handle 方法**
+
+```java
+public <U> CompletableFuture<U> handle(BiFunction<? super T, Throwable, ? extends U> fn) 
+public <U> CompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn)
+public <U> CompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn, Executor executor)
+
+```
+
+和complete 一样，可对结果做最后的处理（可处理异常），可改变返回值。
+
+
+
+**线程串行化方法**
+
+```java
+
+
+
+
+
+```
+
+thenApply 方法：当一个线程依赖另一个线程时，获取上一个任务返回的结果，并返回当前任务的返回值。 
+
+thenAccept 方法：消费处理结果。接收任务的处理结果，并消费处理，无返回结果。 
+
+thenRun 方法：只要上面的任务执行完成，就开始执行thenRun，只是处理完任务后，执行thenRun 的后续操作 
+
+带有Async 默认是异步执行的。
+
+同之前。 以上都要前置任务成功完成。 
+
+Function 
+
+- T：上一个任务返回结果的类型
+- U：当前任务的返回值类型
+
+**两任务组合- 都要完成**
+
+```java
+
+
+
+```
+
+
+
+
+
+**两任务组合- 一个完成**
+
+```java
+
+```
+
+当两个任务中，任意一个future任务完成的时候，执行任务。 
+
+applyToEither：两个任务有一个执行完成，获取它的返回值，处理任务并有新的返回值。 
+
+acceptEither：两个任务有一个执行完成，获取它的返回值，处理任务，没有新的返回值。 
+
+runAfterEither：两个任务有一个执行完成，不需要获取future的结果，处理任务，也没有返回值。
+
+
+
+
+
+**多任务组合**
+
+```java
+
+
+
+
+```
+
+allOf：等待所有任务完成 
+
+anyOf：只要有一个任务完成
