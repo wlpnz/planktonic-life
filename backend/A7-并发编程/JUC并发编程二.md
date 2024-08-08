@@ -162,7 +162,17 @@ runAfterBoth：组合两个 future，不需要获取 future 的结果，只需�
 **两任务组合- 一个完成**
 
 ```java
+public <U> CompletableFuture<U> applyToEither(CompletionStage<? extends T> other, Function<? super T, U> fn)
+public <U> CompletableFuture<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> fn)
+public <U> CompletableFuture<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> fn,Executor executor)
 
+public CompletableFuture<Void> acceptEither(CompletionStage<? extends T> other, Consumer<? super T> action)
+public CompletableFuture<Void> acceptEitherAsync(CompletionStage<? extends T> other, Consumer<? super T> action)
+public CompletableFuture<Void> acceptEitherAsync(CompletionStage<? extends T> other, Consumer<? super T> action,Executor executor)
+
+public CompletableFuture<Void> runAfterEither(CompletionStage<?> other,Runnable action)
+public CompletableFuture<Void> runAfterEitherAsync(CompletionStage<?> other,Runnable action)
+public CompletableFuture<Void> runAfterEitherAsync(CompletionStage<?> other,Runnable action,Executor executor)
 ```
 
 当两个任务中，任意一个future任务完成的时候，执行任务。 
@@ -173,17 +183,12 @@ acceptEither：两个任务有一个执行完成，获取它的返回值，处�
 
 runAfterEither：两个任务有一个执行完成，不需要获取future的结果，处理任务，也没有返回值。
 
-
-
-
-
 **多任务组合**
 
 ```java
+public static CompletableFuture<Void> allOf(CompletableFuture<?>... cfs)
 
-
-
-
+public static CompletableFuture<Object> anyOf(CompletableFuture<?>... cfs)
 ```
 
 allOf：等待所有任务完成 
