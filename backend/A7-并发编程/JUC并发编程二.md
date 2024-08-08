@@ -104,11 +104,17 @@ public <U> CompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? e
 **线程串行化方法**
 
 ```java
+public <U> CompletableFuture<U> thenApply(Function<? super T,? extends U> fn)
+public <U> CompletableFuture<U> thenApplyAsync(Function<? super T,? extends U> fn)
+public <U> CompletableFuture<U> thenApplyAsync(Function<? super T,? extends U> fn, Executor executor)
+    
+public CompletableFuture<Void> thenAccept(Consumer<? super T> action)
+public CompletableFuture<Void> thenAcceptAsync(Consumer<? super T> action)
+public CompletableFuture<Void> thenAcceptAsync(Consumer<? super T> action, Executor executor)
 
-
-
-
-
+public CompletableFuture<Void> thenRun(Runnable action)
+public CompletableFuture<Void> thenRunAsync(Runnable action)
+public CompletableFuture<Void> thenRunAsync(Runnable action, Executor executor)
 ```
 
 thenApply 方法：当一个线程依赖另一个线程时，获取上一个任务返回的结果，并返回当前任务的返回值。 
@@ -129,12 +135,27 @@ Function
 **两任务组合- 都要完成**
 
 ```java
+public <U,V> CompletableFuture<V> thenCombine(CompletionStage<? extends U> other,BiFunction<? super T,? super U,? extends V> fn)
+public <U,V> CompletableFuture<V> thenCombineAsync(CompletionStage<? extends U> other,BiFunction<? super T,? super U,? extends V> fn)
+public <U,V> CompletableFuture<V> thenCombineAsync(CompletionStage<? extends U> other,BiFunction<? super T,? super U,? extends V> fn, Executor executor)
+
+public <U> CompletableFuture<Void> thenAcceptBoth(CompletionStage<? extends U> other,BiConsumer<? super T, ? super U> action)
+public <U> CompletableFuture<Void> thenAcceptBothAsync(CompletionStage<? extends U> other,BiConsumer<? super T, ? super U> action)
+public <U> CompletableFuture<Void> thenAcceptBothAsync(CompletionStage<? extends U> other,BiConsumer<? super T, ? super U> action, Executor executor)
 
 
-
+public CompletableFuture<Void> runAfterBoth(CompletionStage<?> other,Runnable action)
+public CompletableFuture<Void> runAfterBothAsync(CompletionStage<?> other,Runnable action)
+public CompletableFuture<Void> runAfterBothAsync(CompletionStage<?> other,Runnable action,Executor executor)
 ```
 
+两任务都要完成，才触发该任务
 
+thenCombine：组合两个 future，获取两个 future 的返回结果，并返回当前任务的返回值
+
+thenAcceptBoth：组合两个 future，获取两个 future 任务的返回结果，然后处理任务，没有返回值。
+
+runAfterBoth：组合两个 future，不需要获取 future 的结果，只需两个 future 处理完任务后，处理该任务。
 
 
 
