@@ -286,11 +286,11 @@ public static void main(String[] args) throws Exception {
 **队列持久化**
 
 队列持久化需要再队列声明时将durable参数设置为true
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/26677932/1696490080754-8fbd16cf-1ff9-46f0-9ee2-a3cb78bae0b5.png#averageHue=%23f9f7f1&clientId=u80d56b54-ede2-4&from=paste&height=47&id=ucd2956fe&originHeight=70&originWidth=1097&originalType=binary&ratio=1&rotation=0&showTitle=false&size=19912&status=done&style=stroke&taskId=u7a291572-c706-49b2-b67d-f5c251877f3&title=&width=731.3333333333334)
+![image.png](images/RabbitMQ/rabbitmq-queue-durable.png)
 **消息持久化**
 
 消息持久化需要在publish消息时设置 MessageProperties.PERSISTENT_TEXT_PLAIN  这个属性
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/26677932/1696490137710-d78f433e-832a-4999-a621-97d7297487aa.png#averageHue=%23fbfaf9&clientId=u80d56b54-ede2-4&from=paste&height=51&id=u8a7d3ef4&originHeight=76&originWidth=1276&originalType=binary&ratio=1&rotation=0&showTitle=false&size=28940&status=done&style=stroke&taskId=ua824a93b-5d58-4aea-8ec5-a3307a477c5&title=&width=850.6666666666666)
+![image.png](images/RabbitMQ/rabbitmq-message-persistent.png)
 
 ### 预期值
 本身消息的发送就是异步发送的，所以在任何时候，channel 上肯定不止只有一个消息另外来自消费者的手动确认本质上也是异步的。因此这里就存在一个未确认的消息缓冲区，因此希望开发人员能**限制此缓冲区的大小，以避免缓冲区里面无限制的未确认消息问题**。这个时候就可以通过使用**basic.qos **方法设置“**预取计数**”值来完成的。该值**定义通道上允许的未确认消息的最大数量**。一旦数量达到配置的数量，RabbitMQ 将停止在通道上传递更多消息，除非至少有一个未处理的消息被确认，例如，假设在通道上有未确认的消息 5、6、7，8，并且通道的预取计数设置为 4，此时 RabbitMQ 将不会在该通道上再传递任何消息，除非至少有一个未应答的消息被 ack。比方说 tag=6 这个消息刚刚被确认 ACK，RabbitMQ 将会感知这个情况到并再发送一条消息。消息应答和 QoS 预取值对用户吞吐量有重大影响。通常，增加预取将提高向消费者传递消息的速度。**虽然自动应答传输消息速率是最佳的，但是，在这种情况下已传递但尚未处理的消息的数量也会增加，从而增加了消费者的 RAM 消耗**(随机存取存储器)应该小心使用具有无限预处理的自动确认模式或手动确认模式，消费者消费了大量的消息如果没有确认的话，会导致消费者连接节点的内存消耗变大，所以找到合适的预取值是一个反复试验的过程，不同的负载该值取值也不同 100 到 300 范围内的值通常可提供最佳的吞吐量，并且不会给消费者带来太大的风险。预取值为 1 是最保守的。当然这将使吞吐量变得很低，特别是消费者连接延迟很严重的情况下，特别是在消费者连接等待时间较长的环境中。对于大多数应用来说，稍微高一点的值将是最佳的。
@@ -597,7 +597,7 @@ quick.orange.male.rabbit 是四个单词不匹配任何绑定会被丢弃
 
 lazy.orange.male.rabbit 是四个单词但匹配 Q2  
 
-```
+```java
 //生产者
 public class TopicExchangeProducer {
     public static final String EXCHANGE_NAME = "topic_exchange";
@@ -859,13 +859,13 @@ public class DelayQueueConsume {
 ```
 **基于死信队列的缺点**
 当生产者先发送过期时间20s的消息，再发送过期时间2s的消息，RabbitMQ会等待第一条消息过期才会将这两条消息都放进死信队列，而不是先将过期时间2s的消息先写入死信队列
- 因为 RabbitMQ 只会检查第一个消息是否过期， 如果第一个消息的延时时长很长，而第二个消息的延时时长很短，第二个消息并不会优先得到执行。  
+ 因为 RabbitMQ 只会检查第一个消息是否过期， 如果第一个消息的延时时长很长，而第二个消息的延时时长很短，第二个消息并不会优先得到执行。 
 而基于插件的延时队列不会出现这种问题
 
 #### 基于插件
 安装延时队列插件
- 在官网上下载 https://www.rabbitmq.com/community-plugins.html，下载  
- rabbitmq_delayed_message_exchange 插件，然后解压放置到 RabbitMQ 的插件目录。  
+ 在官网上下载 https://www.rabbitmq.com/community-plugins.html，下载
+ rabbitmq_delayed_message_exchange 插件，然后解压放置到 RabbitMQ 的插件目录
 官网下载的是.ez安装包，可以通过unzip解压
 插件目录：/usr/lib/rabbitmq/lib/rabbitmq_server-3.12.6/plugins
 开启插件`rabbitmq-plugins enable rabbitmq_delayed_message_exchange`
@@ -1117,7 +1117,7 @@ public class WarningConsumer {
     }
 }
 ```
-注意： mandatory 参数与备份交换机可以一起使用的时候，如果两者同时开启，消息会优先发送到备份交换机。  
+注意： mandatory 参数与备份交换机可以一起使用的时候，如果两者同时开启，消息会优先发送到备份交换机。
 ### 消息优先级
 当在使用过程中有消息需要优先处理，可以设置消息优先级
 ```java
@@ -1176,9 +1176,9 @@ public class Consumer {
 192.168.10.202 cluster02
 192.168.10.203 cluster03
 在cluster01上执行远程操作命令
-scp /var/lib/rabbitmq/.erlang.cookie root@cluster02:/var/lib/rabbitmq/.erlang.cookie  
-scp /var/lib/rabbitmq/.erlang.cookie root@cluster03:/var/lib/rabbitmq/.erlang.cookie  
- 启动 RabbitMQ 服务,顺带启动 Erlang 虚拟机和 RbbitMQ 应用服务(在三台节点上分别执行以 下命令)  
+scp /var/lib/rabbitmq/.erlang.cookie root@cluster02:/var/lib/rabbitmq/.erlang.cookie 
+scp /var/lib/rabbitmq/.erlang.cookie root@cluster03:/var/lib/rabbitmq/.erlang.cookie 
+启动 RabbitMQ 服务,顺带启动 Erlang 虚拟机和 RbbitMQ 应用服务(在三台节点上分别执行以 下命令) 
 rabbitmq-server -detached
 在cluster02和cluster03上执行
 rabbitmqctl stop_app
@@ -1193,7 +1193,7 @@ rabbitmqctl cluster_status
 设置权限  rabbitmqctl set_permissions -p "/" pnz ".*" ".*" ".*" 
 
 解除集群节点
- rabbitmqctl forget_cluster_node rabbit@cluster02(cluster01 机器上执行)  
+ rabbitmqctl forget_cluster_node rabbit@cluster02(cluster01 机器上执行) 
 :::
 搭建镜像队列
 
