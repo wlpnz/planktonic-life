@@ -46,7 +46,7 @@ RabbitMQ是一个消息中间件，它用于接收并转发消息。
 **Channel**：如果每一次访问 RabbitMQ 都建立一个 Connection，在消息量大的时候建立 TCP Connection 的开销将是巨大的，效率也较低。Channel 是在 connection 内部建立的逻辑连接，如果应用程序支持多线程，通常每个 thread 创建单独的 channel 进行通讯，AMQP method 包含了 channel id 帮助客户端和 message broker 识别 channel，所以 channel 之间是完全隔离的。Channel 作为轻量级的Connection 极大减少了操作系统建立 TCP connection 的开销 
 **Exchange**：message 到达 broker 的第一站，根据分发规则，匹配查询表中的 routing key，分发
 消息到 queue 中去。常用的类型有：direct (point-to-point), topic (publish-subscribe) and fanout (multicast)
-**Queue**：消息最终被送到这里等待 consumer 取走
+**Queue**：消息最终被送到这里等待 consumer 取走 
 **Binding**：exchange 和 queue 之间的虚拟连接，binding 中可以包含 routing key，Binding 信息被保存到 exchange 中的查询表中，用于 message 的分发依据
 
 ### RabbitMQ的安装
@@ -88,7 +88,7 @@ rabbitmqctl add_user pnz abc123
 ```
 
 ### RabbitMQ的模式
-#### HelloWorld
+#### P2P
 ![image.png](images/RabbitMQ/1696312673893-641c980f-cef5-4979-80ab-398326034cee.png)
 ##### 依赖
 ```java
@@ -178,7 +178,7 @@ public class Consumer {
 #### Work Queues
 ![image.png](images/RabbitMQ/1696488353836-e985ff9e-6b47-492f-b1ed-0ae22c2b7290.png)
 介绍：
-代码部分与Hello World模式一样，不过会启动两个工作线程(消费者)
+代码部分与点对点模式一样，不过会启动两个工作线程(消费者)
 RabbitMQ在分发消息时是通过轮训的方式分发
 
 #### Publish/Subscribe
@@ -201,25 +201,41 @@ RabbitMQ在分发消息时是通过轮训的方式分发
 ### 消息应答
 因为RabbitMQ一旦向消费者发送完一条消息，便立即删除消息，如果消费者在处理消息的过程中突然挂掉了，那我们会丢失正在处理的消息。
 为了保证消息在发送过程中不丢失，rabbitmq 引入消息应答机制，消息应答就是:消费者在接 收到消息并且处理该消息之后，告诉 rabbitmq 它已经处理了，rabbitmq 可以把该消息删除了。  
+
 #### 自动应答
 **消息发送后立即被认为已经传送成功**，这种模式需要在**高吞吐量和数据传输安全性方面做权衡**,因为这种模式如果消息在接收到之前，消费者那边出现连接或者 channel 关闭，那么消息就丢失了,当然另一方面这种模式消费者那边可以传递过载的消息，没有对传递的消息数量进行限制，当然这样有可能使得消费者这边由于接收太多还来不及处理的消息，导致这些消息的积压，最终使得内存耗尽，最终这些消费者线程被操作系统杀死，所以这种模式仅适用**在消费者可以高效并以某种速率能够处理这些消息的情况下使用**。
 
 #### 手动应答
-**消息应答的方法**
+消息应答的方法
+
 channel.basicAck(用于肯定确认) 
+
 RabbitMQ 已知道该消息并且成功的处理消息，可以将其丢弃了 
+
 channel.basicNack(用于否定确认) 
+
 channel.basicReject(用于否定确认) 
-Channel.basicNack 相比少一个参数 不处理该消息了直接拒绝，可以将其丢弃了  
+
+Channel.basicNack 相比少一个参数 不处理该消息了直接拒绝，可以将其丢弃了
+
 **Multiple的解释**
+
 手动应答的好处就是可以批量应答并减少网络拥堵
+
 channel.basicAck(deliveryTag,true)
+
 basicAck的第二个参数就是multiple
+
 true 代表批量应答 channel 上未应答的消息
+
 比如说 channel 上有传送 tag 的消息 5,6,7,8 当前 tag 是 8 那么此时
+
 5-8 的这些还未应答的消息都会被确认收到消息应答
+
 false 同上面相比
+
 只会应答 tag=8 的消息 5,6,7 这三个消息依然不会被确认收到消息应答
+
 注意：当时用手动应答时，如果消费者因为某些原因导致消息未发送ack确认，RabbitMQ会将消息重新入队，这样即使消费者有问题，消息也不会丢失
 **代码**
 
@@ -266,14 +282,18 @@ public static void main(String[] args) throws Exception {
 ```
 ### RabbitMQ持久化
 要保证RabbitMQ在出现宕机后重启消息不丢失，需要将**队列**和**消息**都进行持久化处理
+
 **队列持久化**
+
 队列持久化需要再队列声明时将durable参数设置为true
 ![image.png](https://cdn.nlark.com/yuque/0/2023/png/26677932/1696490080754-8fbd16cf-1ff9-46f0-9ee2-a3cb78bae0b5.png#averageHue=%23f9f7f1&clientId=u80d56b54-ede2-4&from=paste&height=47&id=ucd2956fe&originHeight=70&originWidth=1097&originalType=binary&ratio=1&rotation=0&showTitle=false&size=19912&status=done&style=stroke&taskId=u7a291572-c706-49b2-b67d-f5c251877f3&title=&width=731.3333333333334)
 **消息持久化**
+
 消息持久化需要在publish消息时设置 MessageProperties.PERSISTENT_TEXT_PLAIN  这个属性
 ![image.png](https://cdn.nlark.com/yuque/0/2023/png/26677932/1696490137710-d78f433e-832a-4999-a621-97d7297487aa.png#averageHue=%23fbfaf9&clientId=u80d56b54-ede2-4&from=paste&height=51&id=u8a7d3ef4&originHeight=76&originWidth=1276&originalType=binary&ratio=1&rotation=0&showTitle=false&size=28940&status=done&style=stroke&taskId=ua824a93b-5d58-4aea-8ec5-a3307a477c5&title=&width=850.6666666666666)
+
 ### 预期值
-本身消息的发送就是异步发送的，所以在任何时候，channel 上肯定不止只有一个消息另外来自消费者的手动确认本质上也是异步的。因此这里就存在一个未确认的消息缓冲区，因此希望开发人员能**限制此缓冲区的大小，以避免缓冲区里面无限制的未确认消息问题**。这个时候就可以通过使用** basic.qos **方法设置“**预取计数**”值来完成的。该值**定义通道上允许的未确认消息的最大数量**。一旦数量达到配置的数量，RabbitMQ 将停止在通道上传递更多消息，除非至少有一个未处理的消息被确认，例如，假设在通道上有未确认的消息 5、6、7，8，并且通道的预取计数设置为 4，此时 RabbitMQ 将不会在该通道上再传递任何消息，除非至少有一个未应答的消息被 ack。比方说 tag=6 这个消息刚刚被确认 ACK，RabbitMQ 将会感知这个情况到并再发送一条消息。消息应答和 QoS 预取值对用户吞吐量有重大影响。通常，增加预取将提高向消费者传递消息的速度。**虽然自动应答传输消息速率是最佳的，但是，在这种情况下已传递但尚未处理的消息的数量也会增加，从而增加了消费者的 RAM 消耗**(随机存取存储器)应该小心使用具有无限预处理的自动确认模式或手动确认模式，消费者消费了大量的消息如果没有确认的话，会导致消费者连接节点的内存消耗变大，所以找到合适的预取值是一个反复试验的过程，不同的负载该值取值也不同 100 到 300 范围内的值通常可提供最佳的吞吐量，并且不会给消费者带来太大的风险。预取值为 1 是最保守的。当然这将使吞吐量变得很低，特别是消费者连接延迟很严重的情况下，特别是在消费者连接等待时间较长的环境中。对于大多数应用来说，稍微高一点的值将是最佳的。
+本身消息的发送就是异步发送的，所以在任何时候，channel 上肯定不止只有一个消息另外来自消费者的手动确认本质上也是异步的。因此这里就存在一个未确认的消息缓冲区，因此希望开发人员能**限制此缓冲区的大小，以避免缓冲区里面无限制的未确认消息问题**。这个时候就可以通过使用**basic.qos **方法设置“**预取计数**”值来完成的。该值**定义通道上允许的未确认消息的最大数量**。一旦数量达到配置的数量，RabbitMQ 将停止在通道上传递更多消息，除非至少有一个未处理的消息被确认，例如，假设在通道上有未确认的消息 5、6、7，8，并且通道的预取计数设置为 4，此时 RabbitMQ 将不会在该通道上再传递任何消息，除非至少有一个未应答的消息被 ack。比方说 tag=6 这个消息刚刚被确认 ACK，RabbitMQ 将会感知这个情况到并再发送一条消息。消息应答和 QoS 预取值对用户吞吐量有重大影响。通常，增加预取将提高向消费者传递消息的速度。**虽然自动应答传输消息速率是最佳的，但是，在这种情况下已传递但尚未处理的消息的数量也会增加，从而增加了消费者的 RAM 消耗**(随机存取存储器)应该小心使用具有无限预处理的自动确认模式或手动确认模式，消费者消费了大量的消息如果没有确认的话，会导致消费者连接节点的内存消耗变大，所以找到合适的预取值是一个反复试验的过程，不同的负载该值取值也不同 100 到 300 范围内的值通常可提供最佳的吞吐量，并且不会给消费者带来太大的风险。预取值为 1 是最保守的。当然这将使吞吐量变得很低，特别是消费者连接延迟很严重的情况下，特别是在消费者连接等待时间较长的环境中。对于大多数应用来说，稍微高一点的值将是最佳的。
 ![image.png](images/RabbitMQ/1696490569299-c21b9521-2829-4abd-8d83-cba1cbc1f11b.png)
 
 ```java
@@ -426,11 +446,14 @@ public class ConfirmTask {
 ### 交换机
 #### 概念
 RabbitMQ 消息传递模型的核心思想是: **生产者生产的消息从不会直接发送到队列**。通常生产者甚至都不知道这些消息传递传递到了哪些队列中。
- 相反，**生产者只能将消息发送到交换机(exchange)**，交换机工作的内容非常简单，一方面它接收来 自生产者的消息，另一方面将它们推入队列。交换机必须确切知道如何处理收到的消息。是应该把这些消 息放到特定队列还是说把他们到许多队列中还是说应该丢弃它们。这就的由交换机的类型来决定。  
+ 相反，**生产者只能将消息发送到交换机(exchange)**，交换机工作的内容非常简单，一方面它接收来 自生产者的消息，另一方面将它们推入队列。交换机必须确切知道如何处理收到的消息。是应该把这些消 息放到特定队列还是说把他们到许多队列中还是说应该丢弃它们。这就的由交换机的类型来决定。 
+
 **交换机的类型**
- 直接(direct), 主题(topic) ,标题(headers) , 扇出(fanout)  
+ 直接(direct), 主题(topic) ,标题(headers) , 扇出(fanout) 
+
 **绑定binding**
 是exchange和queue之间的桥梁，表明exchange和哪个队列绑定
+
 #### 扇出(fanout)
 将接收到的消息广播到绑定的队列
 ![image.png](images/RabbitMQ/1696492790201-e869e3ff-1d0d-4753-a151-b9b73128c949.png)
@@ -557,13 +580,21 @@ public class DirectExchangeConsumer2 {
 #：代表零个或多个单词
 ![image.png](images/RabbitMQ/1696492813447-8c7666d6-7f92-4f57-9dba-556f81fe890a.png)
  上图是一个队列绑定关系图，我们来看看他们之间数据接收情况是怎么样的 
+
 quick.orange.rabbit 被队列 Q1Q2 接收到 
+
 lazy.orange.elephant 被队列 Q1Q2 接收到 
+
 quick.orange.fox 被队列 Q1 接收到
+
 lazy.brown.fox 被队列 Q2 接收到 
+
 lazy.pink.rabbit 虽然满足两个绑定但只被队列 Q2 接收一次 
+
 quick.brown.fox 不匹配任何绑定不会被任何队列接收到会被丢弃 
+
 quick.orange.male.rabbit 是四个单词不匹配任何绑定会被丢弃 
+
 lazy.orange.male.rabbit 是四个单词但匹配 Q2  
 
 ```
@@ -630,11 +661,12 @@ public class TopicExchangeConsumer2 {
 ```
 ### 死信队列
 #### 死信的概念
- 先从概念解释上搞清楚这个定义，死信，顾名思义就是无法被消费的消息，字面意思可以这样理 解，一般来说，producer 将消息投递到 broker 或者直接到 queue 里了，consumer 从 queue 取出消息 进行消费，但某些时候由于特定的**原因导致 queue 中的某些消息无法被消费**，这样的消息如果没有 后续的处理，就变成了死信，有死信自然就有了死信队列。  
+先从概念解释上搞清楚这个定义，死信，顾名思义就是无法被消费的消息，字面意思可以这样理 解，一般来说，producer 将消息投递到 broker 或者直接到 queue 里了，consumer 从 queue 取出消息 进行消费，但某些时候由于特定的**原因导致 queue 中的某些消息无法被消费**，这样的消息如果没有 后续的处理，就变成了死信，有死信自然就有了死信队列。  
 #### 死信的来源
 消息 TTL 过期 
 队列达到最大长度(队列满了，无法再添加数据到 mq 中) 
 消息被拒绝(basic.reject 或 basic.nack)并且 requeue=false.  
+
 #### 代码示例
 ![image.png](images/RabbitMQ/1696493169197-04132e18-3e66-4836-8d00-c019b9469233.png)
 ```java
@@ -829,6 +861,7 @@ public class DelayQueueConsume {
 当生产者先发送过期时间20s的消息，再发送过期时间2s的消息，RabbitMQ会等待第一条消息过期才会将这两条消息都放进死信队列，而不是先将过期时间2s的消息先写入死信队列
  因为 RabbitMQ 只会检查第一个消息是否过期， 如果第一个消息的延时时长很长，而第二个消息的延时时长很短，第二个消息并不会优先得到执行。  
 而基于插件的延时队列不会出现这种问题
+
 #### 基于插件
 安装延时队列插件
  在官网上下载 https://www.rabbitmq.com/community-plugins.html，下载  
@@ -896,8 +929,10 @@ public class DelayPluginQueueConsume {
 在配置文件中添加
  `spring.rabbitmq.publisher-confirm-type=correlated`
 **none**:禁用发布确认模式，是默认值
+
 **correlated**:发布消息成功到交换器后会触发回调方法
-**simple**:经测试有两种效果，其一效果和 correlated 值一样会触发回调方法， 其二在发布消息成功后使用 rabbitTemplate 调用 waitForConfirms 或 waitForConfirmsOrDie 方法 等待 broker 节点返回发送结果，根据返回结果来判定下一步的逻辑，要注意的点是 waitForConfirmsOrDie 方法如果返回 false 则会关闭 channel，则接下来无法发送消息到 broker  
+
+**simple**:经测试有两种效果，其一效果和 correlated 值一样会触发回调方法， 其二在发布消息成功后使用 rabbitTemplate 调用 waitForConfirms 或 waitForConfirmsOrDie 方法 等待 broker 节点返回发送结果，根据返回结果来判定下一步的逻辑，要注意的点是 waitForConfirmsOrDie 方法如果返回 false 则会关闭 channel，则接下来无法发送消息到 broker 
 ![image.png](images/RabbitMQ/1696502661036-19f3838a-e424-410a-a65f-7bc03d3707b3.png)
 
 ```java
@@ -1009,7 +1044,11 @@ public class MyCallBack implements RabbitTemplate.ConfirmCallback,RabbitTemplate
 }
 ```
 #### 备份交换机
- 有了 mandatory 参数和回退消息，我们获得了对无法投递消息的感知能力，有机会在生产者的消息 无法被投递时发现并处理。但有时候，我们并不知道该如何处理这些无法路由的消息，最多打个日志，然 后触发报警，再来手动处理。而通过日志来处理这些无法路由的消息是很不优雅的做法，特别是当生产者 所在的服务有多台机器的时候，手动复制日志会更加麻烦而且容易出错。而且设置 mandatory 参数会增 加生产者的复杂性，需要添加处理这些被退回的消息的逻辑。如果既不想丢失消息，又不想增加生产者的 复杂性，该怎么做呢？前面在设置死信队列的文章中，我们提到，可以为队列设置死信交换机来存储那些 处理失败的消息，可是这些不可路由消息根本没有机会进入到队列，因此无法使用死信队列来保存消息。 在RabbitMQ 中，有一种备份交换机的机制存在，可以很好的应对这个问题。什么是备份交换机呢？备份 交换机可以理解为 RabbitMQ 中交换机的“备胎”，当我们为某一个交换机声明一个对应的备份交换机时， 就是为它创建一个备胎，当交换机接收到一条不可路由消息时，将会把这条消息转发到备份交换机中，由 备份交换机来进行转发和处理，通常备份交换机的类型为 Fanout ，这样就能把所有消息都投递到与其绑 定的队列中，然后我们在备份交换机下绑定一个队列，这样所有那些原交换机无法被路由的消息，就会都 进入这个队列了。当然，我们还可以建立一个报警队列，用独立的消费者来进行监测和报警。
+有了 mandatory 参数和回退消息，我们获得了对无法投递消息的感知能力，有机会在生产者的消息 无法被投递时发现并处理。但有时候，我们并不知道该如何处理这些无法路由的消息，最多打个日志，然 后触发报警，再来手动处理。而通过日志来处理这些无法路由的消息是很不优雅的做法，特别是当生产者 所在的服务有多台机器的时候，手动复制日志会更加麻烦而且容易出错。而且设置 mandatory 参数会增 加生产者的复杂性，需要添加处理这些被退回的消息的逻辑。如果既不想丢失消息，又不想增加生产者的 复杂性，该怎么做呢？前面在设置死信队列的文章中，我们提到，可以为队列设置死信交换机来存储那些 处理失败的消息，可是这些不可路由消息根本没有机会进入到队列，因此无法使用死信队列来保存消息。
+
+在RabbitMQ 中，有一种备份交换机的机制存在，可以很好的应对这个问题。
+
+什么是备份交换机呢？备份 交换机可以理解为 RabbitMQ 中交换机的“备胎”，当我们为某一个交换机声明一个对应的备份交换机时， 就是为它创建一个备胎，当交换机接收到一条不可路由消息时，将会把这条消息转发到备份交换机中，由 备份交换机来进行转发和处理，通常备份交换机的类型为 Fanout ，这样就能把所有消息都投递到与其绑 定的队列中，然后我们在备份交换机下绑定一个队列，这样所有那些原交换机无法被路由的消息，就会都 进入这个队列了。当然，我们还可以建立一个报警队列，用独立的消费者来进行监测和报警。
 ![image.png](images/RabbitMQ/1696502647152-454eeeef-0c6b-4dc4-a1a2-fd84ace31f0c.png)  
 
 ```java
