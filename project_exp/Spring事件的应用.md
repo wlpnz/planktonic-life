@@ -1,50 +1,80 @@
-#### 新建自定义事件
-```
-//自定义事件 继承 ApplicationEvent
-public class SysLogEvent extends ApplicationEvent {
+# Spring Event的应用
 
-    // OptLogDTO：自定义系统日志类
-    public SysLogEvent(OptLogDTO source) {
+### 自定义事件
+
+#### 自定义事件
+
+```java
+//自定义事件 继承 ApplicationEvent
+public class CustomEvent extends ApplicationEvent {
+
+    public CustomEvent(MQMsg source) {
         super(source);
     }
 }
 ```
-#### 新建自定义事件监听
-```
-@Slf4j
-@AllArgsConstructor
-public class SysLogListener {
 
-    private final Consumer<OptLogDTO> consumer;
+#### 事件监听一
+
+```java
+@Component
+public class CustomEventEventListener1 {
 
     @Async
-    @Order
-    @EventListener(SysLogEvent.class)  //监听 SysLogEvent事件
-    public void saveSysLog(SysLogEvent event) {
-        OptLogDTO sysLog = (OptLogDTO) event.getSource();
-        consumer.accept(sysLog);
+    @EventListener
+    public void onCustomEventEvent(CustomEvent event) {
+        MQMsg source = (MQMsg) event.getSource();
+        System.out.println("onCustomEventEvent: MQMsg >>" + source + " current thread:" + Thread.currentThread().getName());
     }
 }
 ```
 
-#### 注册事件监听器
-```java
-/**
-* lamp.log.enabled = true 并且 lamp.log.type=DB时实例该类
-*/
-@Bean
-@ConditionalOnExpression("${lamp.log.enabled:true} && 'DB'.equals('${lamp.log.type:LOGGER}')")
-public SysLogListener sysLogListener(BaseOperationLogService logApi) {
-// 消费者的accept设置为 往数据库中插入一条记录  
-//也就是说，在事件触发后，将操作log往数据库中存储
-return new SysLogListener(data -> 
-  logApi.save(BeanPlusUtil.toBean(data, BaseOperationLogSaveVO.class))); //消费者的accept
+#### 发布事件
+
+```
+@Autowired
+ApplicationEventPublisher publisher;
+
+@RequestMapping("/publish")
+public String test(String msg) {
+    MQMsg event = new MQMsg(12, msg);
+    // 发布事件
+    publisher.publishEvent(new CustomEvent(event));
+    return "event";
 }
 ```
 
-#### 发布事件
+#### 事件监听的其他方式
+
 ```java
-//ApplicationContext applicationContext
-applicationContext.publishEvent(event);
+@AllArgsConstructor
+public class CustomEventEventListener2 {
+
+    private final Consumer<MQMsg> consumer;
+
+    @Async
+    @EventListener
+    public void onCustomEventEvent(CustomEvent event) {
+        MQMsg source = (MQMsg) event.getSource();
+        consumer.accept(source);
+    }
+}
+
+// 在配置类注册
+@Bean
+@ConditionalOnExpression("\"peng\".equals('${custom.listener}')")
+public CustomEventEventListener4 customEventEventListener4() {
+    return new CustomEventEventListener4(data -> {
+        System.out.println("peng -- 自定义事件监听器：" + data);
+    });
+}
+
+@Bean
+@ConditionalOnExpression("\"zhang\".equals('${custom.listener}')")
+public CustomEventEventListener4 customEventEventListener4() {
+    return new CustomEventEventListener4(data -> {
+        System.out.println("zhang -- 自定义事件监听器：" + data);
+    });
+}
 ```
 
