@@ -72,7 +72,7 @@ Redis Stream 主要用于消息队列（MQ，Message Queue），Redis 本身是�
 seconds意为距离上次保存RDB文件seconds秒
 changes意为在这个时间内key改变了changes次
 自动触发需要两个条件都满足
-示例：save 60 3 意为距离上次保存RDB文件之后的60秒之内，key已经改变了3次自动触发保存【】
+示例：save 60 3 意为距离上次保存RDB文件之后的60秒之内，key已经改变了3次自动触发保存
 
 ##### RDB手动触发
 ①save
@@ -179,7 +179,7 @@ redis重启时会加载dir+appenddirname目录下的aof文件，以达到恢复�
 
 **修复**
 
-如果aof文件出现异常可以尝试使用命令 redis-check-aof --fix修复
+如果aof文件出现异常可以尝试使用命令`redis-check-aof --fix`修复
 
 ![image.png](images/Redis基础/1695393725100-aebd881f-103b-478e-8db7-f64ee234d08f.png)
 
@@ -200,10 +200,12 @@ redis重启时会加载dir+appenddirname目录下的aof文件，以达到恢复�
    - 满足配置文件中的选项后，Redis会记录上次重写时的AOF大小
    - ![image.png](images/Redis基础/1695559144209-170cf439-4c32-4292-a39a-c27c7d00bd34.png) 
 - 手动触发：
-   - 客户端向服务器发送bgreriteaof命令
+   - 客户端向服务器发送`bgrewriteaof`命令
 
 ![image.png](images/Redis基础/1695559658808-8b6df332-59a5-42a2-912a-50305a74bdc8.png)
+
 **重写原理**
+
 1：在重写开始前，redis会创建一个“重写子进程”，这个子进程会读取现有的AOF文件，并将其包含的指令进行分析压缩并写入到一个临时文件中。
 
 2：与此同时，主进程会将新接收到的写指令一边累积到内存缓冲区中，一边继续写入到原有的AOF文件中，这样做是保证原有的AOF文件的可用性，避免在重写过程中出现意外。
@@ -221,7 +223,7 @@ redis重启时会加载dir+appenddirname目录下的aof文件，以达到恢复�
 #### RDB-AOF混合持久化
 **数据恢复顺序和加载流程**
 
-在同时开启rdb和aof持久化时，重启时只会加载aof文件，不会加载rdb文件
+在同时开启rdb和aof持久化时，重启时只会**加载aof文件**，不会加载rdb文件
 ![image.png](images/Redis基础/1695561767379-0d8ac9e0-e3d6-4fce-abce-49a11bd8e179.png)
 
 **开启RDB+AOF混合方式**
@@ -248,11 +250,11 @@ redis重启时会加载dir+appenddirname目录下的aof文件，以达到恢复�
 #### 使用
 **常用命令**
 
-- **discard：**取消事务，放弃执行事务快内的所有命令
-- **exec：**执行所有事务块内的命令
-- **multi：**标记一个事务块的开始
-- **unwatch：**取消watch命令对所有key的监视
-- **watch key [key ...]：**监视一个（或多个）key，如果事务执行之前，监视的key被其他命令改动，那么事务被打断。
+- **discard**：取消事务，放弃执行事务快内的所有命令
+- **exec**：执行所有事务块内的命令
+- **multi**：标记一个事务块的开始
+- **unwatch**：取消watch命令对所有key的监视
+- **watch key [key ...]**：监视一个（或多个）key，如果事务执行之前，监视的key被其他命令改动，那么事务被打断。
 - **事务执行情况**
   - case1：正常执行 正常使用multi标记事务块的开始，exec执行事务块内的命令
   - case2：放弃事务 正常使用multi标记事务块的开始，discard放弃事务块
@@ -327,10 +329,10 @@ Redis客户端可以订阅任意数量的频道，类似微信中可以关注多
 
 **基本操作命令：**
 
-- **info replication ：**可以查看复制节点的主从关系和配置信息
-- **replicaof 主库ip 主库port ：**一般写进redis.conf配置文件内
-- **slaveof 主库ip 主库port：** 每次与master断开之后，都需要重新连接，除非配置redis.conf文件。在运行期间修改slave节点的信息，如果该数据库已经是某个数据库的从库，那么会停止与原主库的同步关系，转而和新的主库同步。
-- **slaveof no one：**使当前数据库停止与其他数据库的同步，装成主数据库，自立为王
+- **`info replication`**：可以查看复制节点的主从关系和配置信息
+- **`replicaof 主库ip 主库port`**：一般写进redis.conf配置文件内
+- **`slaveof 主库ip 主库port`**： 每次与master断开之后，都需要重新连接，除非配置redis.conf文件。在运行期间修改slave节点的信息，如果该数据库已经是某个数据库的从库，那么会停止与原主库的同步关系，转而和新的主库同步。
+- **`slaveof no one`**：使当前数据库停止与其他数据库的同步，装成主数据库，自立为王
 
 > 注意：**在配置时要注意防火墙的端口的开放**
 
@@ -495,6 +497,7 @@ quorum这个参数是进行客观下线的一个依据，法定人数/法定票�
 
 **Raft算法**
 ![image.png](images/Redis基础/1695738059472-0538f6dc-ad1c-4359-bcd4-8be2d63c673a.png)
+
 监视该主节点的所有哨兵都有可能被选为领导者，选举使用的算法是Raft算法；Raft算法的基本思路是先到先得：
 即在一轮选举中，哨兵A向B发送成为领导者的申请，如果B没有同意过其他哨兵，则会同意A成为领导者
 
