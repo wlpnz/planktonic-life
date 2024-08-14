@@ -800,6 +800,8 @@ System.out.println(bloomFilter.mightContain(1)); //true
 
 ## 分布式锁
 
+lua使用：[Redis 脚本 - Lua - 菜鸟](https://www.runoob.com/redis/redis-scripting.html)
+
 ### 锁的种类
 
 单机版同一个JVM虚拟机内，synchronized或者Lock接口
