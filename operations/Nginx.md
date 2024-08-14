@@ -287,6 +287,24 @@ server {
 
 **路径匹配**：`alias` 更适合用于路径重定向和复杂路径结构，而 `root` 更适合用于简单的目录层次。
 
+**资源映射参数获取**
+
+```nginx
+location /manage/ {  
+    alias   D:/data/dsjoa/;
+    autoindex on;
+    error_page 405 =200 http://$host$request_uri;
+    if ($arg_attname ~ "^(.+)") {
+        add_header Content-Type application/x-download;
+        add_header Content-Disposition "attachment;filename=$arg_attname";
+        charset                 utf-8,gbk,ISO8859-1; 
+    }
+}
+# http://localhost:8888/manage/temp.jpg?attname=test.jpg   下载文件，且下载文件名为 test.jpg
+```
+
+
+
 ##### UrlRewrite
 
 在 Nginx 中，`rewrite` 指令用于重写 URL，通常用于 URL 重定向和重写。它可以在 `server`、`location` 和 `if` 块中使用。`rewrite` 指令的语法格式和参数如下：
@@ -377,6 +395,7 @@ valid_referers none | blocked | server_names | strings ....;
 ```
 
 **示例**
+
 ```nginx
 location /images/ {
     # 设置防盗链

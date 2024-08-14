@@ -1,4 +1,7 @@
+# Yaml配置
+
 ### &、*、<<:
+
 **示例**
 ```yaml
 development: &defaults
