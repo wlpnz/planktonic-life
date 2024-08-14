@@ -797,36 +797,6 @@ System.out.println(bloomFilter.mightContain(1)); //true
 
 ## 分布式锁
 
-### 面试题
-
-> Redis做分布式锁的时候需要注意什么问题？
-
-
-
-> 自己实现分布式锁是否用的setnx命令实现？
->
-> 这个合适吗？如何考虑分布式锁的可重入问题？
-
-
-
-> 如果是Redis是单点部署的，会带来什么问题？
->
-> 怎么解决单带你问题？
-
-
-
-> Redis集群下，比如主从模式，CAP方面有什么问题？
-
-
-
-> 简单介绍一下Redlock？
-
-
-
-> Redis分布式锁如何续期？看门狗有了解吗？
-
-
-
 ### 锁的种类
 
 单机版同一个JVM虚拟机内，synchronized或者Lock接口
@@ -1087,10 +1057,6 @@ redis默认内存：如果不设置最大内存大小或者设置最大内存大
   key,如果你不确定使用哪种策略，那么推荐使用**allkeys-lru**
 - 如果所有的key的访问概率都是差不多的，那么可以选用**allkeys-random**策略去置换数据
 - 如果对数据有足够的了解，能够为key指定hint(通过expire/ttl指定)，那么可以选择**volatile-ttl**进行置换
-
-> redis的LRU了解过吗？手写LRU
-
-
 
 > LRU和LFU算法的区别是什么
 
