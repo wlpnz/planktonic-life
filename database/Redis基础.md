@@ -325,7 +325,7 @@ Redis客户端可以订阅任意数量的频道，类似微信中可以关注多
 ##### 一主二仆
 **配置从库不配置主库**
 
-**权限细节：**master如果配置了requirepass，那么slave需要配置masterauth来设置校验密码，否则master会拒绝slave的访问请求
+**权限细节**：master如果配置了requirepass，那么slave需要配置masterauth来设置校验密码，否则master会拒绝slave的访问请求
 
 **基本操作命令：**
 
