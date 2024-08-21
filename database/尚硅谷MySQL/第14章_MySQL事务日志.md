@@ -93,24 +93,22 @@ mysql> show variables like '%innodb_log_buffer_size%';
 
   ![image-20220328151926842](images/第14章_MySQL事务日志/image-20220328151926842.png)
 
+### 1.4 redo的整体流程
+
 以一个更新事务为例，redo log 流转过程，如下图所示：  
 
 ![image-20220328142105871](images/第14章_MySQL事务日志/image-20220328142105871.png)
 
-```tiki wiki
+```
 第1步：先将原始数据从磁盘中读入内存中来，修改数据的内存拷贝
 第2步：生成一条重做日志并写入redo log buffer，记录的是数据被修改后的值
 第3步：当事务commit时，将redo log buffer中的内容刷新到 redo log file，对 redo log file采用追加写的方式
 第4步：定期将内存中修改的数据刷新到磁盘中  
 ```
 
-
-
 > 体会：
 >
 > Write-Ahead Log(预先日志持久化)：在持久化一个数据页之前，先将内存中相应的日志页持久化。  
-
-
 
 ### 1.5 redo log的刷盘策略
 
