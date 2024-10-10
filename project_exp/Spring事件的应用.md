@@ -48,7 +48,7 @@ public String test(String msg) {
 
 ```java
 @AllArgsConstructor
-public class CustomEventEventListener2 {
+public class CustomEventEventListener {
 
     private final Consumer<MQMsg> consumer;
 
@@ -63,16 +63,16 @@ public class CustomEventEventListener2 {
 // 在配置类注册
 @Bean
 @ConditionalOnExpression("\"peng\".equals('${custom.listener}')")
-public CustomEventEventListener4 customEventEventListener4() {
-    return new CustomEventEventListener4(data -> {
+public CustomEventEventListener customEventEventListener4() {
+    return new CustomEventEventListener(data -> {
         System.out.println("peng -- 自定义事件监听器：" + data);
     });
 }
 
 @Bean
 @ConditionalOnExpression("\"zhang\".equals('${custom.listener}')")
-public CustomEventEventListener4 customEventEventListener4() {
-    return new CustomEventEventListener4(data -> {
+public CustomEventEventListener customEventEventListener4() {
+    return new CustomEventEventListener(data -> {
         System.out.println("zhang -- 自定义事件监听器：" + data);
     });
 }
