@@ -40,9 +40,13 @@ root@localhost: 后面就是初始化的密码
 ### 设置远程登录
 先在防火墙开放端口 
 放行端口：firewall-cmd --permanent --zone=public --add-port=3306/tcp 
+
 最后刷新：firewall-cmd --reload 
+
 查看已开放端口：firewall-cmd --list-ports --permanent
+
 修改mysql数据库下user表的host属性
+
 例如：
 
 ```mysql

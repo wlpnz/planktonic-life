@@ -63,7 +63,7 @@ public class CustomEventEventListener {
 // 在配置类注册
 @Bean
 @ConditionalOnExpression("\"peng\".equals('${custom.listener}')")
-public CustomEventEventListener customEventEventListener4() {
+public CustomEventEventListener customEventEventListener() {
     return new CustomEventEventListener(data -> {
         System.out.println("peng -- 自定义事件监听器：" + data);
     });
@@ -71,7 +71,7 @@ public CustomEventEventListener customEventEventListener4() {
 
 @Bean
 @ConditionalOnExpression("\"zhang\".equals('${custom.listener}')")
-public CustomEventEventListener customEventEventListener4() {
+public CustomEventEventListener customEventEventListener() {
     return new CustomEventEventListener(data -> {
         System.out.println("zhang -- 自定义事件监听器：" + data);
     });
