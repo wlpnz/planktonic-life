@@ -87,6 +87,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint(value = "/websocket/{sid}", configurator = WebSocketConfigurator.class)
 @Component
 public class WebSocketServer {
+    
+    // 注入bean需要通过set注入的方式，bean变量需要被static修饰
+    private static UserMapper userMapper;
+
+    @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        WebSocketServer.userMapper = userMapper;
+    }
 
     // 静态变量，用于记录当前在线连接数
     private static int onlineCount = 0;
@@ -311,3 +319,6 @@ export default {
 >
 > 连接成功后，可以输入消息并发送，收到的消息会显示在下方列表中。
 
+> 注意点：
+>
+> 针对客户端websocket断开服务端没有触发断开连接的事件，需要添加心跳请求                 
