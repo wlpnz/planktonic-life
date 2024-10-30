@@ -317,6 +317,25 @@ Java中synchronized关键字和Lock接口的实现类都是悲观锁
 
 #### 自旋锁SpinLock
 
+是指尝试获取锁的线程不会立即阻塞，而是采循环的方式去尝试获取锁
+
+当线程发现锁被占用时，会不断循环判断锁的状态，直到获取。这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU
+
+示例：
+
+```java
+public final int getAndAddInt(Object var1, long var2, int var4) {
+    int var5;
+    do {
+        var5 = this.getIntVolatile(var1, var2);
+    } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+
+    return var5;
+}
+```
+
+
+
 #### 死锁及排查
 死锁是指两个或两个以上的线程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力干涉那它们都将无法推进下去，如
 果系统资源充足，进程的资源请求都能够得到满足，死锁出现的可能性就很低，否则就会因争夺有限的资源而陷入死锁。
@@ -339,7 +358,22 @@ Java中synchronized关键字和Lock接口的实现类都是悲观锁
 方法二：通过jconsole
 ![img_2](images/JUC并发编程二/img_2-17301825318275.png)
 
+
+
+#### 锁升级
+
+**无锁->独占锁->读写锁->邮戳锁**
+
+
+
+**无锁->偏向锁->轻量锁->重量锁**
+
+
+
+
+
 ### 线程中断与LockSupport
+
 #### 线程中断
 **什么是中断？**
 
@@ -529,21 +563,249 @@ unlock:作用于主内存，把一个处于锁定状态的变量释放，然后�
 
 **有序性**
 
+禁止指令重排
 
+指令重排序：是指编译器和处理器为了优化程序性能而对指令序列进行重新排序的一种手段，有时候会改变程序语句的先后顺序
 
+不存在数据依赖关系，可以重排序；存在数据依赖关系，禁止重排序
 
+数据依赖性：若两个操作访问一个变量，且这两个操作中有一个为写操作，此时两个操作间就存在数据依赖性
 
+**volatile**通过插入内存屏障保证指令禁止重排：
 
+- 在每个volatile写操作的前面插入一个StoreStore屏障
+- 在每个volatile写操作的后面插入一个StoreLoad屏障
+
+- 在每个volatile读操作的后面插入一个LoadLoad屏障
+- 在每个volatile读操作的后面插入一个LoadStore屏障
 
 #### 怎么使用volatile
 
+- 单一赋值可以，but含复合运算赋值不可以(++之类)
+- 状态标志，判断业务是否结束
+- 开销较低的读，写锁策略
+- DCL双端锁的发布
+
+通过volatile + synchronized 双端检索的方式实现单例
+
+通过私有静态内部类实现单例
+
+```java
+public class SingletonDemo{
+    private SingletonDemo(){}
+    private static class SingletonDemoHandler{
+        private static SingletonDemo instance = new SingletonDemo();
+    }
+    public static SingletonDemo getInstance(){
+        return SingletonDemoHandler.instance;
+    }
+}
+```
+
+### CAS与Unsafe
+
+#### CAS
+
+compare and swap的缩写，中文翻译成比较并交换，实现并发算法时常用到的一种技术。
+
+它包含三个操作数一一内存位置、预期原值及更新值。
+
+执行CAS操作的时候，将内存位置的值与预期原值比较：
+
+- 如果相匹配，那么处理器会自动将该位置值更新为新值
+- 如果不匹配，处理器不做任何操作，多个线程同时执行CAS操作只有一个会成功。
+
+CAS有3个操作数，位置内存值V,旧的预期值A,要修改的更新值B。
+
+当且仅当旧的预期值A和内存值V相同时，将内存值V修改为B,否则什么都不做或重来
+
+![image-20241030103252656](images/JUC并发编程二/image-20241030103252656.png)
+
+CAS的硬件级别保证：
+
+CAS是一条CPU的原子指令(cmpxchg指令)，不会造成所谓的数据不一致问题，Unsafe提供的CAS方法(如compareAndSwapXXX)底层实现即为CPU指令cmpxchg。
+
+执行cmpxchg指令的时候，会判断当前系统是否为多核系统，如果是就给总线加锁，只有一个线程会对总线加锁成功，加锁成功之后会执行cas操作，也就是说CAS的原子性实际上是CPU实现的，其实在这一点上还是有排他锁的，只是比起用synchronized,这里的排他时间要短的多，所以在多线程情况下性能会比较好
+
+#### Unsafe
+
+是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地(native)方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据。Unsafe类存在于sun.misc包中，其内部方法操作可以像C的指针一样直接操作内存，因为Java中CAS操作的执行依赖于Unsafe类的方法。
+
+注意Unsafe类中的所直方法都是native修饰的，也就是说泡Unsafe类中的法都直接调用操作系统底层资源执行相应任务
 
 
 
+CAS与Unsafe的应用
+
+```java
+class AtomicInteger{
+    //...
+    public final int getAndIncrement() {
+        return unsafe.getAndAddInt(this, valueOffset, 1);
+    }
+    //...
+}
+
+class Unsafe{
+    //...
+    public final int getAndAddInt(Object var1, long var2, int var4) {
+        int var5;
+        do {
+            // 重新获取值， 也就是预期值
+            var5 = this.getIntVolatile(var1, var2);
+           // 更新成功才退出循环
+        } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+
+        return var5;
+    }
+    //...
+}
+```
+
+CAS会导致“ABA问题”。
+
+CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。
+
+比如说一个线程one从内存位置V中取出A,这时候另一个线程two也从内存中取出A,并且线程two进行了一些操作将值变成了B,
+
+然后线程two又将V位置的数据变成A,这时候线程one进行CAS操作发现内存中仍然是A,然后线程one操作成功。
+
+尽管线程one的CAS操作成功，但是不代表这个过程就是没有问题的。
+
+解决“ABA问题”
+
+仍然使用CAS机制，但是比较值是通过版本号
+使用的类：AtomicStampeReference类
+
+### 原子类
+
+- AtomicBoolean
+
+- AtomicInteger
+- AtomicIntegerArray
+- AtomicIntegerFieldUpdater
+- AtomicLong
+- AtomicLongArray
+- AtomicLongFieldUpdater
+- AtomicMarkableReference -- 修改标识 mark true/false
+- AtomicReference
+- AtomicReferenceArray
+- AtomicReferenceFieldUpdater
+- AtomicStampedReference -- 修改标识  stamp  
+- DoubleAccumulator
+- DoubleAdder
+- LongAccumulator
+- LongAdder
+
+**CountDownLatch** 用来计算线程是否结束，通过await()阻塞主线程，其他线程结束时通过countDown()表示线程完成
+
+**对象属性修改原子类**：
+
+AtomicIntegerFieldUpdater： 原子更新对象中int类型字段的值
+
+AtomicLongFieldUpdater： 原子更新对象中Long类型字段的值
+
+AtomicReferenceFieldUpdater：原子更新引用类型字段的值
+
+使用目的：以一种线程安全的方式操作非线程安全对象内的某些字段
+
+使用要求：
+
+- 更新的对象属性必须使用public volatile修饰符。
+- 因为对象的属性修改类型原子类都是抽象类，所以每次使用都必须使用静态方法newUpdater()创建一个更新器，并且需要设置想要更新的类和属性。
+
+示例：
+
+```java
+public class AtomicIntegerFieldUpdaterDemo {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount();
+        for (int i = 0; i < 1000; i++) {
+            new Thread(() -> {
+                 account.transfer(account);
+            }, String.valueOf(i)).start();
+        }
+        try {TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {throw new RuntimeException(e);}
+        System.out.println(account.money); //1000
+    }
+}
+
+class BankAccount{
+    String bankName = "ccb";
+
+    // 更新的对象属性必须使用public volatile修饰
+    public volatile int money = 0;
+
+    // 因为对象属性修改类型原子类都是抽象类，所以每次使用都必须使用静态方法newUpdater()创建一个更新器，并且设置想要更新的类和属性
+    AtomicIntegerFieldUpdater fieldUpdater = AtomicIntegerFieldUpdater.newUpdater(BankAccount.class, "money");
+
+    public void transfer(BankAccount account) {
+        fieldUpdater.incrementAndGet(account);
+    }
+}
+```
+
+LongAccumulator ： 提供了自定义函数的函数操作
+
+LongAdder : 只能用来计算加法，性能最好
+
+```java
+LongAdder longAdder = new LongAdder();
+longAdder.increment();
+longAdder.increment();
+longAdder.increment();
+System.out.println(longAdder.sum());
+// left 是类的value值（初始值或者是上次Operator方法执行的结果值），right是accumulate传入的参数
+LongAccumulator longAccumulator = new LongAccumulator((left, right) -> left + right, 0);
+longAccumulator.accumulate(1);
+longAccumulator.accumulate(2);
+longAccumulator.accumulate(3);
+System.out.println(longAccumulator.get());
+```
+
+**LongAdder为什么快？**
+
+`LongAdder`的基本思路就是**分散热点**，将value值分散到一个Cell数组中，不同线程会命中到数组的不同槽中，各个线程只对自己槽中的那个值进行CAS操作，这样热点就被分散了，冲突的概率就小很多。如果要获取真正的long值，只要将各个槽中的变量值累加返回。
+sum()会将所有Cell数组中的value和base累加作为返回值，核心的思想就是将之前`AtomicLong`一个value的更新压力分散到多个value中去，从而降级更新热点。
+
+小总结：`LongAdder`在无竞争的情况，跟`AtomicLong`一样，对同一个base进行操作，当出现**竞争关系**时则是采用化整为零的做法，从空间换时间，用一个**数组cells**,将一个value拆分进这个数组cells。多个线程需要同时对value进行操作时候，可以对线程id进行hash得到hash值，再根据hash值映射到这个数组cells的某个下标，再对该下标所对应的值进行自增操作。当所有线程操作完毕，将数组cells的所有值和无竞争值base都加起来作为最终结果。
+
+源码：
+
+```java
+public void add(long x) {
+    // as是striped64中的cells数组属性
+    // b是striped64中的base属件
+    // v是当前线hash到的cell中存储的值
+    // m是cells的长度减1，hash时作为掩码使用
+    // a是当前线指hash到的cell
+    Cell[] as; long b, v; int m; Cell a;
+    //首次首线程((as= cells)!= null)一定是false，此时走casBase方法，以CAS的方式更新base值，且只有当cas失败时，才会走到if中
+    // 条件1:cells不为空，说明出现过竞争，cell[]已创建
+    //条件2:cas操作base失败，说明其它线程先一步修改了base正在出现竞争
+    if ((as = cells) != null || !casBase(b = base, b + x)) {
+        // true无竞争false表示竞争激烈，多个线程hash到同一个cell，可能要扩容
+        boolean uncontended = true;
+        // 条件1:cells为空，说明正在出现竞争，上面是从条件2过来的
+		// 条件2:应该不会出现
+		// 条件3:当前线程所在的cell为空，说明当前线程还没有更新过cell，应初始化一个cell
+        // 条件4:更新当前线程所在的cell失败，说明现在竞争很激烈，多个线程hash到了同一个cell，应扩容
+        if (as == null || (m = as.length - 1) < 0 ||
+            // getProbe()方法返回的是线程中的threadLocalRandomProbe字段
+			// 它是通过随机数生成的一个值，对于一个确定的线程这个值是固定的(除非刻意修改它)
+            (a = as[getProbe() & m]) == null || !(uncontended = a.cas(v = a.value, v + x)))
+            longAccumulate(x, null, uncontended);  // 调用striped64中的方法处理
+    }
+}
 
 
 
-### 锁升级
-**无锁->独占锁->读写锁->邮戳锁**
+```
 
-**无锁->偏向锁->轻量锁->重量锁**
+
+
+### ThreadLocal
+
+
+
+### AQS
