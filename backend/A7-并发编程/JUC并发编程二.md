@@ -205,6 +205,7 @@ anyOf：只要有一个任务完成
 说明：尽可能使加锁的代码块工作量尽可能的小，避免在锁代码块中调用RPC方法。
 
 **八锁现象**
+
 ```java
 class Phone{
     public synchronized void sendEmail(){
@@ -246,6 +247,10 @@ synchronized同步方法 调用指令会检查方法的ACC_SYNCHRONIZED访问标
 如果设置了，执行线程会将先持有monitor然后再执行方法，在方法执行完成后，释放monitor
 
 有synchronized的同步方法，会设置ACC_SYNCHRONIZED访问标志
+
+  
+
+
 
 
 #### 乐观锁和悲观锁
@@ -299,22 +304,6 @@ Java中synchronized关键字和Lock接口的实现类都是悲观锁
 
 否则使用公平锁，公平使用
 
-#### 可重入锁
-可重入锁又名递归锁
-
-是指在同一个线程在外层方法获取锁的时候，再进入该线程的内层方法会自动获取锁（前提，锁对象得是同一个对象），
-不会因为之前已经获取过还没释放而阻塞。
-
-如果是1个有synchronized修饰的递归调用方法，程序第2次进入被自己阻塞了岂不是天大的笑话，出现了作茧自缚。
-
-所以Java中**ReentrantLock**和**synchronized**都是可重入锁，可重入锁的一个优点是可一定程度避免死锁。
-
-在外层获取到同步锁后，在内层中一样可以获取到这把同步锁，不会产生死锁，这就是可重入锁
-
-#### 写锁(独占锁)/读锁(共享锁)
-
-
-
 #### 自旋锁SpinLock
 
 是指尝试获取锁的线程不会立即阻塞，而是采循环的方式去尝试获取锁
@@ -334,7 +323,79 @@ public final int getAndAddInt(Object var1, long var2, int var4) {
 }
 ```
 
+#### 可重入锁
+可重入锁又名递归锁
 
+是指在同一个线程在外层方法获取锁的时候，再进入该线程的内层方法会自动获取锁（前提，锁对象得是同一个对象）不会因为之前已经获取过还没释放而阻塞。
+
+Java中**ReentrantLock**和**synchronized**都是可重入锁，可重入锁的一个优点是可一定程度避免死锁。
+
+在外层获取到同步锁后，在内层中一样可以获取到这把同步锁，不会产生死锁，这就是可重入锁
+
+#### 读写锁
+
+`ReentrantReadWriteLock`
+
+一个资源能被多个读线程访问，或者被一个写线程访问，但是不能同时存在读写线程
+
+`读写锁ReentrantReadWriteLock`并不是真正意义上的读写分离，它只允许读读共存，而读写和写写依然是互斥的，大多实际场景是“读/读”线程间并不存在互斥关系，只有”读/写”线程或”写/写”线程间的操作需要互斥的。因此引入ReentrantReadWriteLock。
+
+一个ReentrantReadWriteLock同时只能存在一个写锁但是可以存在多个读锁，但不能同时存在写锁和读锁。
+
+也即一个资源可以被多个读操作访问或一个写操作访问，但**两者不能同时进行**。
+
+只有在读多写少情境之下，读写锁才具有较高的性能体现。
+
+
+
+**ReentrantReadWriteLock读写锁降级规则**
+
+《Java并发编程的艺术》中关于锁降级的说明：
+
+锁的严苛程度变强叫升级，反之叫降级
+
+|    特性    |                             说明                             |
+| :--------: | :----------------------------------------------------------: |
+| 公平性选择 | 支持非公平（默认）和公平的锁获取方式，吞吐两还是非公平优于公平 |
+|   重进入   | 该锁支持重进入，以读写线程为例：读线程在获取了读锁之后，能够再次获取读锁。而写线程在获取了写锁之后能够再次获取写锁，同时也可以获取读锁 |
+|   锁降级   | 遵循获取写锁、获取读锁再释放写锁的次序，**写锁能够降级成读锁** |
+
+如果一个线程获取了写锁，在不释放写锁的情况下又获取了读锁，那么称写锁降级为读锁
+
+锁降级的目的是为了让当前线程感知到数据的变化，目的是保证数据的可见性
+
+注意点：如果有线程获取了读锁，那么线程无法获取写锁，是悲观锁的策略
+
+#### 邮戳锁
+
+**介绍**
+
+StampedLock是jdk1.8中新增的一个读写锁，也是对jdk1.5中的读写锁ReentrantReadWriteLock的优化，叫邮戳锁或票据锁
+
+stamp（long类型）：代表了锁的状态。当stamp返回零时，表示线程获取锁失败。并且，当释放锁或者转换锁的时候，都要传入最初获取的stamp值。
+
+
+
+ReentrantReadWriteLock：允许多个线程同时读，但是只允许一个线程写，在线程获取到写锁的时候，其他写操作和读操作都会处于阻塞状态，读锁和写锁也是互斥的，所以在读的时候是不允许写的，读写锁比传统的synchronized速度要快很多，原因就是在于ReentrantReadWriteLock支持读并发
+
+StampedLock：ReentrantReadWriteLock的读锁被占用的时候，其他线程尝试获取写锁的时候会被阻塞但是，StampedLock采取乐观获取锁后，其他线程尝试获取写锁时不会被阻塞，这其实是对读锁的优化，所以，在获取乐观读锁后，还需要对结果进行校验。
+
+**特点**：
+
+- 所有获取锁的方法，都返回一个邮戳(Stamp)，Stamp为零表示获取失败，其余都表示成功
+- 所有释放锁的方法，都需要一个邮戳(Stamp)，这个Stamp必须是和成功获取锁时得到的Stamp一致
+- StampedLock是不可重入的，危险(如果一个线程已经持有了写锁，再去获取写锁的话就会造成死锁)
+
+- StampedLock有三种访问模式：
+  - Readling（读模式）：功能和ReentrantReadWriteLock的读锁类似
+  - Writing（写模式）：功能和ReentrantReadWriteLock的写锁类似
+  - Optimistic readling（乐观读模式）：无锁机制，支持读写并发。很乐观认为读取时没人修改，假如被修改再实现升级为悲观读模式
+
+**缺点**：
+
+- StampedLock不支持重入，没有Re开头
+- StampedLock的悲观读锁和写锁都不支持条件变量(Condition),这个也需要注意。
+- 使用StampedLock一定不要调用中断操作，即不要调用interrupt()方法
 
 #### 死锁及排查
 死锁是指两个或两个以上的线程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力干涉那它们都将无法推进下去，如
@@ -362,15 +423,207 @@ public final int getAndAddInt(Object var1, long var2, int var4) {
 
 #### 锁升级
 
-**无锁->独占锁->读写锁->邮戳锁**
+查看对象头情况：
+
+先引入依赖，然后通过解析对象，打印对象头
+
+```java
+<dependency>
+    <groupId>org.openjdk.jol</groupId>
+    <artifactId>jol-core</artifactId>
+    <version>0.9</version>
+</dependency>
+    
+System.out.println(ClassLayout.parseInstance(obj).toPrintable());
+```
+
+synchronized锁：由对象头中的Mark Word根据锁标志位的不同而被复用及锁升级策略
+
+jdk5之前，只有synchronized 这个操作系统级别的重量级锁，效率低下，因为监视器(monitor)是依赖底层的操作系统的Mutex Lock实现，挂起线程和恢复线程都需要转入内核态去完成，阻塞或唤醒一个Java线程需要操作系统切换CPU状态来完成，这种状态转换耗费处理器时间，如果同步代码块内容过于简单，切换的时间可能比任务执行的时间还要长
+
+jdk6之后，为了提高效率，引入了偏向锁和轻量级锁 
+
+**synchronized锁升级过程**
+
+>  **无锁->偏向锁->轻量锁->重量锁**
+
+无锁：
+
+对象头情况：
+
+```java
+private static void unLock() {
+    Object obj = new Object();
+    System.out.println(obj.hashCode());
+    System.out.println(Integer.toHexString(obj.hashCode()));
+
+    System.out.println(ClassLayout.parseInstance(obj).toPrintable());
+}
+
+1956725890 // hash 
+74a14482   // hash 16进制
+java.lang.Object object internals:
+ OFFSET  SIZE   TYPE DESCRIPTION                               VALUE
+      0     4        (object header)                           01 82 44 a1 (00000001 10000010 01000100 10100001) (-1589345791)
+      4     4        (object header)                           74 00 00 00 (01110100 00000000 00000000 00000000) (116)
+      8     4        (object header)                           e5 01 00 f8 (11100101 00000001 00000000 11111000) (-134217243)
+     12     4        (loss due to the next object alignment)
+Instance size: 16 bytes
+Space losses: 0 bytes internal + 4 bytes external = 4 bytes total
+```
+
+根据图，要倒着看上面的输出
+
+![image-20241031154717445](images/JUC并发编程二/image-20241031154717445.png)
 
 
 
-**无锁->偏向锁->轻量锁->重量锁**
+**偏向锁**：当一段代码一直被一个线程多次访问，由于只有一个线程，那么该线程在后续访问时，便会自动获得锁
+
+在没有其他线程竞争的情况下，一直偏向当前线程，当前线程可以一直执行
+
+偏向锁只有遇到其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁，**线程是不会主动释放偏向锁的**。
+
+可以通过命令`java -XX:+PrintFlagsInitial | grep BiasedLock*` 查看是否开启了偏向锁（`UseBiasedLocking`是否为true）
+
+```shell
+$ java -XX:+PrintFlagsInitial | grep BiasedLock*
+     intx BiasedLockingBulkRebiasThreshold          = 20                                  {product}
+     intx BiasedLockingBulkRevokeThreshold          = 40                                  {product}
+     intx BiasedLockingDecayTime                    = 25000                               {product}
+     intx BiasedLockingStartupDelay                 = 4000                                {product}
+     bool TraceBiasedLocking                        = false                               {product}
+     bool UseBiasedLocking                          = true                                {product}
+```
+
+jdk1.6之后是默认开启偏向锁的，但是启动时间有延迟
+
+可以添加参数 `-XX:BiasedLockingStartupDelay=0`，让其在程序启动时立刻启动
+
+开启偏向锁：
+
+```shell
+-XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0
+```
+
+关闭偏向锁，关闭之后会默认进入轻量级锁
+
+```shell
+-XX:-UseBiasedLocking
+```
+
+偏向锁持有的对象头情况：
+
+```java
+private static void biasedLock() {
+    Object o = new Object();
+    new Thread(() -> {
+        synchronized (o) {
+            System.out.println(ClassLayout.parseInstance(o).toPrintable());
+        }
+    }).start();
+}
+
+java.lang.Object object internals:
+ OFFSET  SIZE   TYPE DESCRIPTION                               VALUE
+      0     4        (object header)                           05 70 ad 70 (00000101 01110000 10101101 01110000) (1890414597)
+      4     4        (object header)                           68 01 00 00 (01101000 00000001 00000000 00000000) (360)
+      8     4        (object header)                           e5 01 00 f8 (11100101 00000001 00000000 11111000) (-134217243)
+     12     4        (loss due to the next object alignment)
+Instance size: 16 bytes
+Space losses: 0 bytes internal + 4 bytes external = 4 bytes total
+```
+
+![image-20241031154846963](images/JUC并发编程二/image-20241031154846963.png)
+
+偏向锁的撤销：
+
+当有另外线程逐步来竞争锁的时候，就不能再使用偏向锁了，要升级为轻量级锁
+
+撤销的情况：
+
+偏向锁使用一种等到竞争出现才释放锁的机制，只有当其他线程竞争锁时，持有偏向锁的原来线程才会被撤销。
+
+撤销需要等待全局安全点（该时间点上没有字节码正在执行），同时检查持有偏向锁的线程是否还在执行：
+
+- ①第一个线程正在执行synchronized方法（处于同步块），它还没有执行完，其它线程来抢夺，该偏向锁会被取消掉并出现**锁升级**。
+  此时轻量级锁由原持有偏向锁的线程持有，继续执行其同步代码，而正在竞争的线程会进入**自旋**等待获得该轻量级锁。
+
+- ②第一个线程执行完成synchronized方法（退出同步块），则将对象头设置成无锁状态并撤销偏向锁，重新偏向
 
 
 
+**轻量级锁**：
 
+轻量级锁是为了在线程**近乎交替**执行同步块时提高性能。
+
+主要目的：在没有多线程竞争的前提下，通过CAS减少重量级锁使用操作系统互斥量产生的性能消耗，说白了先自旋再阻塞。
+
+升级时机：当关闭偏向锁功能 或 多线程竞争偏向锁会导致偏向锁升级为轻量级锁
+
+线程B竞争锁的操作中有两种情况：
+
+如果锁获取成功，直接替换Mark Word中的线程ID为自己的ID,此时线程B成功获取偏向锁，然后执行同步代码。
+
+如果锁获取失败，则偏向锁升级为轻量级锁，此时轻量级锁由原持锁的线程A持有，继续执行其同步代码，而线程B会进入自选等待获取该轻量级锁
+
+![image-20241031160825984](images/JUC并发编程二/image-20241031160825984.png)
+
+代码打印对象头信息：
+
+```java
+//打印代码同上，主要是关闭偏向锁，让线程直接获取轻量级锁
+// 关闭偏向锁 -XX:-UseBiasedLocking
+java.lang.Object object internals:
+ OFFSET  SIZE   TYPE DESCRIPTION                               VALUE
+      0     4        (object header)                           90 f0 6f dc (10010000 11110000 01101111 11011100) (-596643696)
+      4     4        (object header)                           37 00 00 00 (00110111 00000000 00000000 00000000) (55)
+      8     4        (object header)                           e5 01 00 f8 (11100101 00000001 00000000 11111000) (-134217243)
+     12     4        (loss due to the next object alignment)
+Instance size: 16 bytes
+Space losses: 0 bytes internal + 4 bytes external = 4 bytes total
+```
+
+
+
+**重量级锁**
+
+轻量级锁的情况下，如果线程超过某些条件，会升级成重量级锁
+
+jdk1.6之前
+
+默认启用，默认情况下自旋的次数是10次 参数设置：`-XXPreBlockSpin=10`
+
+或者自旋线程数超过cpu核数的一半
+
+
+
+jdk1.6之后
+
+自旋次数自适应变化，只要是竞争线程的次数超过这个次数，轻量级锁就会升级成重量级锁
+
+自旋次数根据 同一个线程上一次自旋的时间 以及 拥有锁线程的状态来决定
+
+
+
+代码打印对象头：
+
+```java
+// 打印代码同上，多个线程参与竞争
+
+java.lang.Object object internals:
+ OFFSET  SIZE   TYPE DESCRIPTION                               VALUE
+      0     4        (object header)                           8a 5b 5d ce (10001010 01011011 01011101 11001110) (-832742518)
+      4     4        (object header)                           97 01 00 00 (10010111 00000001 00000000 00000000) (407)
+      8     4        (object header)                           e5 01 00 f8 (11100101 00000001 00000000 11111000) (-134217243)
+     12     4        (loss due to the next object alignment)
+Instance size: 16 bytes
+Space losses: 0 bytes internal + 4 bytes external = 4 bytes total
+```
+
+各种锁的优缺点：
+
+![image-20241031170611960](images/JUC并发编程二/image-20241031170611960.png)
 
 ### 线程中断与LockSupport
 
@@ -770,7 +1023,7 @@ sum()会将所有Cell数组中的value和base累加作为返回值，核心的�
 
 小总结：`LongAdder`在无竞争的情况，跟`AtomicLong`一样，对同一个base进行操作，当出现**竞争关系**时则是采用化整为零的做法，从空间换时间，用一个**数组cells**,将一个value拆分进这个数组cells。多个线程需要同时对value进行操作时候，可以对线程id进行hash得到hash值，再根据hash值映射到这个数组cells的某个下标，再对该下标所对应的值进行自增操作。当所有线程操作完毕，将数组cells的所有值和无竞争值base都加起来作为最终结果。
 
-源码：
+源码分析：[尚硅谷视频教程](https://www.bilibili.com/video/BV1ar4y1x727?spm_id_from=333.788.videopod.episodes&vd_source=b65df187291916e801dd2d3d831fb71e&p=91)
 
 ```java
 public void add(long x) {
@@ -798,14 +1051,104 @@ public void add(long x) {
     }
 }
 
-
+// TODO
 
 ```
 
-
-
 ### ThreadLocal
 
+**介绍**
 
+ThreadLocal提供线程局部变量。这些变量与正常的变量不同，因为每一个线程在访问ThreadLocal实例的时候（通过其get或set方法）都有**自己的、独立初始化的变量副本**。ThreadLocal实例通常是类中的私有静态字段，使用它的目的是希望将状态（例如，用户ID或事务ID)与线程关联起来
+
+**Thread、ThreadLocal、ThreadLocalMap的关系？**
+
+Thread类有ThreadLocal.ThreadLocalMap的属性
+
+ThreadLocal类里有ThreadLocalMap的静态内部类
+
+ThreadLocalMap里面有Entry，Entry的key就是ThreadLocal 
+
+且Entry继承WeakReference（弱引用）
+
+当我们为threadLocal变量赋值，实际上是以当前threadLocal实例为key，值为value的Entry往threadLocalMap中存放
+
+**ThreadLocal如何防止内存泄漏的？**
+
+ThreadLocalMap的Entry的key使用的是弱引用，key存放的值是ThreadLocal对象，线程结束后，那么声明的ThreadLocal变量的强引用链就断了，GC回收时，ThreadLocal对象就会被回收，Entry的key会为null，对于Entry的key为null的value，在线程结束后，Thread 和 ThreadLocalMap就不存在引用链了，在GC回收时，value会被回收。但是在某些情况下，线程不会结束，例如使用线程池，因此在不使用ThreadLocal时，要记得调用remove方法
+
+
+
+**为什么Entry要使用弱引用？**
+
+![image-20241031114314715](images/JUC并发编程二/image-20241031114314715.png)
+
+如上图，当线程中的ThreadLocal强引用对象可以被GC回收的时候，如果Entry的key是**强引用**，就会导致key指向的ThreadLocal对象以及value指向的对象不能被GC回收，造成内存泄漏；如果Entry的key是**弱引用**，就可以大概率减少内存泄漏的问题（会有key为null的问题），使用弱引用，就可以使ThreadLocal对象在方法执行完毕后顺利被回收，且Entry的key引用指向为null。
+
+**key为null的问题？**
+
+系统GC时，Entry的key也就是ThreadLocal对象会被回收，这时候在ThreadLocalMap中会出现Entry的key为null，并且没法访问key为null的Entry的value，如果线程长时间不结束，key为null的Entry的value就不会被回收，时间久了就会造成内存泄漏。
+
+在线程池中，核心线程就不会结束。因此在线程池中使用ThreadLocal要格外注意内存泄漏的问题，在不适用ThreadLocal的时候，要手动remove方法来删除它
+
+#### 引用类型
+
+![image-20241031105600570](images/JUC并发编程二/image-20241031105600570.png)
+
+Reference：强引用
+
+SoftReference：软引用
+
+WeakReference：弱引用
+
+PhantomReference：虚引用
+
+Java技术允许使用finalize()方法在垃圾回收器将对象从内存中清除出去之前必要的清理工作
+
+**强引用**
+
+```java
+MyObject myObj = new MyObject(); // 默认使用强引用
+// 当对象是强引用的状态时，不管内存是否够用，在GC回收时只要还有引用指向引用对象，GC就不能回收强引用对象
+```
+
+**软引用**
+
+两个特点：内存够用，不回收；内存不够，才回收
+
+**弱引用**
+
+当遇到GC回收时，就会被回收
+
+**虚引用**
+
+顾名思义，就是形同虚设，与其他几种引用都不同，虚引用并不会决定对象的生命周期。
+
+如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收器回收，它不能单独使用也不能通过它访问对象，虚引用必须和引用队列(ReferenceQueue)联合使用。
+
+虚引用的主要作用是跟踪对象被垃圾回收的状态。仅仅是提供了一种确保对象被finalize以后，做某些事情的机制。
+
+PhantomReference的get方法总是返回null,因此无法访问对应的引用对象。
+
+其意义在于：说明一个对象已经进入finalization阶段，可以被gc回收，用来实现比finalization机制更灵活的回收操作。
+
+换句话说，设置虚引用关联的唯一目的，就是在这个对象被收集器回收的时候收到一个系统通知或者后续添加进一步的处理。
+
+ 虚引用必定被GC回收，在回收前会触发finalize()方法，且进入ReferenceQueue队列
 
 ### AQS
+
+**介绍**
+
+`AbstractQueuedSynchronizer`（抽象的队列同步器）是用来构建锁或者其它同步器组件的**重量级基础框架及整个JUC体系的基石**，通过内置的**FIFO队列**来完成资源获取线程的排队工作，并通过一个int类变量表示持有锁的状态
+
+加锁就会阻塞，有阻塞就需要排队，实现排队必然需要队列
+
+
+
+AQS使用一个volatile的int类型的成员变量state来表示同步状态，通过内置的FIFO队列来完成资源获取的排队工作，将每条要去抢占资源的线程封装成一个Node节点来实现锁的分配，通过CAS完成对State值的修改。
+
+![image-20241101102338799](images/JUC并发编程二/image-20241101102338799.png)
+
+### 线程池
+
