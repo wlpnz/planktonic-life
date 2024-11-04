@@ -1152,7 +1152,7 @@ ThreadLocalMap里面有Entry，Entry的key就是ThreadLocal
 
 **ThreadLocal如何防止内存泄漏的？**
 
-ThreadLocalMap的Entry的key使用的是弱引用，key存放的值是ThreadLocal对象，线程结束后，那么声明的ThreadLocal变量的强引用链就断了，GC回收时，ThreadLocal对象就会被回收，Entry的key会为null，对于Entry的key为null的value，在线程结束后，Thread 和 ThreadLocalMap就不存在引用链了，在GC回收时，value会被回收。但是在某些情况下，线程不会结束，例如使用线程池，因此在不使用ThreadLocal时，要记得调用remove方法
+当我们往ThreadLocal中存值时，其实是把key为ThreadLocal对象的Entry往ThreadLocalMap中存，这个Entry的key还是个弱引用。当线程结束后，虚拟机栈里面的ThreadLocal强引用就释放了，此时ThreadLocal对象上只有一条弱引用，在GC回收时，ThreadLocal对象就会被回收。ThreadLocal对象回收后，会出现key为null的Entry，这时候它的value就访问不到了。如果线程结束了，那value上不存在一条强引用链，因此也会被回收；如果线程不会结束，例如使用线程池，value就不会被回收，所以在不使用ThreadLocal时，要记得调用remove方法。
 
 
 
