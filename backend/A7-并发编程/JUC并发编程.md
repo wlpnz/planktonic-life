@@ -102,9 +102,96 @@ java
 
 ### 线程的状态
 
+从**操作系统**来看，线程有五个状态
+
+<img src="./images/JUC并发编程/image-20241105091529876.png" alt="image-20241105091529876" style="zoom:50%;" />
+
+- 【初始状态】仅是在语言层面创建了线程对象，还未与操作系统线程关联 
+- 【可运行状态】（就绪状态）指该线程已经被创建（与操作系统线程关联），可以由 CPU 调度执行 
+- 【运行状态】指获取了 CPU 时间片运行中的状态 
+  - 当 CPU 时间片用完，会从【运行状态】转换至【可运行状态】，会导致线程的上下文切换 
+- 【阻塞状态】 
+  - 如果调用了阻塞 API，如 BIO 读写文件，这时该线程实际不会用到 CPU，会导致线程上下文切换，进入 【阻塞状态】 
+  - 等 BIO 操作完毕，会由操作系统唤醒阻塞的线程，转换至【可运行状态】 
+  - 与【可运行状态】的区别是，对【阻塞状态】的线程来说只要它们一直不唤醒，调度器就一直不会考虑 调度它们 
+- 【终止状态】表示线程已经执行完毕，生命周期已经结束，不会再转换为其它状态
 
 
 
+从**Java API层面**来看，线程有六种状态
+
+根据 Thread.State 枚举，分为六种状态
+
+<img src="./images/JUC并发编程/image-20241105091917775.png" alt="image-20241105091917775" style="zoom:50%;" />
+
+- `NEW`  线程刚被创建，但是还没有调用  start() 方法
+- `RUNNABLE` 当调用了  `start()` 方法之后，注意，Java API 层面的  `RUNNABLE` 状态涵盖了操作系统层面的 【可运行状态】、【运行状态】和【阻塞状态】（由于 BIO 导致的线程阻塞，在 Java 里无法区分，仍然认为 是可运行）
+- `BLOCKED` ， `WAITING` ， `TIMED_WAITING` 都是 Java API 层面对【阻塞状态】的细分
+- `TERMINATED` 当线程代码运行结束
+
+假如有线程`Thread t`
+
+情况一：`NEW --> RUNNABLE`
+
+- 当调用`t.start()`方法时，由`NEW --> RUNNABLE`
+
+情况二：  `RUNNABLE <--> WAITING`
+
+t 线程用  synchronized(obj) 获取了对象锁后
+
+- 调用 obj.wait() 方法时，t 线程从 `RUNNABLE --> WAITING` 
+- 调用obj.notify() ， obj.notifyAll() ， t.interrupt() 时 
+  - 竞争锁成功，t 线程从`WAITING --> RUNNABLE` 
+  - 竞争锁失败，t 线程从`WAITING --> BLOCKED` 
+
+情况三： `RUNNABLE <--> WAITING`
+
+- 当前线程调用  t.join() 方法时，当前线程从  `RUNNABLE --> WAITING`
+  - 注意是当前线程在t 线程对象的监视器上等待
+- t 线程运行结束，或调用了当前线程的  interrupt() 时，当前线程从`WAITING --> RUNNABLE`
+
+情况四：`RUNNABLE <--> WAITING`
+
+- 当前线程调用`LockSupport.park()` 方法会让当前线程从`RUNNABLE --> WAITING`
+- 调用`LockSupport.unpark(目标线程)`或调用了线程的`interrupt()`，会让目标线程从`WAITING --> RUNNABLE`
+
+情况五： `RUNNABLE <--> TIMED_WAITING`
+
+t 线程用  synchronized(obj) 获取了对象锁后
+
+- 调用  `obj.wait(long n)` 方法时，t 线程从  `RUNNABLE --> TIMED_WAITING`
+
+- t 线程等待时间超过了 n 毫秒，或调用  obj.notify() ， obj.notifyAll() ，t.interrupt()时 
+  - 竞争锁成功，t 线程从   `TIMED_WAITING --> RUNNABLE `
+  - 竞争锁失败，t 线程从   `TIMED_WAITING --> BLOCKED`
+
+情况六：  `RUNNABLE <--> TIMED_WAITING`
+
+- 当前线程调用`t.join(long n)` 方法时，当前线程从  `RUNNABLE --> TIMED_WAITING`
+
+注意是当前线程在t 线程对象的监视器上等待
+
+当前线程等待时间超过了 n 毫秒，或t 线程运行结束，或调用了当前线程的`interrupt()` 时，当前线程从`TIMED_WAITING --> RUNNABLE`
+
+情况七：`RUNNABLE <--> TIMED_WAITING`  
+
+- 当前线程调用  `Thread.sleep(long n)` ，当前线程从  `RUNNABLE --> TIMED_WAITING`
+- 当前线程等待时间超过了 n 毫秒，当前线程从   `TIMED_WAITING --> RUNNABLE`
+
+情况八：`RUNNABLE <--> TIMED_WAITING`  
+
+- 当前线程调用  `LockSupport.parkNanos(long nanos)` 或 `LockSupport.parkUntil(long millis)` 时，当前线程从 `RUNNABLE --> TIMED_WAITING`
+- `LockSupport.unpark(目标线程)` 或调用了线程 的 `interrupt()`，或是等待超时，会让目标线程从`TIMED_WAITING--> RUNNABLE`
+
+情况九：`RUNNABLE <--> BLOCKED`
+
+- t 线程用 `synchronized(obj)` 获取了对象锁时如果竞争失败，从`RUNNABLE --> BLOCKED` 
+
+- 持 obj 锁线程的同步代码块执行完毕，会唤醒该对象上所有  BLOCKED  的线程重新竞争，如果其中 t 线程竞争 成功，从  BLOCKED --> RUNNABLE ，其它失败的线程仍然   BLOCKED 
+
+情况十：`RUNNABLE <--> TERMINATED`
+
+- 当前线程所有代码运行完毕，进入 `TERMINATED`
 
 ### CompletableFuture
 
@@ -275,10 +362,11 @@ allOf：等待所有任务完成
 
 anyOf：只要有一个任务完成
 
+
+
 ### 锁
 #### synchronized
-【强制】高并发时，同步调用应该去考量锁的性能损耗。能用无锁数据结构，就不要用锁；能锁区块，就
-不要锁整个方法体；能用对象锁，就不要用类锁。
+【强制】高并发时，同步调用应该去考量锁的性能损耗。能用无锁数据结构，就不要用锁；能锁区块，就不要锁整个方法体；能用对象锁，就不要用类锁。
 
 说明：尽可能使加锁的代码块工作量尽可能的小，避免在锁代码块中调用RPC方法。
 
@@ -327,8 +415,6 @@ synchronized同步方法 调用指令会检查方法的ACC_SYNCHRONIZED访问标
 有synchronized的同步方法，会设置ACC_SYNCHRONIZED访问标志
 
   
-
-
 
 
 #### 乐观锁和悲观锁
@@ -780,7 +866,7 @@ Space losses: 0 bytes internal + 4 bytes external = 4 bytes total
 
 ![image-20241031170611960](images/JUC并发编程/image-20241031170611960.png)
 
-### 线程中断与LockSupport
+### 线程中断与线程等待
 
 #### 线程中断
 **什么是中断？**
@@ -809,7 +895,20 @@ interrupt()方法，只会将中断标设为true，不会将线程立即停止
 
 在使用sleep、join方法时，如果调用interrupt方法，则抛出InterruptedException异常，并将中断标志设为false
 
-#### LockSupport
+#### 线程等待
+
+**wait/notify**
+
+- obj.wait() 让进入 object 监视器的线程到 waitSet 等待，无限制等待，直到 notify 为止
+- obj.notify() 在 object 上正在 waitSet 等待的线程中挑一个唤醒 
+- obj.notifyAll() 让 object 上正在 waitSet 等待的线程全部唤醒
+
+它们都是线程之间进行协作的手段，都属于 Object 对象的方法。必须获得此对象的锁，才能调用这几个方法
+
+
+
+**LockSupport**
+
 LockSupport是用来创建锁和其他同步类的基本线程阻塞原语
 
 LockSupport类使用了一种名为Permit(许可)的概念来做到阻塞和唤醒线程的功能，每个线程都有一个许可(permit)), permit只有两个值1和零，默认是零。
@@ -864,8 +963,6 @@ CPU的运行并不是直接操作内存，而是把内存中的数据读取缓�
 Java虚拟机规范中试图定义一种Java内存模型（Java Memory Model，简称JMM）来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台下达到一致的访问效果。
 
 JMM(Java内存模型Java Memory Model,简称JMM)本身是一种抽象的概念并不真实存在它仅仅描述的是一组约定或规范，通过这组规范定义了程序中（尤其是多线程）各个变量的读写访问方式并决定一个线程对共享变量的写入何时以及如何变成对另一个线程可见，关键技术点都是围绕多线程的**原子性**、**可见性**和**有序性**展开的。
-
-原则：**JMM的关键技术点都是围绕多线程的原子性、可见性和有序性展开的**
 
 能干嘛？
 
@@ -1105,8 +1202,6 @@ CAS算法实现一个重要前提需要取出内存中某时刻的数据并在�
 - LongAccumulator
 - LongAdder
 
-**CountDownLatch** 用来计算线程是否结束，通过await()阻塞主线程，其他线程结束时通过countDown()表示线程完成
-
 **对象属性修改原子类**：
 
 AtomicIntegerFieldUpdater： 原子更新对象中int类型字段的值
@@ -1305,5 +1400,347 @@ AQS使用一个volatile的int类型的成员变量state来表示同步状态，�
 
 ![image-20241101102338799](images/JUC并发编程/image-20241101102338799.png)
 
+
+
 ### 线程池
+
+#### ThreadPoolExecutor
+
+**线程池状态**
+
+ThreadPoolExecutor 使用 int 的高 3 位来表示线程池状态，低 29 位表示线程数量
+
+| 状态名     | 高三位 | 接收新任务 | 处理阻塞队列任务 | 说明                                     |
+| ---------- | ------ | ---------- | ---------------- | ---------------------------------------- |
+| RUNNING    | 111    | Y          | Y                |                                          |
+| SHUTDOWN   | 000    | N          | Y                | 不会接受新任务，但会处理阻塞队列剩余任务 |
+| STOP       | 001    | N          | N                | 会中断正在执行的任务，并抛弃阻塞队列任务 |
+| TIDYING    | 010    | -          | -                | 任务全执行完毕，活动线程为0即将进入终止  |
+| TERMINATED | 011    | -          | -                | 终止状态                                 |
+
+从数字上比较，TERMINATED > TIDYING > STOP > SHUTDOWN > RUNNING
+
+这些信息存储在一个原子变量 ctl 中，目的是将线程池状态与线程个数合二为一，这样就可以用一次 cas 原子操作 进行赋值
+
+```java
+// c 为旧值， ctlOf 返回结果为新值
+ctl.compareAndSet(c, ctlOf(targetState, workerCountOf(c))));
+
+ // rs 为高 3 位代表线程池状态， wc 为低 29 位代表线程个数，ctl 是合并它们
+private static int ctlOf(int rs, int wc) { return rs | wc; }
+```
+
+**构造方法**
+
+```java
+public ThreadPoolExecutor(int corePoolSize,
+                              int maximumPoolSize,
+                              long keepAliveTime,
+                              TimeUnit unit,
+                              BlockingQueue<Runnable> workQueue,
+                              ThreadFactory threadFactory,
+                              RejectedExecutionHandler handler)
+```
+
+- corePoolSize 核心线程数目 (最多保留的线程数) 
+- maximumPoolSize 最大线程数目 
+- keepAliveTime 生存时间 - 针对救急线程 
+- unit 时间单位 - 针对救急线程 
+- workQueue 阻塞队列
+- threadFactory 线程工厂 - 可以为线程创建时起个好名字 
+- handler 拒绝策略
+
+**工作方式**
+
+- 线程池中刚开始没有线程，当一个任务提交给线程池后，线程池会创建一个新线程来执行任务。
+- 当线程数达到 corePoolSize 并没有线程空闲，这时再加入任务，新加的任务会被加入workQueue 队列排队，直到有空闲的线程。
+- 如果队列选择了有界队列，那么任务超过了队列大小时，会创建 maximumPoolSize - corePoolSize 数目的线程来救急。
+- 如果线程到达 maximumPoolSize 仍然有新任务这时会执行拒绝策略。拒绝策略 jdk 提供了 4 种实现，其它著名框架也提供了实现
+  - AbortPolicy 让调用者抛出 RejectedExecutionException 异常，这是默认策略
+  - CallerRunsPolicy 让调用者运行任务
+  - DiscardPolicy 放弃本次任务
+  - DiscardOldestPolicy 放弃队列中最早的任务，本任务取而代之
+  - Dubbo 的实现，在抛出 RejectedExecutionException 异常之前会记录日志，并dump 线程栈信息，方便定位问题
+  - Netty 的实现，是创建一个新线程来执行任务
+  - ActiveMQ 的实现，带超时等待（60s）尝试放入队列，类似我们之前自定义的拒绝策略
+  - PinPoint 的实现，它使用了一个拒绝策略链，会逐一尝试策略链中每种拒绝策略
+
+- 当高峰过去后，超过corePoolSize 的救急线程如果一段时间没有任务做，需要结束节省资源，这个时间由 keepAliveTime 和 unit 来控制。
+
+根据这个构造方法，JDK Executors 类中提供了众多工厂方法来创建各种用途的线程池
+
+#### newFixedThreadPool
+
+```java
+public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue<Runnable>());
+}
+```
+
+特点：
+
+- 核心线程数 == 最大线程数（没有救急线程被创建），因此也无需超时时间
+- 阻塞队列是无界的，可以放任意数量的任务
+
+> 因为队列无界，适用于任务量已知，相对耗时的任务
+
+#### newCachedThreadPool
+
+```java
+public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue<Runnable>());
+}
+```
+
+特点：
+
+- 核心线程数是 0， 最大线程数是 Integer.MAX_VALUE，救急线程的空闲生存时间是 60s，意味着
+  - 全部都是救急线程（60s 后可以回收）
+  - 救急线程可以无限创建
+
+- 队列采用了 SynchronousQueue 实现特点是，它没有容量，没有线程来取是放不进去的（一手交钱、一手交 货）
+
+> 整个线程池表现为线程数会根据任务量不断增长，没有上限，当任务执行完毕，空闲 1分钟后释放线 程。 适合任务数比较密集，但每个任务执行时间较短的情况
+
+#### newSingleThreadExecutor
+
+```java
+public static ExecutorService newSingleThreadExecutor() {
+    return new FinalizableDelegatedExecutorService
+        (new ThreadPoolExecutor(1, 1,
+                                0L, TimeUnit.MILLISECONDS,
+                                new LinkedBlockingQueue<Runnable>()));
+}
+```
+
+> 希望多个任务排队执行。线程数固定为 1，任务数多于 1 时，会放入无界队列排队。任务执行完毕，这唯一的线程 也不会被释放。
+
+区别：
+
+- 自己创建一个单线程串行执行任务，如果任务执行失败而终止那么没有任何补救措施，而线程池还会新建一个线程，保证池的正常工作
+- `Executors.newSingleThreadExecutor()` 线程个数始终为1，不能修改
+  - `FinalizableDelegatedExecutorService` 应用的是装饰器模式，只对外暴露了 `ExecutorService` 接口，因此不能调用 `ThreadPoolExecutor` 中特有的方法
+  - `Executors.newFixedThreadPool(1)` 初始时为1，以后还可以修改对外暴露的是 `ThreadPoolExecutor` 对象，可以强转后调用 `setCorePoolSize` 等方法进行修改
+
+#### newScheduledThreadPool
+
+```java
+public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
+    return new ScheduledThreadPoolExecutor(corePoolSize);
+}
+
+public static ScheduledExecutorService newScheduledThreadPool(
+        int corePoolSize, ThreadFactory threadFactory) {
+    return new ScheduledThreadPoolExecutor(corePoolSize, threadFactory);
+}
+```
+
+**使用**
+
+```java
+// 延时任务
+ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+// 添加两个任务，希望它们都在 1s 后执行
+executor.schedule(() -> {
+    System.out.println("任务1，执行时间：" + new Date());
+    try { Thread.sleep(2000); } catch (InterruptedException e) { }
+}, 1000, TimeUnit.MILLISECONDS);
+executor.schedule(() -> {
+    System.out.println("任务2，执行时间：" + new Date());
+}, 1000, TimeUnit.MILLISECONDS);
+
+// 输出
+任务2，执行时间：Tue Nov 05 14:06:41 CST 2024
+任务1，执行时间：Tue Nov 05 14:06:41 CST 2024
+    
+// 定时任务
+ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
+System.out.println("start..." + new Date());
+pool.scheduleAtFixedRate(() -> {
+    System.out.println("running..." + new Date());
+    try { Thread.sleep(2000); } catch (InterruptedException e) { }
+}, 2, 1, TimeUnit.SECONDS);
+// 2 是初始延时时间
+// 1 是任务间隔时间 如果任务执行时间超过间隔时间，间隔时间不生效
+//输出
+start...Tue Nov 05 14:09:24 CST 2024
+running...Tue Nov 05 14:09:26 CST 2024
+running...Tue Nov 05 14:09:28 CST 2024
+    
+pool.scheduleWithFixedDelay(() -> {
+    System.out.println("running..." + new Date());
+    try { Thread.sleep(2000); } catch (InterruptedException e) { }
+}, 2, 1, TimeUnit.SECONDS);
+// 2 是初始延时时间
+// 1 是任务间隔时间
+// 在scheduleWithFixedDelay中，间隔时间从上一个任务结束开始计算
+// 输出
+start...Tue Nov 05 14:15:09 CST 2024
+running...Tue Nov 05 14:15:11 CST 2024
+running...Tue Nov 05 14:15:14 CST 2024
+```
+
+
+
+
+
+#### 提交任务
+
+```java
+// 执行任务
+void execute(Runnable command);
+
+// 提交任务 task，用返回值 Future 获得任务执行结果
+<T> Future<T> submit(Callable<T> task);
+
+// 提交 tasks 中所有任务
+<T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
+ 	throws InterruptedException;
+
+// 提交 tasks 中所有任务，带超时时间
+<T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+	 throws InterruptedException;
+
+// 提交 tasks 中所有任务，哪个任务先成功执行完毕，返回此任务执行结果，其它任务取消
+<T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException;
+
+// 提交 tasks 中所有任务，哪个任务先成功执行完毕，返回此任务执行结果，其它任务取消，带超时时间
+<T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+	 throws InterruptedException, ExecutionException, TimeoutException;
+```
+
+#### 关闭线程池
+
+**shutdown**
+
+```java
+/*
+	线程池状态变为 SHUTDOWN
+    - 不会接收新任务
+    - 但已提交任务会执行完
+    - 此方法不会阻塞调用线程的执行
+*/
+void shutdown();
+```
+
+**shutdownNow**
+
+```java
+/*
+    线程池状态变为 STOP
+    - 不会接收新任务
+    - 会将队列中的任务返回
+    - 并用 interrupt 的方式中断正在执行的任务
+*/
+List<Runnable> shutdownNow();
+```
+
+**其它方法**
+
+```java
+// 不在 RUNNING 状态的线程池，此方法就返回 true
+boolean isShutdown();
+
+// 线程池状态是否是 TERMINATED
+boolean isTerminated();
+
+// 调用 shutdown 后，由于调用线程并不会等待所有任务运行结束，
+// 因此如果它想在线程池 TERMINATED 后做些事情，可以利用此方法等待
+boolean awaitTermination(long timeout, TimeUnit unit) 
+    throws InterruptedException;
+```
+
+### Semaphore
+
+信号量，用来限制能同时访问共享资源的线程上限。
+
+```java
+public static void main(String[] args) {
+    // 1. 创建 semaphore 对象
+    Semaphore semaphore = new Semaphore(3);
+    // 2. 10个线程同时运行
+    for (int i = 0; i < 10; i++) {
+        new Thread(() -> {
+            // 3. 获取许可
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                System.out.println(Thread.currentThread().getName() + " running...");
+                sleep(1);
+                System.out.println(Thread.currentThread().getName() + " end...");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }finally {
+                semaphore.release();
+            }
+        }, String.valueOf(i)).start();
+    }
+}
+```
+
+```
+0 running...
+1 running...
+2 running...
+0 end...
+2 end...
+1 end...
+9 running...
+4 running...
+5 running...
+9 end...
+5 end...
+4 end...
+6 running...
+7 running...
+8 running...
+7 end...
+8 end...
+6 end...
+3 running...
+3 end...
+```
+
+### CountdownLatch
+
+用来进行线程同步协作，等待所有线程完成倒计时。
+
+通过await()阻塞主线程，其他线程结束时通过countDown()表示线程完成
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(3);
+    new Thread(() -> {
+        try {TimeUnit.SECONDS.sleep(2);} catch (InterruptedException e) {throw new RuntimeException(e);}
+        System.out.println(Thread.currentThread().getName() + " end...");
+        latch.countDown();
+    }, "t1").start();
+    new Thread(() -> {
+        try {TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {throw new RuntimeException(e);}
+        System.out.println(Thread.currentThread().getName() + " end...");
+        latch.countDown();
+    }, "t2").start();
+    new Thread(() -> {
+        try {TimeUnit.SECONDS.sleep(3);} catch (InterruptedException e) {throw new RuntimeException(e);}
+        System.out.println(Thread.currentThread().getName() + " end...");
+        latch.countDown();
+    }, "t3").start();
+    latch.await();
+    System.out.println("main end...");
+}
+```
+
+```text
+t2 end...
+t1 end...
+t3 end...
+main end...
+```
 
