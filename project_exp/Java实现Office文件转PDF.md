@@ -19,6 +19,12 @@
 </dependency>
 ```
 
+**注意点：**
+
+> 4.4.8版本的`jodconverter-spring-boot-starter`也可以被SpringBoot2.7以上版本引用
+
+![image-20241107165509943](images/Java实现Office文件转PDF/image-20241107165509943.png) 
+
 **配置**
 
 配置详解：[Configuration · jodconverter/jodconverter Wiki · GitHub](https://github.com/jodconverter/jodconverter/wiki/Configuration)
