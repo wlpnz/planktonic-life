@@ -225,6 +225,8 @@ public class WebSocketServer {
 
 ## 客户端实现
 
+#### Vue实现
+
 创建Vue组件`WebSocketDemo.vue`
 
 ```vue
@@ -322,3 +324,142 @@ export default {
 > 注意点：
 >
 > 针对客户端websocket断开服务端没有触发断开连接的事件，需要添加心跳请求                 
+
+
+
+#### SpringBoot实现
+
+**依赖**
+
+```xml
+<!-- Spring Web -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<!-- Spring WebSocket -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+```
+
+**配置**
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.client.WebSocketClient;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+
+@Configuration
+public class WebSocketConfig {
+
+    @Bean
+    public WebSocketClient webSocketClient() {
+        return new StandardWebSocketClient();
+    }
+}@Configuration
+public class WebSocketConfig {
+
+    @Bean
+    public WebSocketClient webSocketClient() {
+        return new StandardWebSocketClient();
+    }
+}
+```
+
+```java
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+@Component
+public class MyWebSocketHandler extends TextWebSocketHandler {
+
+    private WebSocketSession session;
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        System.out.println("WebSocket 连接已建立");
+        this.session = session;
+        session.sendMessage(new TextMessage("Hello from client!"));
+    }
+
+    @Override
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+
+        System.out.println("收到消息: " + message.getPayload());
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        System.out.println("WebSocket 连接已关闭");
+    }
+
+
+    // 发送消息的方法
+    public void sendMessage(String message) throws Exception {
+        if (session != null && session.isOpen()) {
+            session.sendMessage(new TextMessage(message));
+            System.out.println("已发送消息: " + message);
+        } else {
+            System.out.println("连接未建立或已关闭，无法发送消息");
+        }
+    }
+}
+```
+
+**使用**
+
+```java
+import cn.hutool.core.util.StrUtil;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.WebSocketHttpHeaders;
+import org.springframework.web.socket.client.WebSocketClient;
+import top.wlpnz.client.config.MyWebSocketHandler;
+
+import java.net.URI;
+
+/**
+ * @author 雾岚
+ * @data 2024.11.8
+ */
+@RestController
+@RequestMapping("/client")
+@AllArgsConstructor
+public class ClientController {
+
+    private final WebSocketClient webSocketClient;
+    private final MyWebSocketHandler myWebSocketHandler;
+
+
+    // 建立连接
+    @GetMapping("/conn/{sid}")
+    public String conn(@PathVariable("sid") String sid) throws Exception {
+        String uri = StrUtil.format("ws://localhost:8080/websocket/{}?key=from-client", sid);
+//        MyWebSocketHandler handler = new MyWebSocketHandler();
+//        webSocketClient.doHandshake(handler, uri);
+        // 携带请求头
+        WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+        headers.add("X-Authorization", "token");
+        webSocketClient.doHandshake(myWebSocketHandler, headers, URI.create(uri));
+        return "success";
+    }
+
+    // 发送消息
+    @GetMapping("/sent")
+    public String sent() throws Exception {
+        myWebSocketHandler.sendMessage("来自sent请求的消息");
+        return "success";
+    }
+}
+```
+
