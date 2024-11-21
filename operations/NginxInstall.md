@@ -1,16 +1,24 @@
 ### 安装
 上传安装包并解压
-![image.png](images/Nginx Install/1695277749844-01ac1837-eb77-4018-8e0d-c9aef22991a5.png)
+
+![image.png](images/Ng/1695277749844-01ac1837-eb77-4018-8e0d-c9aef22991a5.png)
+
 进入解压目录
+
 安装perl库 
+
 yum install -y pcre pcre-devel
 
 安装zlib库 
+
 yum install -y zlib zlib-devel 
 
 编译安装
+
 ./configure --prefix=/usr/local/nginx 
+
 make
+
 make install
 
 ### 常用命令
@@ -42,7 +50,7 @@ yum -y install openssl openssl-devel
 ./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module
 make
 使用nginx -V查看是否成功
-![image.png](images/Nginx Install/1695277795396-43518bdf-4385-4b27-a9fe-759a2cca5603.png)
+![image.png](images/NginxInstall/1695277795396-43518bdf-4385-4b27-a9fe-759a2cca5603.png)
 将objs中的nginx复制到/usr/local/nginx/sbin/nginx
 rm -rf /usr/local/nginx/sbin/nginx
 cp ./nginx /usr/local/nginx/sbin/nginx

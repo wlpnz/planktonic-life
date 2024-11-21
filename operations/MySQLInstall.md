@@ -1,6 +1,8 @@
 ### Linux下安装
 下载链接：[https://downloads.mysql.com/archives/community/](https://downloads.mysql.com/archives/community/)
+
 选择下载RPM Bundle全量包
+
 依次执行命令
 
 ```shell
@@ -14,6 +16,7 @@ rpm -ivh mysql-community-server-8.0.25-1.el7.x86_64.rpm
 ```
 
 安装过程中出现的问题，安装提示处理
+
 安装成功后，执行mysql --version查看版本
 
 ### 服务初始化
@@ -28,17 +31,24 @@ lower_case_table_names=1
 
 `mysqld --initialize --user=mysql`
 说明： `--initialize` 选项默认以“安全”模式来初始化，则会为 root 用户生成一个密码并将 该密码标记为过期 ，登录后你需要设置一个新的密码。生成的 临时密码 会往日志中记录一份。
+
 查看密码：`cat /var/log/mysqld.log`
-![image.png](images/MySQL Install/1695277996836-04b017f0-cf2e-4f28-9703-63b0560b0b9f.png)
+![image.png](images/MySQLInstall/1695277996836-04b017f0-cf2e-4f28-9703-63b0560b0b9f.png)
 root@localhost: 后面就是初始化的密码
+
 进入系统 ： mysql -u root -p 
+
 修改密码： ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password' 
+
 若是出现密码安全策略，可以进行修改
-	修改密码长度：set global validate_password.length=1;（长度）
-	修改密码等级：set global validate_password.policy=0;（等级)
+
+​	修改密码长度：set global validate_password.length=1;（长度）
+
+​	修改密码等级：set global validate_password.policy=0;（等级)
 
 ### 设置远程登录
 先在防火墙开放端口 
+
 放行端口：firewall-cmd --permanent --zone=public --add-port=3306/tcp 
 
 最后刷新：firewall-cmd --reload 

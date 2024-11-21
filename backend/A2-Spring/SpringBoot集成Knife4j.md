@@ -1,8 +1,8 @@
 ### SpringBoot集成knife4j
-[knife4j官网](https://doc.xiaominfo.com/)
+[快速开始 | Knife4j](https://doc.xiaominfo.com/docs/quick-start)
 
 #### 快速开始
-##### 依赖
+##### 依赖(springboot2.x)
 ```xml
 <dependency>
     <groupId>com.github.xiaoymin</groupId>
@@ -11,6 +11,7 @@
 </dependency>
 ```
 ##### 配置
+
 ```yaml
 # application.yml
 knife4j:
@@ -40,12 +41,14 @@ knife4j:
 ##### 访问
 > http://ip:port/doc.html
 
-如果项目中集成了SpringSecurity则需要放行静态资源
+如果项目中集成了安全框架则需要放行静态资源
 ```
 /doc.html
 /v2/api-docs/**
 /webjars/**
 /swagger-resources/**
+
+
 ```
 #### 常用注解
 ##### 用于类上
@@ -192,3 +195,37 @@ knife4j:
       enabled: true
       version: swagger2
 ```
+
+### SpringBoot3.x集成
+
+**依赖springboot3.x**
+
+```xml
+<dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+    <version>4.4.0</version>
+</dependency>
+```
+
+**放行资源**
+
+```java
+public static final String[] API_WHITELIST = {
+            "/swagger-ui/**",
+            "/swagger-ui/index.html",
+            "/swagger-ui.html",
+            "/swagger-ui.html/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/doc.html",
+    		"/swagger-resources",
+    };
+
+@Override
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+    registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+}
+```
+
