@@ -1,7 +1,7 @@
 ### 安装
 上传安装包并解压
 
-![image.png](images/Ng/1695277749844-01ac1837-eb77-4018-8e0d-c9aef22991a5.png)
+![image.png](images/NginxInstall/1695277749844-01ac1837-eb77-4018-8e0d-c9aef22991a5.png)
 
 进入解压目录
 
@@ -44,19 +44,31 @@ firewall-cmd --list-ports
 
 ### 配置https
 先安装nginx的ssl模块
+
 编译之前安装openssl
+
 yum -y install openssl openssl-devel
+
 然后在nginx的解压目录中执行
+
 ./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module
+
 make
+
 使用nginx -V查看是否成功
+
 ![image.png](images/NginxInstall/1695277795396-43518bdf-4385-4b27-a9fe-759a2cca5603.png)
+
 将objs中的nginx复制到/usr/local/nginx/sbin/nginx
+
 rm -rf /usr/local/nginx/sbin/nginx
+
 cp ./nginx /usr/local/nginx/sbin/nginx
 
 将下载好的证书（pem文件和key文件）上传到/usr/local/nginx/conf的cert中
+
 然后配置nginx.conf
+
 ```
  server {
         listen       443 ssl;
@@ -83,7 +95,7 @@ cp ./nginx /usr/local/nginx/sbin/nginx
 ### 配置成系统服务
 
 ```shell
-vi /usr/lib/systemd/system/nginx.service
+vim /usr/lib/systemd/system/nginx.service
 ```
 
 将以下内容插入nginx.service
