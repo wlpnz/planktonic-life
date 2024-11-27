@@ -86,7 +86,7 @@ npm run serve
 
 ```powershell
 ## 1.创建命令
- 
+npm create vue@latest
 
 ## 2.具体配置
 ## 配置项目名称

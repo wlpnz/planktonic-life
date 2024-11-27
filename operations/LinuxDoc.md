@@ -2,13 +2,13 @@
 
 ### 命令
 
-**检查Linux版本**`cat /etc/redhat-release`
-**修改Hosts文件 **`vim /etc/hosts`
-**修改主机名** `hostnamectl set-hostname new-hostname` 记得修改hosts文件，修改完成后重启
+**检查Linux版本 **`cat /etc/redhat-release`
 
-**修改主机名** `vim /etc/hostname`
+**修改Hosts文件 ** `vim /etc/hosts`
 
+**修改主机名**  `hostnamectl set-hostname new-hostname`  记得修改hosts文件，修改完成后重启
 
+**修改主机名**  `vim /etc/hostname`
 
 ### 修改IP
 

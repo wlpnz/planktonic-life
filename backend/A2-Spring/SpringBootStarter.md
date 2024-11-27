@@ -122,7 +122,7 @@ POM
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
-
+    <!-- 驼峰命名 转换成 横杠(-)命名 -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-configuration-processor</artifactId>
@@ -173,5 +173,7 @@ SpringBoot 2.7.x开始，自动装配的机制开始改动，但是有向后兼�
 
 在相应的类中加入空参的构造函数
 
+问题二：
 
+spring-boot-configuration-processor依赖可以将驼峰命名自动转换成横杠(-)命名
 
