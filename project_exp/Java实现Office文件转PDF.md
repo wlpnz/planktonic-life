@@ -198,6 +198,13 @@ public class ConverterController {
 
 9. 最后，启动 Apache OpenOffice确保它正常工作.
 
+10. 上传中文字体保证文档转码，保证中文字符编码正常
+
+    1. 在`C:\Windows\Fonts`中找到几个中文字体，上传到linux的 `/usr/share/fonts/chinese`
+    2. 执行命令 `fc-cache`刷新字体缓存,查看安装的中文字体`fc-list :lang=zh`
+    3. 如果`fc`命令不存在，执行：`yum install fontconfig`
+
+
 > 注意点：
 >
 > jodconverter-spring-boot-starter在使用OpenOffice时不需要手动启动的OpenOffice

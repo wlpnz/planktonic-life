@@ -56,7 +56,7 @@ import javax.validation.groups.Default;
 public interface Update extends Default {}
 ```
 
-**使用**
+**@Validated使用**
 
 ```java
 @PostMapping("/test")
@@ -74,3 +74,65 @@ public String testUpdate(@RequestBody @Validated({Update.class})UserVO user) {
 }
 ```
 
+### @Valid 的作用
+
+**触发嵌套对象的验证**：
+
+- `@Valid` 通常用于标注在对象参数、对象字段或方法上，表示对该对象进行递归校验。
+- 如果对象中嵌套了其他需要验证的对象，`@Valid` 会触发这些嵌套对象的校验。
+
+**整合SpringValidation**：
+
+- 在 Spring 中，`@Valid` 配合 `@RequestBody` 或 `@ModelAttribute` 用于验证 Controller 的入参。
+- 如果验证失败，会抛出 `MethodArgumentNotValidException` 或 `ConstraintViolationException`。
+
+**示例**
+
+```java
+// @Valid 标识位置
+@PostMapping("/create")
+public ResponseEntity<String> createUser(@RequestBody @Valid UserDTO userDTO, BindingResult result) {
+    if (result.hasErrors()) {
+        return ResponseEntity.badRequest().body("Validation failed: " + result.getAllErrors());
+    }
+    return ResponseEntity.ok("User created successfully");
+}
+
+@Service
+public class UserService {
+    public void saveUser(@Valid UserDTO userDTO) {
+        // 业务逻辑
+    }
+}
+
+
+// 示例对象
+public class UserDTO {
+    @NotNull(message = "Name cannot be null")
+    private String name;
+
+    @Min(value = 18, message = "Age must be at least 18")
+    private Integer age;
+
+    @Valid
+    private AddressDTO address; // 嵌套对象
+}
+
+// 嵌套对象
+public class AddressDTO {
+    @NotBlank(message = "Street cannot be blank")
+    private String street;
+
+    @NotNull(message = "Postal code cannot be null")
+    private String postalCode;
+}
+```
+
+### **与 `@Validated` 的区别**
+
+- **`@Valid`**：
+  - 来自 `javax.validation`，主要用于参数或嵌套对象的校验。
+  - 必须配合 Bean Validation 提供的约束注解（如 `@NotNull`, `@Size` 等）使用。
+- **`@Validated`**：
+  - 来自 Spring 的 `org.springframework.validation.annotation`，主要用于类或方法级别的校验。
+  - 支持分组校验功能（`@GroupSequence`）。
