@@ -69,10 +69,12 @@ docker run -d \
 -v /develop_env/minio/data:/data \
 -v /develop_env/minio/config:/root/.minio \
 minio/minio:RELEASE.2022-09-07T22-25-02Z server \
---console-address ":9000" \
---address ":9001" /data
+--console-address ":9001" \
+--address ":9000" /data
 ```
-访问地址：192.168.10.190:9000 账号密码：admin/admin123
+访问地址：192.168.10.190:9001 账号密码：admin/admin123
+
+API使用端口是9000
 
 #### install rabbitMQ
 ```

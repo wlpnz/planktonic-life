@@ -567,7 +567,7 @@ System.out.println("===================");
     </dependency>
     <dependency>
         <groupId>jakarta.json</groupId>
-        <artifactId>jakarta.json-api</artifactId>
+        <artifactId>jakarta.json</artifactId>
         <version>2.0.1</version>
     </dependency>
 </dependencies>

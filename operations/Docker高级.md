@@ -261,17 +261,21 @@ Compose 是 Docker 公司推出的一个工具软件，可以管理多个 Docker
 #### 安装
 [compose下载](https://docs.docker.com/compose/install/linux/)
 下载命令：
-:::info
+
+```shell
 下载插件
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+
 mkdir -p $DOCKER_CONFIG/cli-plugins
+
 curl -SL [https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-linux-x86_64](https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-linux-x86_64) -o $DOCKER_CONFIG/cli-plugins/docker-compose
+
 添加权限
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 查看是否安装成功
 docker compose version
+```
 
-:::
 #### 核心概念
 一文件：docker-compose.yml
 两要素：服务(service)和工程(project)
@@ -283,7 +287,7 @@ docker compose version
 执行docker compose up命令，启动并运行整个应用程序，完成一键部署上线。
 
 #### compose常用命令
-:::info
+```shell
 docker compose -h                           # 查看帮助
 docker compose up                           # 启动所有docker-compose服务
 docker compose up -d                        # 启动所有docker-compose服务并后台运行
@@ -297,7 +301,7 @@ docker compose config -q  # 检查配置，有问题才有输出
 docker compose restart   # 重启服务
 docker compose start     # 启动服务
 docker compose stop      # 停止服务
-:::
+```
 
 #### 使用compose编排微服务
 **准备应用程序所需镜像**
