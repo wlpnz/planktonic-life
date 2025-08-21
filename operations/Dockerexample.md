@@ -311,8 +311,6 @@ docker run -d `
   xuxueli/xxl-job-admin:2.5.0
 ```
 
-访问路径：http://localhost:8090/xxl-job-admin
-
 账号密码：admin/123456 
 
 #### install nginx
