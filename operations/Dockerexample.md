@@ -178,7 +178,7 @@ docker run -d -e MODE=standalone -p 8848:8848 -v D:\software\nacos\conf:/home/na
 
 #### install minio
 ```
-docker run -d --name minio -p 9000:9000 -p 9001:9001 --privileged=true -e "MINIO_ROOT_USER=admin" -e "MINIO_ROOT_PASSWORD=admin123" -v D:\software\minio\data:/data -v D:\software\minio\config:/root/.minio minio/minio:latest server --console-address ":9000" --address ":9001" /data
+docker run -d --name minio -p 9000:9000 -p 9001:9001 --privileged=true -e "MINIO_ROOT_USER=admin" -e "MINIO_ROOT_PASSWORD=admin123" -v D:\software\minio\data:/data -v D:\software\minio\config:/root/.minio minio/minio:latest server --console-address ":9001" --address ":9000" /data
 ```
 访问地址：localhost:9000 
 
