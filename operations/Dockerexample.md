@@ -357,3 +357,18 @@ docker run -d `
   elasticsearch:8.11.0
 ```
 
+#### install mongodb
+
+```
+docker pull mongo:7.0.23
+
+docker run -d `
+  --name mongo `
+  -p 27017:27017 `
+  -v E:\develop_tool\docker\mongodb\data:/data/db `
+  -v E:\develop_tool\docker\mongodb\config:/data/configdb `
+  -e MONGO_INITDB_ROOT_USERNAME=mongoadmin `
+  -e MONGO_INITDB_ROOT_PASSWORD=mongoadmin `
+  mongo:7.0.23
+```
+
